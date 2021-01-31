@@ -22,6 +22,9 @@ NexT.utils = {
   wrapImageWithFancyBox: function() {
     document.querySelectorAll('.post-body :not(a) > img, .post-body > img').forEach(element => {
       const $image = $(element);
+      if ($(element).hasClass('nofancybox')) {
+          return;
+      }
       const imageLink = $image.attr('data-src') || $image.attr('src');
       const $imageWrapLink = $image.wrap(`<a class="fancybox fancybox.image" href="${imageLink}" itemscope itemtype="http://schema.org/ImageObject" itemprop="url"></a>`).parent('a');
       if ($image.is('.post-gallery img')) {

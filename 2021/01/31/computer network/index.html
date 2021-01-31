@@ -18,30 +18,31 @@
 
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
   </script>
-<meta name="description" content="计算机网络OSI 七层模型\本节内容参考中英文维基百科*。 OSI Model是Open System Interconnection Model的缩写，顾名思义，OSI模型是一种为规范不同设备内部结构和技术的通信过程而产生的模型。 引入了服务、接口、协议、分层的概念，实际的模型结构包含七层：  应用层 提供为应用软件设计的接口，以设置与另一应用软件之间的通信。 HTTP, HTTPS, FTP,">
+<meta name="description" content="OSI 七层模型&amp;#42;本节内容参考中英文维基百科。 OSI Model是Open System Interconnection Model的缩写，顾名思义，OSI模型是一种为规范不同设备内部结构和技术的通信过程而产生的模型。 引入了服务、接口、协议、分层的概念，实际的模型结构包含七层：   应用层 提供为应用软件设计的接口，以设置与另一应用软件之间的通信。 HTTP, HTTPS, FTP,">
 <meta property="og:type" content="article">
 <meta property="og:title" content="计算机网络">
-<meta property="og:url" content="http://example.com/2021/01/31/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/index.html">
+<meta property="og:url" content="http://example.com/2021/01/31/computer%20network/index.html">
 <meta property="og:site_name" content="Zayeum&#39;s Stack">
-<meta property="og:description" content="计算机网络OSI 七层模型\本节内容参考中英文维基百科*。 OSI Model是Open System Interconnection Model的缩写，顾名思义，OSI模型是一种为规范不同设备内部结构和技术的通信过程而产生的模型。 引入了服务、接口、协议、分层的概念，实际的模型结构包含七层：  应用层 提供为应用软件设计的接口，以设置与另一应用软件之间的通信。 HTTP, HTTPS, FTP,">
+<meta property="og:description" content="OSI 七层模型&amp;#42;本节内容参考中英文维基百科。 OSI Model是Open System Interconnection Model的缩写，顾名思义，OSI模型是一种为规范不同设备内部结构和技术的通信过程而产生的模型。 引入了服务、接口、协议、分层的概念，实际的模型结构包含七层：   应用层 提供为应用软件设计的接口，以设置与另一应用软件之间的通信。 HTTP, HTTPS, FTP,">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2021/01/31/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/osi.jpg">
-<meta property="og:image" content="http://example.com/2021/01/31/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP/IP.jpg">
-<meta property="og:image" content="http://example.com/2021/01/31/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/ARP.jpg">
+<meta property="og:image" content="http://example.com/2021/01/31/computer%20network/OSI.png">
+<meta property="og:image" content="http://example.com/2021/01/31/computer%20network/TCP/IP.png">
+<meta property="og:image" content="http://example.com/2021/01/31/computer%20network/ARP.jpg">
 <meta property="article:published_time" content="2021-01-30T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-01-31T06:46:52.867Z">
+<meta property="article:modified_time" content="2021-01-31T08:57:42.114Z">
 <meta property="article:author" content="zayeum">
 <meta property="article:tag" content="Interview, Computer Basics">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2021/01/31/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/osi.jpg">
+<meta name="twitter:image" content="http://example.com/2021/01/31/computer%20network/OSI.png">
 
 
-<link rel="canonical" href="http://example.com/2021/01/31/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+<link rel="canonical" href="http://example.com/2021/01/31/computer%20network/">
 
 
 <script class="page-configurations">
@@ -104,6 +105,9 @@
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
     <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
@@ -125,6 +129,12 @@
 
 
 
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
 
 
 
@@ -153,7 +163,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C"><span class="nav-number">1.</span> <span class="nav-text">计算机网络</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#OSI-%E4%B8%83%E5%B1%82%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.1.</span> <span class="nav-text">OSI 七层模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">应用层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A8%E7%A4%BA%E5%B1%82"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">表示层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E5%B1%82"><span class="nav-number">1.1.0.3.</span> <span class="nav-text">会话层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82"><span class="nav-number">1.1.0.4.</span> <span class="nav-text">传输层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82"><span class="nav-number">1.1.0.5.</span> <span class="nav-text">网络层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82"><span class="nav-number">1.1.0.6.</span> <span class="nav-text">数据链路层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%B1%82"><span class="nav-number">1.1.0.7.</span> <span class="nav-text">物理层</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP-IP-%E5%9B%9B%E5%B1%82%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text">TCP&#x2F;IP 四层模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82-1"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">应用层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82-1"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">传输层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82-1"><span class="nav-number">1.2.0.3.</span> <span class="nav-text">网络层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%93%BE%E8%B7%AF%E5%B1%82"><span class="nav-number">1.2.0.4.</span> <span class="nav-text">链路层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.2.0.5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ARP%E6%89%A9%E5%B1%95%E7%9F%A5%E8%AF%86"><span class="nav-number">1.2.0.6.</span> <span class="nav-text">ARP扩展知识</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#OSI-%E4%B8%83%E5%B1%82%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">OSI 七层模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82"><span class="nav-number">1.1.</span> <span class="nav-text">应用层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E7%A4%BA%E5%B1%82"><span class="nav-number">1.2.</span> <span class="nav-text">表示层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E5%B1%82"><span class="nav-number">1.3.</span> <span class="nav-text">会话层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82"><span class="nav-number">1.4.</span> <span class="nav-text">传输层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82"><span class="nav-number">1.5.</span> <span class="nav-text">网络层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82"><span class="nav-number">1.6.</span> <span class="nav-text">数据链路层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%B1%82"><span class="nav-number">1.7.</span> <span class="nav-text">物理层</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP-IP-%E5%9B%9B%E5%B1%82%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">TCP&#x2F;IP 四层模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82-1"><span class="nav-number">2.1.</span> <span class="nav-text">应用层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82-1"><span class="nav-number">2.2.</span> <span class="nav-text">传输层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82-1"><span class="nav-number">2.3.</span> <span class="nav-text">网络层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E8%B7%AF%E5%B1%82"><span class="nav-number">2.4.</span> <span class="nav-text">链路层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ARP%E6%89%A9%E5%B1%95%E7%9F%A5%E8%AF%86"><span class="nav-number">2.6.</span> <span class="nav-text">ARP扩展知识</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -165,7 +175,8 @@
 <div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives">
+          <a href="/archives/">
+        
           <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">posts</span>
         </a>
@@ -210,7 +221,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/31/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/31/computer%20network/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -235,7 +246,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2021-01-31 00:00:00 / Modified: 14:46:52" itemprop="dateCreated datePublished" datetime="2021-01-31T00:00:00+08:00">2021-01-31</time>
+      <time title="Created: 2021-01-31 00:00:00 / Modified: 16:57:42" itemprop="dateCreated datePublished" datetime="2021-01-31T00:00:00+08:00">2021-01-31</time>
     </span>
 
   
@@ -248,32 +259,33 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h1><h2 id="OSI-七层模型"><a href="#OSI-七层模型" class="headerlink" title="OSI 七层模型"></a>OSI 七层模型</h2><p><em>\</em>本节内容参考中英文维基百科*。</p>
+        <h2 id="OSI-七层模型"><a href="#OSI-七层模型" class="headerlink" title="OSI 七层模型"></a>OSI 七层模型</h2><p><em>&#42;本节内容参考中英文维基百科</em>。</p>
 <p>OSI Model是Open System Interconnection Model的缩写，顾名思义，OSI模型是一种为规范不同设备内部结构和技术的通信过程而产生的模型。</p>
 <p>引入了服务、接口、协议、分层的概念，实际的模型结构包含七层：</p>
-<p><img src="osi.jpg" title="OSI模型"></p>
-<h4 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h4><ul>
+<img src="/2021/01/31/computer%20network/OSI.png" class="" title="OSI模型">
+
+<h3 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h3><ul>
 <li>提供为应用软件设计的<strong>接口</strong>，以设置与另一应用软件之间的通信。</li>
 <li>HTTP, HTTPS, FTP, SSH, SMTP, POP3, IMAP4</li>
 </ul>
-<h4 id="表示层"><a href="#表示层" class="headerlink" title="表示层"></a>表示层</h4><ul>
+<h3 id="表示层"><a href="#表示层" class="headerlink" title="表示层"></a>表示层</h3><ul>
 <li>把数据转换为网络服务通用格式，包括字符编码、数据压缩、编码/解码。</li>
 </ul>
-<h4 id="会话层"><a href="#会话层" class="headerlink" title="会话层"></a>会话层</h4><ul>
+<h3 id="会话层"><a href="#会话层" class="headerlink" title="会话层"></a>会话层</h3><ul>
 <li>负责在数据传输中维护计算机网络中两台计算机之间的通信连接和数据交换。</li>
 <li>SMTP, DNS</li>
 </ul>
-<h4 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h4><ul>
+<h3 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h3><ul>
 <li>接收数据流并将其分成<strong>数据段</strong>，把传输表头（TH）加至数据段。传输表头包含了所使用的协议等发送信息。</li>
 <li>数据段使网络传输能够多路复用</li>
 <li>TCP, UDP</li>
 </ul>
-<h4 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h4><ul>
+<h3 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h3><ul>
 <li>决定数据的路径选择和转寄，将网络表头（NH）加至<strong>数据包</strong>，以形成分组。网络表头包含了网络资料。</li>
 <li>管理多结点的网络，包括寻址、路由等。</li>
 <li>IP, ICMP, ARP, RARP, AKP, UUCP</li>
 </ul>
-<h4 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h4><ul>
+<h3 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h3><ul>
 <li><p>负责物理层连接的两个结点的<strong>数据帧</strong>传输。</p>
 </li>
 <li><p>当表头和表尾被加至数据包时，会形成<strong>数据帧</strong>（Data Frame）。数据链表头（DLH）是包含了物理地址和错误侦测及改错的方法。数据链表尾（DLT）是一串指示数据包末端的字符串。</p>
@@ -281,22 +293,22 @@
 <li><p>以太网、无线局域网（Wi-Fi）和通用分组无线服务（GPRS）等。</p>
 </li>
 </ul>
-<h4 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h4><ul>
+<h3 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h3><ul>
 <li>提供两个网络媒体实际连接的所有物理介质。</li>
 <li>包括针脚、电压、线缆规范、集线器、中继器、网卡、主机接口卡等。</li>
 <li>IEEE 802.1A</li>
 </ul>
 <p>OSI模型并不是一个协议，而是一个制定协议时参考的框架模型。</p>
-<h2 id="TCP-IP-四层模型"><a href="#TCP-IP-四层模型" class="headerlink" title="TCP/IP 四层模型"></a>TCP/IP 四层模型</h2><p><em>\</em>本节内容参考中英文维基百科、<a target="_blank" rel="noopener" href="https://www.cnblogs.com/onepixel/p/7092302.html">一像素的博客</a>  以及 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/59066874">杰杰的文章</a> 。*</p>
+<h2 id="TCP-IP-四层模型"><a href="#TCP-IP-四层模型" class="headerlink" title="TCP/IP 四层模型"></a>TCP/IP 四层模型</h2><p><em>&#42;本节内容参考中英文维基百科、<a target="_blank" rel="noopener" href="https://www.cnblogs.com/onepixel/p/7092302.html">一像素的博客</a>  以及 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/59066874">杰杰的文章</a> 。</em></p>
 <p>个人理解：TCP/IP是指Transmission Control Protocol和Internet Protocol， 而我们常说的TCP/IP实际上是一组协议栈(protocol stack)，国外一般称为DoD模型。</p>
 <p>基本框架：</p>
-<p><img src="TCP/IP.jpg" title="TCP/IP协议栈"></p>
+<p><img src="TCP/IP.png" title="TCP/IP协议栈"></p>
 <p>这种模型参考了OSI模型的设计，将7层精简成4层。</p>
-<h4 id="应用层-1"><a href="#应用层-1" class="headerlink" title="应用层"></a>应用层</h4><ul>
+<h3 id="应用层-1"><a href="#应用层-1" class="headerlink" title="应用层"></a>应用层</h3><ul>
 <li>对应OSI中的应用层、表示层、会话层</li>
 <li>应用层定义数据格式，并按照对应的格式解析数据</li>
 </ul>
-<h4 id="传输层-1"><a href="#传输层-1" class="headerlink" title="传输层"></a>传输层</h4><ul>
+<h3 id="传输层-1"><a href="#传输层-1" class="headerlink" title="传输层"></a>传输层</h3><ul>
 <li><p>对应OSI中的传输层</p>
 </li>
 <li><p>传输层定义了端口，同一台主机上的每个应用程序都要指定唯一端口号，让主机能确定是哪个应用程序要接收这个包。</p>
@@ -323,7 +335,7 @@
 </ul>
 </li>
 </ul>
-<h4 id="网络层-1"><a href="#网络层-1" class="headerlink" title="网络层"></a>网络层</h4><ul>
+<h3 id="网络层-1"><a href="#网络层-1" class="headerlink" title="网络层"></a>网络层</h3><ul>
 <li>对应OSI中的网络层；</li>
 <li>引入<strong>IP协议</strong>(Internet Protocol)指定一套IP地址，用来判断主机所属的网络和在网络内的地址：<ul>
 <li>IP地址有IPv4和IPv6两个版本，其中IPv4是32位地址，分为四部分，每部分用0~255的十进制数字表示；IPv6有128位地址；</li>
@@ -358,7 +370,7 @@
 </ul>
 </li>
 </ul>
-<h4 id="链路层"><a href="#链路层" class="headerlink" title="链路层"></a>链路层</h4><ul>
+<h3 id="链路层"><a href="#链路层" class="headerlink" title="链路层"></a>链路层</h3><ul>
 <li>对应OSI中的数据链路层、物理层；</li>
 <li>将0、1电信号分组，按分组顺序依次发送；</li>
 <li>以太网协议：规定一个分组为一个<strong>数据帧</strong>，并以MAC地址作为网卡间通信的唯一身份标识包含：<ul>
@@ -369,13 +381,14 @@
 </li>
 <li>以太网采用<strong>广播</strong>形式把数据帧发送给所有<strong>子网内</strong>的主机，每台主机比对目标MAC地址，当匹配时就保留，否则丢弃。</li>
 </ul>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><blockquote>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><blockquote>
 <p><strong>“ 配送车就是物理介质，配送站就是网关， 快递员就是路由器，收货地址就是IP地址，联系方式就是MAC地址。”</strong></p>
 <p><strong>当你输入一个网址并按下回车键的时候，首先，应用层协议对该请求包做了格式定义；紧接着传输层协议加上了双方的端口号，确认了双方通信的应用程序；然后网络协议加上了双方的IP地址，确认了双方的网络位置；最后链路层协议加上了双方的MAC地址，确认了双方的物理位置，同时将数据进行分组，形成数据帧，采用广播方式，通过传输介质发送给对方主机。而对于不同网段，该数据包首先会转发给网关路由器，经过多次转发后，最终被发送到目标主机。目标机接收到数据包后，采用对应的协议，对帧数据进行组装，然后再通过一层一层的协议进行解析，最终被应用层的协议解析并交给服务器处理。</strong></p>
 </blockquote>
-<h4 id="ARP扩展知识"><a href="#ARP扩展知识" class="headerlink" title="ARP扩展知识"></a>ARP扩展知识</h4><p>ARP请求包在通信时也需要经过链路层包装成数据帧，但又不知道目标MAC地址，怎么办呢？</p>
+<h3 id="ARP扩展知识"><a href="#ARP扩展知识" class="headerlink" title="ARP扩展知识"></a>ARP扩展知识</h3><p>ARP请求包在通信时也需要经过链路层包装成数据帧，但又不知道目标MAC地址，怎么办呢？</p>
 <p>以太网数据帧首部用<strong>帧类型</strong>来区分ARP请求包和IP数据包，ARP请求包的帧类型为0x0806，而IP数据包的帧类型为0x0800；而ARP请求包内的目标MAC地址值为FF-FF-FF-FF-FF-FF。</p>
-<p><img src="ARP.jpg" title="ARP数据包封装在以太网帧的格式"></p>
+<img src="/2021/01/31/computer%20network/ARP.jpg" class="" title="ARP数据包封装在以太网帧的格式">
+
 <ul>
 <li><p>硬件类型，表示要知道目标网卡的硬件类型，其中，值为1表示以太网地址；</p>
 </li>
@@ -411,8 +424,8 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/01/28/Singleton%20Pattern/" rel="prev" title="Singleton Pattern">
-                  <i class="fa fa-chevron-left"></i> Singleton Pattern
+                <a href="/2021/01/28/Java%E5%9F%BA%E7%A1%80/" rel="prev" title="Java基础">
+                  <i class="fa fa-chevron-left"></i> Java基础
                 </a>
             </div>
             <div class="post-nav-item">
@@ -464,7 +477,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">zayeum</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>
 
     </div>
@@ -472,6 +485,8 @@
 
   
   <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 <script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
 
   
