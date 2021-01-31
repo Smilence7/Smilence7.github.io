@@ -169,7 +169,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -203,6 +203,99 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/23/hexo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zayeum">
+      <meta itemprop="description" content="postgraduate student">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zayeum's Stack">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/01/23/hexo/" class="post-title-link" itemprop="url">Hexo Installation & Configuration</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-01-23 00:00:00 / Modified: 17:36:40" itemprop="dateCreated datePublished" datetime="2021-01-23T00:00:00+08:00">2021-01-23</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h4 id="安装nodejs"><a href="#安装nodejs" class="headerlink" title="安装nodejs"></a>安装nodejs</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">sudo wget https://npm.taobao.org/mirrors/node/latest-v14.x/node-v14.15.4.tar.gz</span><br><span class="line">sudo tar zxvf node-v14.15.4.tar.gz</span><br><span class="line">yum install gcc gcc-c++</span><br><span class="line">mv node-v14.15.4-linux-x64 nodejs</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/node /usr/bin/node </span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npm /usr/bin/npm</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npx /usr/bin/npx</span><br><span class="line"><span class="comment"># 换源</span></span><br><span class="line">npm install -g cnpm --registry=https://registry.npm.taobao.org</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/cnpm /usr/bin/cnpm</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo cnpm install -g hexo-cli</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/hexo /usr/bin/hexo</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 依赖</span></span><br><span class="line">yum -y install curl-devel expat-devel gettext-devel openssl-devel zlib-devel gcc</span><br><span class="line">sudo tar -zxf git-2.21.0.tar.gz</span><br><span class="line"><span class="built_in">cd</span> git-2.21.0</span><br><span class="line">sudo make</span><br><span class="line">sudo make install prefix=/usr/<span class="built_in">local</span>/git</span><br><span class="line"><span class="comment"># 添加环境变量</span></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/usr/<span class="built_in">local</span>/git/bin</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br><span class="line"><span class="comment"># 或建立软连接</span></span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/git/bin/git /usr/<span class="built_in">local</span>/bin/</span><br><span class="line"><span class="comment"># 配置身份</span></span><br><span class="line">git config --global user.name <span class="string">&quot;zayeum&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;smilence7@outlook.com&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">sudo hexo init</span><br><span class="line">sudo hexo s  <span class="comment"># start local server</span></span><br><span class="line">sudo npm install hexo-deployer-git --save</span><br><span class="line">sudo vim _config.yml</span><br><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: <span class="string">&#x27;git&#x27;</span></span><br><span class="line">  repo: <span class="string">&#x27;https://github.com/Smilence7/Smilence7.github.io&#x27;</span></span><br><span class="line">  branch: <span class="string">&#x27;master&#x27;</span></span><br><span class="line">sudo hexo clean</span><br><span class="line">sudo hexo g  <span class="comment"># generate</span></span><br><span class="line">sudo hexo d  <span class="comment"># deploy</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="多端部署"><a href="#多端部署" class="headerlink" title="多端部署"></a>多端部署</h4><p>主要参考 <a target="_blank" rel="noopener" href="https://leooo48.github.io/2017/07/12/hexo-github/">这篇博客</a></p>
+<p>从base端上传源文件到github的hexo branch下</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog</span><br><span class="line"><span class="comment"># 先删除theme中的.git文件夹</span></span><br><span class="line">sudo git init</span><br><span class="line">sudo git add -A</span><br><span class="line">sudo git commit -m <span class="string">&quot;all blog source files&quot;</span></span><br><span class="line">sudo git branch hexo</span><br><span class="line">sudo git checkout hexo</span><br><span class="line">sudo git remote add origin https://github.com/Smilence7/Smilence7.github.io.git</span><br><span class="line">sudo git push origin hexo -f</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>在新环境中安装Git, Nodejs</p>
+</li>
+<li><p>从github repo中克隆源文件</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> -b hexo https://github.com/Smilence7/Smilence7.github.io.git</span><br></pre></td></tr></table></figure></li>
+<li><p>安装hexo</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># windows</span></span><br><span class="line">npm install hexo-cli -g</span><br><span class="line">npm install</span><br><span class="line"><span class="comment"># Ubuntu</span></span><br><span class="line">npm install hexo --save</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<h4 id="配置域名"><a href="#配置域名" class="headerlink" title="配置域名"></a>配置域名</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog/<span class="built_in">source</span></span><br><span class="line"><span class="comment"># 创建CNAME文件绑定域名</span></span><br><span class="line">vim CNAME</span><br><span class="line">zayeum.com</span><br><span class="line"><span class="comment"># 在域名管理页面中配置DNS解析</span></span><br><span class="line"><span class="comment"># 解析类型为CNAME，ip为Smilence7.github.io</span></span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
