@@ -2,9 +2,79 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://zayeum.com/2021/01/31/computer%20network/</loc>
+    
+    <lastmod>2021-02-04</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/2021/02/01/algorithm-data-structure/</loc>
+    
+    <lastmod>2021-02-04</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/2021/02/04/spring-boot/</loc>
+    
+    <lastmod>2021-02-04</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/2021/01/28/singleton-pattern/</loc>
+    
+    <lastmod>2021-02-04</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/2021/01/28/java-basics/</loc>
+    
+    <lastmod>2021-02-04</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://zayeum.com/2021/01/31/idea-keymap/</loc>
     
-    <lastmod>2021-01-31</lastmod>
+    <lastmod>2021-02-04</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/2021/01/23/hexo/</loc>
+    
+    <lastmod>2021-02-04</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/404.html</loc>
+    
+    <lastmod>2021-02-04</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/categories/index.html</loc>
+    
+    <lastmod>2021-02-04</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/index.html</loc>
+    
+    <lastmod>2021-02-04</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/about/index.html</loc>
+    
+    <lastmod>2021-02-04</lastmod>
     
   </url>
   
@@ -12,27 +82,6 @@
     <loc>https://zayeum.com/2021/01/31/computer-network/</loc>
     
     <lastmod>2021-01-31</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/2021/01/28/singleton-pattern/</loc>
-    
-    <lastmod>2021-01-31</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/2021/01/28/java-basics/</loc>
-    
-    <lastmod>2021-01-31</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/2021/01/23/hexo/</loc>
-    
-    <lastmod>2021-01-23</lastmod>
     
   </url>
   
@@ -53,6 +102,34 @@
 
   
   <url>
+    <loc>https://zayeum.com/tags/algorithm/</loc>
+    <lastmod>2021-02-04</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/data-structure/</loc>
+    <lastmod>2021-02-04</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/Interview/</loc>
+    <lastmod>2021-02-04</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/Computer-Basics/</loc>
+    <lastmod>2021-02-04</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zayeum.com/tags/Interview-Computer-Basics/</loc>
     <lastmod>2021-02-04</lastmod>
     <changefreq>daily</changefreq>
@@ -60,7 +137,21 @@
   </url>
   
   <url>
-    <loc>https://zayeum.com/tags/IDE-toolbox/</loc>
+    <loc>https://zayeum.com/tags/Blog/</loc>
+    <lastmod>2021-02-04</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/IDE/</loc>
+    <lastmod>2021-02-04</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/Toolbox/</loc>
     <lastmod>2021-02-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -74,7 +165,21 @@
   </url>
   
   <url>
-    <loc>https://zayeum.com/tags/Design-Patterns-Singleton/</loc>
+    <loc>https://zayeum.com/tags/Design-Patterns/</loc>
+    <lastmod>2021-02-04</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/Singleton/</loc>
+    <lastmod>2021-02-04</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/Framework/</loc>
     <lastmod>2021-02-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>

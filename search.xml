@@ -1,6 +1,278 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>算法与数据结构</title>
+    <url>/2021/02/01/algorithm-data-structure/</url>
+    <content><![CDATA[<p><em>本文是一篇复习笔记，参考自<a href="https://time.geekbang.org/column/intro/126">王争的《数据结构与算法之美》</a>。</em></p>
+<h2 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h2><p>二叉查找树定义每个结点的左子树里的元素值都小于该节点、右子树里的元素都大于该节点，这样的定义使它的中序遍历就是升序的有序数据，时间复杂度为O(n)。</p>
+<p>查找操作：从根节点出发，小于就递归左子树，大于就递归右子树，直到等于根节点就返回。</p>
+<p>插入操作：一直递归比较，直到找到该分支底部的位置（左小右大向下查找，直到左/右子树为空，就新建一个结点放到左/右子结点）。</p>
+<a id="more"></a>
+
+<p>删除操作：先查找到删除的结点位置，</p>
+<ul>
+<li>如果该位置没有子结点，将父节点指向null；</li>
+<li>如果该位置有一个子结点，将父节点指向该子结点（如果待删除结点是父节点的左子结点就接左指针，否则接右指针）；</li>
+<li>如果该位置有两个子结点，查找右子树中最小的结点，用它的值覆盖待删除位置，再递归地删除新的待删除结点。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">delete</span><span class="params">(<span class="keyword">int</span> data)</span> </span>&#123;</span><br><span class="line">  Node p = tree; <span class="comment">// p指向要删除的节点，初始化指向根节点</span></span><br><span class="line">  Node pp = <span class="keyword">null</span>; <span class="comment">// pp记录的是p的父节点</span></span><br><span class="line">  <span class="keyword">while</span> (p != <span class="keyword">null</span> &amp;&amp; p.data != data) &#123;</span><br><span class="line">    pp = p;</span><br><span class="line">    <span class="keyword">if</span> (data &gt; p.data) p = p.right;</span><br><span class="line">    <span class="keyword">else</span> p = p.left;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (p == <span class="keyword">null</span>) <span class="keyword">return</span>; <span class="comment">// 没有找到</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 要删除的节点有两个子节点</span></span><br><span class="line">  <span class="keyword">if</span> (p.left != <span class="keyword">null</span> &amp;&amp; p.right != <span class="keyword">null</span>) &#123; <span class="comment">// 查找右子树中最小节点</span></span><br><span class="line">    Node minP = p.right;</span><br><span class="line">    Node minPP = p; <span class="comment">// minPP表示minP的父节点</span></span><br><span class="line">    <span class="keyword">while</span> (minP.left != <span class="keyword">null</span>) &#123;</span><br><span class="line">      minPP = minP;</span><br><span class="line">      minP = minP.left;</span><br><span class="line">    &#125;</span><br><span class="line">    p.data = minP.data; <span class="comment">// 将minP的数据替换到p中</span></span><br><span class="line">    p = minP; <span class="comment">// 下面就变成了删除minP了</span></span><br><span class="line">    pp = minPP;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 删除节点是叶子节点或者仅有一个子节点</span></span><br><span class="line">  Node child; <span class="comment">// p的子节点</span></span><br><span class="line">  <span class="keyword">if</span> (p.left != <span class="keyword">null</span>) child = p.left;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (p.right != <span class="keyword">null</span>) child = p.right;</span><br><span class="line">  <span class="keyword">else</span> child = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (pp == <span class="keyword">null</span>) tree = child; <span class="comment">// 删除的是根节点</span></span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (pp.left == p) pp.left = child;</span><br><span class="line">  <span class="keyword">else</span> pp.right = child;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>前驱结点：比该结点小的最大结点。</p>
+<p>后继结点：比该结点大的最小结点。</p>
+<p>支持重复数值：如果存储的是对象，并通过其中一个成员变量来判断大小，那么就可能存在重复值。对于重复值的处理很简单：后出现的重复值看作大于前面出现的值就可以了。在插入时，新出现的重复值被插入前一个的右子树；在查找时，每查找到一个就存入结果，并继续往右子树查找，直到遇到叶子结点才结束；删除时同理。</p>
+<p>时间复杂度：完全二叉树O(logn)，极端不平衡的二叉树退化成链表O(logn)。</p>
+<p>二叉查找树 v.s. 哈希表：二叉查找树存储的是有序数据，且性能稳定，而哈希表会遇到散列冲突、扩容等情况；哈希表大多数情况比二叉查找树快，因为O(1)与O(logn)的差别，只有n特别小时，哈希函数的复杂度加上常量级的查找时间也可能超过O(logn)。</p>
+<h2 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h2><p>完全二叉树是只有最后一层不满，且结点靠左排列的二叉树。</p>
+<p>严格平衡二叉树：任意结点的左右子树高度差不大于1。因此平衡二叉树不一定是完全二叉树。</p>
+<p>最先被发明的 <em>AVL树</em> 是严格的平衡二叉查找树，而后面的平衡查找树并没有严格符合高度差不超过1，只需要大致平衡。</p>
+<h4 id="为什么红黑树是近似平衡的"><a href="#为什么红黑树是近似平衡的" class="headerlink" title="为什么红黑树是近似平衡的"></a>为什么红黑树是近似平衡的</h4><p><strong>红黑树</strong>的结点有两种颜色，并规定：</p>
+<ul>
+<li>根节点是黑色；</li>
+<li>相邻节点不能同时为红色；</li>
+<li>每个结点到达其可达叶子结点的所有路径，都包含相同数目的黑色结点。</li>
+<li>叶子结点是黑色空结点（方便代码实现）</li>
+</ul>
+<p>基于这种定义，红黑树的黑色结点会比完全二叉树矮，因为去掉红色结点后，树会变成：</p>
+<img src="/2021/02/01/algorithm-data-structure/RBTree.jpg" class="" title="黑色结点高度">
+
+<p>同样数量的结点下，黑色树的高度不会超过其完全二叉树log<del>2</del>n，而又定义了红色结点必须用黑色结点隔开，所以红色结点数量不会超过黑色结点——合起来的树也就不会超过2*log<del>2</del>n，所以性能也是O(logn)级别的。</p>
+]]></content>
+      <tags>
+        <tag>algorithm</tag>
+        <tag>data structure</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>计算机网络</title>
+    <url>/2021/01/31/computer%20network/</url>
+    <content><![CDATA[<h3 id="OSI-七层模型"><a href="#OSI-七层模型" class="headerlink" title="OSI 七层模型"></a>OSI 七层模型</h3><p><em>&#42;本节内容参考中英文维基百科</em>。</p>
+<p>OSI Model是Open System Interconnection Model的缩写，顾名思义，OSI模型是一种为规范不同设备内部结构和技术的通信过程而产生的模型。</p>
+<p>引入了服务、接口、协议、分层的概念，实际的模型结构包含七层：</p>
+<img src="/2021/01/31/computer%20network/OSI.png" class="" title="OSI模型">
+
+<a id="more"></a>
+
+<h4 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h4><ul>
+<li>提供为应用软件设计的<strong>接口</strong>，以设置与另一应用软件之间的通信。</li>
+<li>HTTP, HTTPS, FTP, SSH, SMTP, POP3, IMAP4</li>
+</ul>
+<h4 id="表示层"><a href="#表示层" class="headerlink" title="表示层"></a>表示层</h4><ul>
+<li>把数据转换为网络服务通用格式，包括字符编码、数据压缩、编码/解码。</li>
+</ul>
+<h4 id="会话层"><a href="#会话层" class="headerlink" title="会话层"></a>会话层</h4><ul>
+<li>负责在数据传输中维护计算机网络中两台计算机之间的通信连接和数据交换。</li>
+<li>SMTP, DNS</li>
+</ul>
+<h4 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h4><ul>
+<li>接收数据流并将其分成<strong>数据段</strong>，把传输表头（TH）加至数据段。传输表头包含了所使用的协议等发送信息。</li>
+<li>数据段使网络传输能够多路复用</li>
+<li>TCP, UDP</li>
+</ul>
+<h4 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h4><ul>
+<li>决定数据的路径选择和转寄，将网络表头（NH）加至<strong>数据包</strong>，以形成分组。网络表头包含了网络资料。</li>
+<li>管理多结点的网络，包括寻址、路由等。</li>
+<li>IP, ICMP, ARP, RARP, AKP, UUCP</li>
+</ul>
+<h4 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h4><ul>
+<li><p>负责物理层连接的两个结点的<strong>数据帧</strong>传输。</p>
+</li>
+<li><p>当表头和表尾被加至数据包时，会形成<strong>数据帧</strong>（Data Frame）。数据链表头（DLH）是包含了物理地址和错误侦测及改错的方法。数据链表尾（DLT）是一串指示数据包末端的字符串。</p>
+</li>
+<li><p>以太网、无线局域网（Wi-Fi）和通用分组无线服务（GPRS）等。</p>
+</li>
+</ul>
+<h4 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h4><ul>
+<li>提供两个网络媒体实际连接的所有物理介质。</li>
+<li>包括针脚、电压、线缆规范、集线器、中继器、网卡、主机接口卡等。</li>
+<li>IEEE 802.1A</li>
+</ul>
+<p>OSI模型并不是一个协议，而是一个制定协议时参考的框架模型。</p>
+<h3 id="TCP-IP-四层模型"><a href="#TCP-IP-四层模型" class="headerlink" title="TCP/IP 四层模型"></a>TCP/IP 四层模型</h3><p><em>&#42;本节内容参考中英文维基百科、<a href="https://www.cnblogs.com/onepixel/p/7092302.html">一像素的博客</a>  以及 <a href="https://zhuanlan.zhihu.com/p/59066874">杰杰的文章</a> 。</em></p>
+<p>个人理解：TCP/IP是指Transmission Control Protocol和Internet Protocol， 而我们常说的TCP/IP实际上是一组协议栈(protocol stack)，国外一般称为DoD模型。</p>
+<p>基本框架：</p>
+<p><img src="TCPIP.jpg" title="TCP/IP协议栈"></p>
+<p>这种模型参考了OSI模型的设计，将7层精简成4层。</p>
+<h4 id="应用层-1"><a href="#应用层-1" class="headerlink" title="应用层"></a>应用层</h4><ul>
+<li>对应OSI中的应用层、表示层、会话层</li>
+<li>应用层定义数据格式，并按照对应的格式解析数据</li>
+</ul>
+<h4 id="传输层-1"><a href="#传输层-1" class="headerlink" title="传输层"></a>传输层</h4><ul>
+<li><p>对应OSI中的传输层</p>
+</li>
+<li><p>传输层定义了端口，同一台主机上的每个应用程序都要指定唯一端口号，让主机能确定是哪个应用程序要接收这个包。</p>
+</li>
+<li><p><strong>UDP协议</strong>，要求在传输数据中加上端口号：</p>
+<ul>
+<li>首部<strong>8字节</strong>，包括源端口和目标端口；</li>
+<li>数据最大65527个字节；</li>
+</ul>
+</li>
+<li><p><strong>TCP协议</strong>解决UDP协议可靠性差的问题，因为UDP协议没有确认机制，无法确定对方是否收到数据；而TCP协议是面向连接的、可靠的、基于字节流的通信协议：</p>
+<ul>
+<li><p>三次握手建立连接，四次握手关闭连接</p>
+</li>
+<li><p>TCP数据包和UDP数据包一样，只是长度没有限制，但通常不会超过下一层（网络层）数据包的长度，确保不会再被分割；</p>
+</li>
+<li><p>TCP比UDP传输速度慢，消耗资源多，但更可靠。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="网络层-1"><a href="#网络层-1" class="headerlink" title="网络层"></a>网络层</h4><ul>
+<li>对应OSI中的网络层；</li>
+<li>引入<strong>IP协议</strong>(Internet Protocol)指定一套IP地址，用来判断主机所属的网络和在网络内的地址：<ul>
+<li>IP地址有IPv4和IPv6两个版本，其中IPv4是32位地址，分为四部分，每部分用0~255的十进制数字表示；IPv6有128位地址；</li>
+<li>以C类地址为例：<ul>
+<li>IP地址前三部分（24位）表示网络地址，第四部分（8位）表示主机地址；</li>
+<li>子网掩码前三部分为255（24位都为1），第四部分为0（8位都为0）；</li>
+<li>把子网掩码和IP地址按位与就能得到网络地址；</li>
+</ul>
+</li>
+<li>通过比较两个网络地址就能判断两台主机是否在同一个子网。</li>
+</ul>
+</li>
+<li>引入<strong>ARP协议</strong>(Address Resolution Protocol)根据IP地址获取MAC地址：<ul>
+<li>ARP获取到目标IP地址，如果在缓存中找不到对应的MAC地址，就发起一个数据包来<strong>请求</strong>目标IP对应的MAC地址，并等待接收返回消息；</li>
+<li>这个请求数据包与普通数据包一样在链路层包装为数据帧（见下段），通过以太网协议<strong>广播</strong>到子网内的所有主机；</li>
+<li>主机收到请求，比对首部的IP地址，如果匹配就发回自己的MAC地址，否则丢弃数据包；</li>
+<li>ARP接受到发回的MAC地址，存入缓存中。</li>
+</ul>
+</li>
+<li>引入<strong>路由协议</strong>，因为ARP只能提供<strong>子网内</strong>的MAC地址解析。<ul>
+<li>先通过IP协议判断两台主机是否在同一个子网中：<ul>
+<li>如果在，则直接使用ARP协议查询MAC地址；</li>
+<li>否则，把ARP数据包转发给子网的网关进行路由（网关可以连接到其他子网的网关）。</li>
+</ul>
+</li>
+<li>经过多次路由转发，最后到达目标IP所在的子网，子网内再用ARP广播形式发送，并以相同的方式发回源IP地址。</li>
+</ul>
+</li>
+<li>在网络层包装的数据包叫<strong>IP数据包</strong>，因为它主要包含IP地址信息。IP数据包包含：<ul>
+<li><strong>20字节</strong>的首部，主要包含目标IP地址和源IP地址；</li>
+<li>65515字节的数据。</li>
+</ul>
+</li>
+</ul>
+<h4 id="链路层"><a href="#链路层" class="headerlink" title="链路层"></a>链路层</h4><ul>
+<li>对应OSI中的数据链路层、物理层；</li>
+<li>将0、1电信号分组，按分组顺序依次发送；</li>
+<li>以太网协议：规定一个分组为一个<strong>数据帧</strong>，并以MAC地址作为网卡间通信的唯一身份标识包含：<ul>
+<li>14字节的<strong>首部</strong>，包含目标MAC地址，源MAC地址和帧类型；</li>
+<li>46~1500字节的<strong>数据</strong>；</li>
+<li>4字节的<strong>尾部</strong>，包含校验序列。</li>
+</ul>
+</li>
+<li>以太网采用<strong>广播</strong>形式把数据帧发送给所有<strong>子网内</strong>的主机，每台主机比对目标MAC地址，当匹配时就保留，否则丢弃。</li>
+</ul>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><blockquote>
+<p><strong>“ 配送车就是物理介质，配送站就是网关， 快递员就是路由器，收货地址就是IP地址，联系方式就是MAC地址。”</strong></p>
+<p><strong>当你输入一个网址并按下回车键的时候，首先，应用层协议对该请求包做了格式定义；紧接着传输层协议加上了双方的端口号，确认了双方通信的应用程序；然后网络协议加上了双方的IP地址，确认了双方的网络位置；最后链路层协议加上了双方的MAC地址，确认了双方的物理位置，同时将数据进行分组，形成数据帧，采用广播方式，通过传输介质发送给对方主机。而对于不同网段，该数据包首先会转发给网关路由器，经过多次转发后，最终被发送到目标主机。目标机接收到数据包后，采用对应的协议，对帧数据进行组装，然后再通过一层一层的协议进行解析，最终被应用层的协议解析并交给服务器处理。</strong></p>
+</blockquote>
+<h4 id="ARP扩展知识"><a href="#ARP扩展知识" class="headerlink" title="ARP扩展知识"></a>ARP扩展知识</h4><p>ARP请求包在通信时也需要经过链路层包装成数据帧，但又不知道目标MAC地址，怎么办呢？</p>
+<p>以太网数据帧首部用<strong>帧类型</strong>来区分ARP请求包和IP数据包，ARP请求包的帧类型为0x0806，而IP数据包的帧类型为0x0800；而ARP请求包内的目标MAC地址值为FF-FF-FF-FF-FF-FF。</p>
+<img src="/2021/01/31/computer%20network/ARP.png" class="" title="ARP数据包封装在以太网帧的格式">
+
+<ul>
+<li><p>硬件类型，表示要知道目标网卡的硬件类型，其中，值为1表示以太网地址；</p>
+</li>
+<li><p>协议类型，0x0800表示IP协议，其他还可能是ICMP/IGMP协议等；</p>
+</li>
+<li><p>硬件地址长度，指出该报文中硬件地址的长度，对于以太网硬件类型，它的值为6；</p>
+</li>
+<li><p>协议地址长度，如果是ARP协议、IP协议等，该值为4；</p>
+</li>
+<li><p>op字段，用于记录ARP操作的类型，分别是：</p>
+<ul>
+<li>ARP请求，其值为1。</li>
+<li>ARP应答，其值为2。</li>
+<li>RARP请求，其值为3。</li>
+<li>RARP应答，其值为4。</li>
+</ul>
+<p>其中RARP是逆地址解析协议，已经基本被淘汰。</p>
+</li>
+</ul>
+<h3 id="三次握手和四次握手"><a href="#三次握手和四次握手" class="headerlink" title="三次握手和四次握手"></a>三次握手和四次握手</h3><h4 id="三次握手建立连接："><a href="#三次握手建立连接：" class="headerlink" title="三次握手建立连接："></a>三次握手建立连接：</h4><ul>
+<li>Client端告诉Server端将要开始发送数据，并告知将要使用的同步位和序列号(SYN_bit=1,  seq_A=x)；</li>
+<li>Server端发回自己将要使用的同步位和序列号(SYN_bit=1, seq=y)，以及对Client端的确认信号(ACK_A=x+1)；</li>
+<li>Client端发回确认信号ACK_B=y+1，表示双方的连接是稳定的，并将开始发送数据。</li>
+</ul>
+
+
+<h4 id="四次挥手关闭连接："><a href="#四次挥手关闭连接：" class="headerlink" title="四次挥手关闭连接："></a>四次挥手关闭连接：</h4><p>如果是Client端向Server端提出关闭连接（反之同理），</p>
+<ul>
+<li><p>Client端发送FIN_A报文，表示自己这边的数据已经发完了，进入FIN_WAI_1状态；</p>
+</li>
+<li><p>Server端收到FIN_A报文，发回ACK_A报文，作为收到FIN报文的确认；</p>
+<ul>
+<li>Client端收到ACK_A报文，进入FIN_WAIT_2状态，继续接收Server端的数据；</li>
+</ul>
+</li>
+<li><p>Server端的数据也发完了，向Client端发送FIN_B报文；</p>
+</li>
+<li><p>Client端收到FIN_B报文也向Server端返回一个ACK_B报文，通知对方准备可以关闭连接了，自己进入TIME_WAIT状态；</p>
+<ul>
+<li><p>Server端收到ACK_B报文，关闭连接；</p>
+</li>
+<li><p>Client端TIME_WAIT时间用完，关闭连接。</p>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h4 id="为什么连接的时候是三次握手，关闭的时候却是四次握手？"><a href="#为什么连接的时候是三次握手，关闭的时候却是四次握手？" class="headerlink" title="为什么连接的时候是三次握手，关闭的时候却是四次握手？"></a>为什么连接的时候是三次握手，关闭的时候却是四次握手？</h4><p>因为建立连接时，当Server端收到Client端的SYN连接请求报文后，可以直接发送SYN+ACK报文。其中ACK报文是用来应答的，SYN报文是用来同步的。</p>
+<p>但是关闭连接时，当Server端收到FIN报文时，先回复ACK报文。等到Server端所有的数据都发送完了，才发送FIN报文。因为两个报文不能一起发送。故需要四步握手。</p>
+<h3 id="HTTP-协议"><a href="#HTTP-协议" class="headerlink" title="HTTP 协议"></a>HTTP 协议</h3><h4 id="Request-报文"><a href="#Request-报文" class="headerlink" title="Request 报文"></a>Request 报文</h4><p>状态行、请求头、消息主体：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">method</span>&gt;</span> <span class="tag">&lt;<span class="name">request-URL</span>&gt;</span> <span class="tag">&lt;<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">headers</span>&gt;</span></span><br><span class="line">  </span><br><span class="line"><span class="tag">&lt;<span class="name">entity-body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>其中method有四种：GET, POST, PUT, DELETE, 分别是对资源的查增改删；</p>
+<p>URL就是资源的地址，描述method的操作对象。</p>
+<p>例如GET请求：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">GET &#x2F;books&#x2F;?sex&#x3D;man&amp;name&#x3D;Professional HTTP&#x2F;1.1</span><br><span class="line">Host: www.example.com</span><br><span class="line">User-Agent: Mozilla&#x2F;5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.6)</span><br><span class="line">Gecko&#x2F;20050225 Firefox&#x2F;1.0.1</span><br><span class="line">Connection: Keep-Alive</span><br></pre></td></tr></table></figure>
+<p>POST请求：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">POST &#x2F; HTTP&#x2F;1.1</span><br><span class="line">Host: www.example.com</span><br><span class="line">User-Agent: Mozilla&#x2F;5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.6)</span><br><span class="line">Gecko&#x2F;20050225 Firefox&#x2F;1.0.1</span><br><span class="line">Content-Type: application&#x2F;x-www-form-urlencoded</span><br><span class="line">Content-Length: 40</span><br><span class="line">Connection: Keep-Alive</span><br><span class="line"></span><br><span class="line">sex&#x3D;man&amp;name&#x3D;Professional</span><br></pre></td></tr></table></figure>
+<p>GET请求的长度受到特定浏览器及服务器的限制；POST请求理论上没有大小限制，服务器处于安全因素考虑会有一定的限制。</p>
+<p>POST的content-type 可以是 <code>application/x-www-form-urlencoded</code> 或<code>multipart/form-data</code>。前者如<code>sex=man&amp;name=Professional</code>，后者是指定一个boundary，消息主体通过*<code>--boundary</code><em>分隔不同字段，并以</em><code>--boundary--</code>*结束。还有新的content-type，如<code>application/json</code>, <code>text/xml</code>,  <code>application/x-protobuf</code>。</p>
+<h4 id="Response-报文"><a href="#Response-报文" class="headerlink" title="Response 报文"></a>Response 报文</h4><p>状态行、响应头、响应正文（对应Request），如：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line"></span><br><span class="line">Server:Apache Tomcat/5.0.12  </span><br><span class="line">Date:Mon,6Oct2003 13:23:42 GMT</span><br><span class="line">Content-Length:112</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span>...</span><br></pre></td></tr></table></figure>
+<p>状态码有：</p>
+<ul>
+<li><p><code>200 OK</code> 客户端请求成功</p>
+</li>
+<li><p><code>301 Moved Permanently</code> 请求永久重定向</p>
+</li>
+<li><p><code>302 Moved Temporarily</code> 请求临时重定向</p>
+</li>
+<li><p><code>304 Not Modified</code> 文件未修改，可以直接使用缓存的文件。</p>
+</li>
+<li><p><code>400 Bad Request</code> 由于客户端请求有语法错误，不能被服务器所理解。</p>
+</li>
+<li><p><code>401 Unauthorized</code> 请求未经授权。这个状态代码必须和WWW-Authenticate报头域一起使用</p>
+</li>
+<li><p><code>403 Forbidden</code> 服务器收到请求，但是拒绝提供服务。服务器通常会在响应正文中给出不提供服务的原因</p>
+</li>
+<li><p><code>404 Not Found</code> 请求的资源不存在，例如，输入了错误的URL</p>
+</li>
+<li><p><code>500 Internal Server Error</code> 服务器发生不可预期的错误，导致无法完成客户端的请求。</p>
+</li>
+<li><p><code>503 Service Unavailable</code> 服务器当前不能够处理客户端的请求，在一段时间之后，服务器可能会恢复正常。</p>
+</li>
+</ul>
+<h4 id="持久连接"><a href="#持久连接" class="headerlink" title="持久连接"></a>持久连接</h4><p>HTTP1.0中，默认采取完成“请求-应答”后关闭连接的方式，也就是HTTP协议的无连接特点。而Keep-Alive模式不会立刻关闭连接，避免了重新建立连接。如果客户端浏览器支持Keep-Alive，就在请求头中设置字段 <code>Connection: Keep-Alive</code>，如果服务器也支持这种模式，会在相应头中也设置同样的字段，这样Keep-Alive模式就开启了。</p>
+<p>HTTP1.1中，默认采取Keep-Alive模式，如果设置字段 <code>Connection: close</code>才关闭。而目前大多数浏览器都是用HTTP1.1协议，这种情况下能否开启Keep-Alive模式取决于服务器的设置。</p>
+<p>Keep-Alive的作用是保持下层的TCP连接，并且要求设置一个<strong>超时阈值</strong>和<strong>最大接受请求次数的阈值</strong>，达到阈值会断开连接。</p>
+<p>需要注意的是，Keep-Alive只允许保持连接，但HTTP仍然是无状态的，也就是说不同的请求-响应内容仍然是<strong>独立、互不影响</strong>的。此外，程序不应该依赖它的保持连接特性，因为连接会因为各种原因断开。</p>
+<h4 id="Chunked-传输"><a href="#Chunked-传输" class="headerlink" title="Chunked 传输"></a>Chunked 传输</h4><p>如果在HTTP消息头部设置字段<code>Transfer-Encoding: chunked</code>，则表示消息分块传输。</p>
+<p>每一个非空块都由<code>块字节数 + CRLF + 数据</code>组成，最后一块是空块，由<code>0+CRLF</code>组成，表示本次传输数据结束。</p>
+<p>例如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HTTP&#x2F;1.1 200 OK</span><br><span class="line">Content-Type: text&#x2F;plain</span><br><span class="line">Transfer-Encoding: chunked</span><br><span class="line"></span><br><span class="line">25</span><br><span class="line">This is the data in the first chunk</span><br><span class="line"></span><br><span class="line">1A</span><br><span class="line">and this is the second one</span><br><span class="line">0</span><br></pre></td></tr></table></figure>
+<p>优点：使用chunked传输可以边生成内容边发送。</p>
+<p>缺点：chunked 传输的接收方事先不知道全部数据的长度，所以无法实现进度追踪。</p>
+]]></content>
+      <tags>
+        <tag>Interview</tag>
+        <tag>Computer Basics</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>计算机网络</title>
     <url>/2021/01/31/computer-network/</url>
     <content><![CDATA[<h2 id="OSI-七层模型"><a href="#OSI-七层模型" class="headerlink" title="OSI 七层模型"></a>OSI 七层模型</h2><p><em>&#42;本节内容参考中英文维基百科</em>。</p>
@@ -160,8 +432,9 @@
   <entry>
     <title>Hexo Installation &amp; Configuration</title>
     <url>/2021/01/23/hexo/</url>
-    <content><![CDATA[<h4 id="安装nodejs"><a href="#安装nodejs" class="headerlink" title="安装nodejs"></a>安装nodejs</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo wget https://npm.taobao.org/mirrors/node/latest-v14.x/node-v14.15.4.tar.gz</span><br><span class="line">sudo tar zxvf node-v14.15.4.tar.gz</span><br><span class="line">yum install gcc gcc-c++</span><br><span class="line">mv node-v14.15.4-linux-x64 nodejs</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/node /usr/bin/node </span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npm /usr/bin/npm</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npx /usr/bin/npx</span><br><span class="line"><span class="comment"># 换源</span></span><br><span class="line">npm install -g cnpm --registry=https://registry.npm.taobao.org</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/cnpm /usr/bin/cnpm</span><br></pre></td></tr></table></figure>
-
+    <content><![CDATA[<p>因为搭建博客的命令步骤都很容易理解，所以本文只是简单的记录过程中用到的命令和配置，可供参考和回查。</p>
+<h4 id="安装nodejs"><a href="#安装nodejs" class="headerlink" title="安装nodejs"></a>安装nodejs</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo wget https://npm.taobao.org/mirrors/node/latest-v14.x/node-v14.15.4.tar.gz</span><br><span class="line">sudo tar zxvf node-v14.15.4.tar.gz</span><br><span class="line">yum install gcc gcc-c++</span><br><span class="line">mv node-v14.15.4-linux-x64 nodejs</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/node /usr/bin/node </span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npm /usr/bin/npm</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npx /usr/bin/npx</span><br><span class="line"><span class="comment"># 换源</span></span><br><span class="line">npm install -g cnpm --registry=https://registry.npm.taobao.org</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/cnpm /usr/bin/cnpm</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
 
 <h4 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo cnpm install -g hexo-cli</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/hexo /usr/bin/hexo</span><br></pre></td></tr></table></figure>
 
@@ -190,11 +463,17 @@
 
 
 ]]></content>
+      <tags>
+        <tag>Blog</tag>
+      </tags>
   </entry>
   <entry>
     <title>IDEA Keymap</title>
     <url>/2021/01/31/idea-keymap/</url>
     <content><![CDATA[<p><em>本文归纳自官方文档与 <a href="https://github.com/judasn/IntelliJ-IDEA-Tutorial/blob/master/keymap-introduce.md">IntelliJ-IDEA-Tutorials</a></em></p>
+<p>待更新，调整只保留常用实用快捷键。</p>
+<a id="more"></a>
+
 <h2 id="for-Windows"><a href="#for-Windows" class="headerlink" title="for Windows"></a>for Windows</h2><h4 id="Ctrl"><a href="#Ctrl" class="headerlink" title="Ctrl"></a>Ctrl</h4><table>
 <thead>
 <tr>
@@ -519,7 +798,7 @@
 <td>格式化代码</td>
 </tr>
 <tr>
-<td><kbd>⌃</kbd> + <kbd>⌥</kbd> + <kbd>O</kbd></td>
+<td><kbd>⌃</kbd> + <kbd>⌥</kbd> + <kbd>O</kbd</td>
 <td>优化import</td>
 </tr>
 <tr>
@@ -641,13 +920,14 @@
 </tbody></table>
 ]]></content>
       <tags>
-        <tag>IDE, toolbox</tag>
+        <tag>IDE</tag>
+        <tag>Toolbox</tag>
       </tags>
   </entry>
   <entry>
-    <title>Java基础</title>
+    <title>Java 基础</title>
     <url>/2021/01/28/java-basics/</url>
-    <content><![CDATA[<h2 id="Java基础"><a href="#Java基础" class="headerlink" title="Java基础"></a>Java基础</h2><h3 id="运算符优先级"><a href="#运算符优先级" class="headerlink" title="运算符优先级"></a>运算符优先级</h3><table>
+    <content><![CDATA[<h2 id="Java-基础"><a href="#Java-基础" class="headerlink" title="Java 基础"></a>Java 基础</h2><h3 id="运算符优先级"><a href="#运算符优先级" class="headerlink" title="运算符优先级"></a>运算符优先级</h3><table>
 <thead>
 <tr>
 <th>优先级</th>
@@ -726,6 +1006,8 @@
 <td>从右向左</td>
 </tr>
 </tbody></table>
+<a id="more"></a>
+
 <h3 id="重载和重写"><a href="#重载和重写" class="headerlink" title="重载和重写"></a>重载和重写</h3><h4 id="重载"><a href="#重载" class="headerlink" title="重载"></a>重载</h4><p>​        多个方法可以有相同的名字和不同的参数，这种特征叫做<strong>重载</strong>。编译器通过各方法给出的参数与调用时填入的参数类型进行匹配来挑选出合适的方法，这个过程叫做<strong>重载解析</strong>(overloading resolution)。</p>
 <p>​        方法的<strong>签名</strong>(signature)包括方法名和参数类型，而不包括返回值类型。</p>
 <h4 id="重写"><a href="#重写" class="headerlink" title="重写"></a>重写</h4><ol>
@@ -746,6 +1028,13 @@
 <li>final关键词表示一个常量，它的值在初始化之后就不能再修改。</li>
 </ul>
 <p>嵌套类(nested class)分为静态和非静态两种，分别称为静态嵌套类(static nested class)和内部类(Inner class)。</p>
+<h3 id="按值传递"><a href="#按值传递" class="headerlink" title="按值传递"></a>按值传递</h3><p>Java中的参数变量是按值传递(called by value)的，通俗的说，不管参数是<strong>基础数据类型</strong>还是<strong>对象引用</strong>，方法接收的参数 <em>永远</em> 是参数值的副本。</p>
+<p>也就是说，如果我们在方法内修改参数的值，那么作为局部变量的副本参数在方法完成后就被丢弃了，并不会影响方法外原参数的值。不管是修改基础数据类型参数，还是修改对象引用参数，都只是作用在副本上；</p>
+<p>但是，如果要修改引用的对象内的属性，是可以生效的：因为 <strong>对象引用的副本</strong> 与 <strong>原对象引用</strong> 指向的是同一个对象，我们是根据这个引用找到对象并修改对象的值，并没有试图修改<strong>原对象引用</strong>的值。</p>
+<p>举一个例子：如果a是person对象的引用，方法接收的参数是a的副本b，那么a和b都引用的是person对象。此时我们无法通过让b引用别的对象（通过修改b的值），来让a引用别的对象（来修改a的值）；但我们能通过b修改person对象的属性，因为不管对b的引用操作还是对a的引用操作，最终都是对person操作。</p>
+<h3 id="变量的初始化"><a href="#变量的初始化" class="headerlink" title="变量的初始化"></a>变量的初始化</h3><p>一个很容易忽视的细节是，局部变量必须初始化才能使用，而类中的字段如果不初始化值，会自动初始化为默认值(0, false, null)。例如在Java8的HashMap源码中无参构造器就没有为threshold变量初始化，但其在后续的逻辑中以0生效。</p>
+<h3 id="构造器"><a href="#构造器" class="headerlink" title="构造器"></a>构造器</h3><p>如果一个类没有写任何构造器，就会有一个隐式的无参构造器，将所有实例变量设置为默认值；</p>
+<p>如果写了有参构造器，但没有无参构造器，在调用无参构造器时就会产生错误。</p>
 <h3 id="内部类"><a href="#内部类" class="headerlink" title="内部类"></a>内部类</h3><h4 id="1-成员内部类"><a href="#1-成员内部类" class="headerlink" title="1. 成员内部类"></a>1. 成员内部类</h4><p>在一个类内定义另一个内，内部的这个类就叫成员内部类，相对地，外层的类叫外部类。</p>
 <ul>
 <li><p>成员内部类可以访问外部类的<strong>所有</strong>成员属性和方法（包括private和static成员），因为编译后的字节码为内部类构造器传入了指向外部类对象的引用（指针）。</p>
@@ -773,6 +1062,42 @@
 <ul>
 <li>匿名内部类/局部内部类只能访问局部final变量。因为内部类和外部类的生命周期可能不同，编译器会为内部类传入变量的拷贝值，同时，为了防止数据不一致，必须使用final修饰来防止内部类改变这个值。</li>
 </ul>
+<h2 id="Java-源码"><a href="#Java-源码" class="headerlink" title="Java 源码"></a>Java 源码</h2><h3 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h3><p>我们知道HashMap通过对key计算哈希值来高效存取映射关系，当遇到哈希冲突，对应位置的结点会以链表的形式向下扩展。这里具体聊一下Java 8中，HashMap的实现逻辑。</p>
+<p>首先，在调用构造函数时，如果没有指定初始大小和装载因子，会使用默认的装载因子0.75、初始阈值0、初始大小16。其中<strong>阈值</strong>的含义是当装填的因子超过该值时就扩容。注意：构造函数只是设定了参数值，并没有创建数组。</p>
+<p>当调用<code>put()</code>方法时，实际上执行的是<code>putVal()</code>方法，<code>put()</code>方法帮我们隐藏了<code>onlyIfAbsent</code>和<code>evict</code>参数。前者为true表示遇到相同键值不进行覆盖，默认为false；后者为false表示table在创造模式(creation mode)，默认为true。</p>
+<p>在<code>putVal()</code>方法中，首先判断table（hashmap数据结构的变量名）是否为null，如果为null会先通过<code>resize()</code>方法创建一个初始table。</p>
+<p><code>resize()</code>方法用于扩容和初始化，具体来说，是根据table.length和threshold两个参数判断：</p>
+<ul>
+<li>如果table.length == 0，说明哈希表还没有创建，此时分两种情况：<ul>
+<li>threshold &gt; 0：把容量设置成threshold的大小；</li>
+<li>threshold == 0：把容量设置成默认的16，threshold设置成装载因子*16；</li>
+</ul>
+</li>
+<li>如果table.length &gt; 0，说明是需要扩容，也分两种情况：<ul>
+<li>容量已经超过最大容量的阈值，不能再扩容了，只能把threshold设置成MAX_VALUE，继续使用剩下的空间；</li>
+<li>容量还没超过最大值，将容量和threshold都扩大一倍。</li>
+</ul>
+</li>
+</ul>
+<p>定好新的参数后，创建一个新的数组，把旧数组的数据拷贝到新数组上。</p>
+<p>接着，通过对key的哈希值hash取table.length的模来定位：</p>
+<ul>
+<li>如果这个位置是空的，在这个位置创建一个键值对结点；</li>
+<li>否则存在三种情况：<ul>
+<li>哈希值相等，key值也相等，说明是存在相同的键，应该覆盖；</li>
+<li>数组的这个位置存储的不是Node&lt;K, V&gt;对象，而是TreeNode&lt;K, V&gt;对象，使用<code>putTreeVal()</code>方法来插入值；</li>
+<li>否则，说明发生了哈希冲突（碰撞），应该把值加在该位置链表的末尾。插入之后，如果链表长度超过了<strong>树化</strong>的阈值，则将链表Node转为树TreeNode。</li>
+</ul>
+</li>
+</ul>
+<p>这其中有几点需要解释：</p>
+<ol>
+<li>HashMap的底层实现中，如果一个位置的链表长度超过阈值(8)，就会转为树结构（树化）；</li>
+<li>链表结构是自定义的Node&lt;K, V&gt;类，实现自Map.Entry&lt;K, V&gt;接口；树结构是自定义的TreeNode&lt;K, V&gt;类，继承自LinkedHashMap.Entry&lt;K, V&gt;类，而LinkedHashMap的Entry类实际上就是继承自HashMap本身的Node类；简单地说，它们的关系是：<ul>
+<li>Map.Entry&lt;K, V&gt;接口  &lt;=  HashMap.Node&lt;K, V&gt;类  &lt;=  LinkedHashMap.Node&lt;K, V&gt;类  &lt;=  HashMap.TreeNode&lt;K, V&gt;类</li>
+</ul>
+</li>
+</ol>
 ]]></content>
       <tags>
         <tag>Java</tag>
@@ -781,13 +1106,16 @@
   <entry>
     <title>Singleton Pattern</title>
     <url>/2021/01/28/singleton-pattern/</url>
-    <content><![CDATA[<h1 id="Singleton-Pattern"><a href="#Singleton-Pattern" class="headerlink" title="Singleton Pattern"></a>Singleton Pattern</h1><p>Singleton pattern restricts the instantiation of a class and ensures that only one instance of the class exists in the Java virtual machine.</p>
+    <content><![CDATA[<p>This post references <a href="https://www.journaldev.com/1377/java-singleton-design-pattern-best-practices-examples">JournalDev</a>, and was written by English for personnal practicing.</p>
+<h1 id="Singleton-Pattern"><a href="#Singleton-Pattern" class="headerlink" title="Singleton Pattern"></a>Singleton Pattern</h1><p>Singleton pattern restricts the instantiation of a class and ensures that only one instance of the class exists in the Java virtual machine.</p>
 <p>To implement a singleton pattern, we should follow three concepts.</p>
 <ul>
 <li>Private constructor to prevent new instantiation act from other class.</li>
 <li>Private static variable of the same class that is the only instance of the class.</li>
 <li>Public static method that returns the instance of the class, providing the only way for outer programs to get the instance of the singleton class.</li>
 </ul>
+<a id="more"></a>
+
 <h2 id="Implemention-practices"><a href="#Implemention-practices" class="headerlink" title="Implemention practices"></a>Implemention practices</h2><h3 id="1-Eager-initialization"><a href="#1-Eager-initialization" class="headerlink" title="1. Eager initialization"></a>1. Eager initialization</h3><p>In eager initialization, the instance of singleton class is created when class is loaded by Java virtual machine. While it is the easiest way to create a singleton class, it has a drawback that instance is created even if it may not be used by any program.</p>
 <p>Implemention is as follows.</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EagerInitializedSingleton</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> EagerInitializedSingleton instance = <span class="keyword">new</span> EagerInitializedSingleton();</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">EagerInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> EagerInitializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -812,7 +1140,31 @@
 <p><strong><em>Mark to update later.</em></strong></p>
 ]]></content>
       <tags>
-        <tag>Design Patterns, Singleton</tag>
+        <tag>Design Patterns</tag>
+        <tag>Singleton</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringBoot2</title>
+    <url>/2021/02/04/spring-boot/</url>
+    <content><![CDATA[<h3 id="Web-开发"><a href="#Web-开发" class="headerlink" title="Web 开发"></a>Web 开发</h3><h4 id="1-静态资源访问"><a href="#1-静态资源访问" class="headerlink" title="1. 静态资源访问"></a>1. 静态资源访问</h4><h5 id="1-1-路径"><a href="#1-1-路径" class="headerlink" title="1.1 路径"></a>1.1 路径</h5><p>静态资源路径包括 <code>/static</code>、 <code>/public</code>、 <code>/resources</code> 、<code>/META-INF/resources</code> ，访问 <em>根路径 + 静态资源名</em> 即可访问对应的静态资源，如： /picture123.jpg</p>
+<p>其原理是使用静态映射/**，当访问请求找不到对应的Controller，再交给静态资源处理器，如果静态资源处理器也找不到就返回404。</p>
+<p>在application.yaml文件中使用<code>  static-path-pattern</code>修改配置</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">	<span class="attr">mvc:</span></span><br><span class="line">	<span class="attr">static-path-pattern:</span> <span class="string">/resources/**</span></span><br></pre></td></tr></table></figure>
+<p>相应地，<code>static-location: [classpath: /xxx/]</code> 用来重新设置多个静态资源路径</p>
+<a id="more"></a>
+
+
+
+
+
+
+
+
+
+]]></content>
+      <tags>
+        <tag>Framework</tag>
       </tags>
   </entry>
   <entry>
