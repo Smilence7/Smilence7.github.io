@@ -144,6 +144,13 @@
   </url>
   
   <url>
+    <loc>https://zayeum.com/tags/Java/</loc>
+    <lastmod>2021-02-04</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zayeum.com/tags/IDE/</loc>
     <lastmod>2021-02-04</lastmod>
     <changefreq>daily</changefreq>
@@ -152,13 +159,6 @@
   
   <url>
     <loc>https://zayeum.com/tags/Toolbox/</loc>
-    <lastmod>2021-02-04</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/tags/Java/</loc>
     <lastmod>2021-02-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>

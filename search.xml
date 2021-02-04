@@ -468,6 +468,185 @@
       </tags>
   </entry>
   <entry>
+    <title>Java 基础</title>
+    <url>/2021/01/28/java-basics/</url>
+    <content><![CDATA[<h2 id="Java-基础"><a href="#Java-基础" class="headerlink" title="Java 基础"></a>Java 基础</h2><h3 id="运算符优先级"><a href="#运算符优先级" class="headerlink" title="运算符优先级"></a>运算符优先级</h3><table>
+<thead>
+<tr>
+<th>优先级</th>
+<th>运算符</th>
+<th>结合性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>括号</td>
+<td>从左到右</td>
+</tr>
+<tr>
+<td>2</td>
+<td>正负号、非、反、自增自减</td>
+<td>从右向左</td>
+</tr>
+<tr>
+<td>3</td>
+<td>*  /  %</td>
+<td>从左到右</td>
+</tr>
+<tr>
+<td>4</td>
+<td>+(加)  -(减)</td>
+<td>从左到右</td>
+</tr>
+<tr>
+<td>5</td>
+<td>位移符号</td>
+<td>从左到右</td>
+</tr>
+<tr>
+<td>6</td>
+<td>&lt; &lt;= &gt; &gt;= instanceof</td>
+<td>从左到右</td>
+</tr>
+<tr>
+<td>7</td>
+<td>== !=</td>
+<td>从左到右</td>
+</tr>
+<tr>
+<td>8</td>
+<td>&amp;</td>
+<td>从左到右</td>
+</tr>
+<tr>
+<td>9</td>
+<td>^ (异或)</td>
+<td>从左到右</td>
+</tr>
+<tr>
+<td>10</td>
+<td>|</td>
+<td>从左到右</td>
+</tr>
+<tr>
+<td>11</td>
+<td>&amp;&amp;</td>
+<td>从左到右</td>
+</tr>
+<tr>
+<td>12</td>
+<td>||</td>
+<td>从左到右</td>
+</tr>
+<tr>
+<td>13</td>
+<td>?:</td>
+<td>从右向左</td>
+</tr>
+<tr>
+<td>14</td>
+<td>=  +=  -=  *=  /=  %=  &amp;=  |=  ^=  ~=  &lt;&lt;=  &gt;&gt;=  &gt;&gt;&gt;=</td>
+<td>从右向左</td>
+</tr>
+</tbody></table>
+<a id="more"></a>
+
+<h3 id="重载和重写"><a href="#重载和重写" class="headerlink" title="重载和重写"></a>重载和重写</h3><h4 id="重载"><a href="#重载" class="headerlink" title="重载"></a>重载</h4><p>​        多个方法可以有相同的名字和不同的参数，这种特征叫做<strong>重载</strong>。编译器通过各方法给出的参数与调用时填入的参数类型进行匹配来挑选出合适的方法，这个过程叫做<strong>重载解析</strong>(overloading resolution)。</p>
+<p>​        方法的<strong>签名</strong>(signature)包括方法名和参数类型，而不包括返回值类型。</p>
+<h4 id="重写"><a href="#重写" class="headerlink" title="重写"></a>重写</h4><ol>
+<li><p>重写发生在运行期，是子类对父类的允许访问的方法的实现过程进行重新编写。</p>
+</li>
+<li><p>抛出的异常范围小于等于父类，访问修饰符范围大于等于父类。</p>
+</li>
+<li><p>构造方法无法被重写</p>
+</li>
+<li><p>如果方法的返回类型是void和基本数据类型，则返回值重写时不可修改。但是如果方法的返回值是引用类型，重写时是可以返回该引用类型的子类的。</p>
+</li>
+</ol>
+<h3 id="面向对象编程三大特性"><a href="#面向对象编程三大特性" class="headerlink" title="面向对象编程三大特性"></a>面向对象编程三大特性</h3><h4 id="封装"><a href="#封装" class="headerlink" title="封装"></a>封装</h4><p><em>封装</em> 把一个对象的属性私有化，同时提供一些可以被外界访问的属性的方法。</p>
+<h4 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h4><p><em>继承</em> 是使用已存在的类的定义作为基础建立新类的技术，使用继承我们能够非常方便地复用以前的代码。</p>
+<h4 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h4><p><em>多态</em> 可以通过继承和接口两种方式实现</p>
+<h3 id="static和final"><a href="#static和final" class="headerlink" title="static和final"></a>static和final</h3><ul>
+<li>static是与class绑定的，在被JVM加载时跟随class放入栈空间，可以被修改，但所有实例都会共享同一份值。</li>
+<li>final关键词表示一个常量，它的值在初始化之后就不能再修改。</li>
+</ul>
+<p>嵌套类(nested class)分为静态和非静态两种，分别称为静态嵌套类(static nested class)和内部类(Inner class)。</p>
+<h3 id="按值传递"><a href="#按值传递" class="headerlink" title="按值传递"></a>按值传递</h3><p>Java中的参数变量是按值传递(called by value)的，通俗的说，不管参数是<strong>基础数据类型</strong>还是<strong>对象引用</strong>，方法接收的参数 <em>永远</em> 是参数值的副本。</p>
+<p>也就是说，如果我们在方法内修改参数的值，那么作为局部变量的副本参数在方法完成后就被丢弃了，并不会影响方法外原参数的值。不管是修改基础数据类型参数，还是修改对象引用参数，都只是作用在副本上；</p>
+<p>但是，如果要修改引用的对象内的属性，是可以生效的：因为 <strong>对象引用的副本</strong> 与 <strong>原对象引用</strong> 指向的是同一个对象，我们是根据这个引用找到对象并修改对象的值，并没有试图修改<strong>原对象引用</strong>的值。</p>
+<p>举一个例子：如果a是person对象的引用，方法接收的参数是a的副本b，那么a和b都引用的是person对象。此时我们无法通过让b引用别的对象（通过修改b的值），来让a引用别的对象（来修改a的值）；但我们能通过b修改person对象的属性，因为不管对b的引用操作还是对a的引用操作，最终都是对person操作。</p>
+<h3 id="变量的初始化"><a href="#变量的初始化" class="headerlink" title="变量的初始化"></a>变量的初始化</h3><p>一个很容易忽视的细节是，局部变量必须初始化才能使用，而类中的字段如果不初始化值，会自动初始化为默认值(0, false, null)。例如在Java8的HashMap源码中无参构造器就没有为threshold变量初始化，但其在后续的逻辑中以0生效。</p>
+<h3 id="构造器"><a href="#构造器" class="headerlink" title="构造器"></a>构造器</h3><p>如果一个类没有写任何构造器，就会有一个隐式的无参构造器，将所有实例变量设置为默认值；</p>
+<p>如果写了有参构造器，但没有无参构造器，在调用无参构造器时就会产生错误。</p>
+<h3 id="内部类"><a href="#内部类" class="headerlink" title="内部类"></a>内部类</h3><h4 id="1-成员内部类"><a href="#1-成员内部类" class="headerlink" title="1. 成员内部类"></a>1. 成员内部类</h4><p>在一个类内定义另一个内，内部的这个类就叫成员内部类，相对地，外层的类叫外部类。</p>
+<ul>
+<li><p>成员内部类可以访问外部类的<strong>所有</strong>成员属性和方法（包括private和static成员），因为编译后的字节码为内部类构造器传入了指向外部类对象的引用（指针）。</p>
+</li>
+<li><p>当成员内部类和外部类有同名的成员变量或方法时，默认调用的是内部类的成员，如果要调用外部类的同名成员，需要使用：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">外部类.<span class="keyword">this</span>.xxxVariable</span><br><span class="line">外部类.<span class="keyword">this</span>.xxxMethod</span><br></pre></td></tr></table></figure></li>
+<li><p>而外部类访问内部类的成员时，需要先创建外部类的对象，再通过外部类对象创建内部类对象</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">外部类类名.内部类类名 xxx = 外部类对象名.new 内部类类名()</span><br></pre></td></tr></table></figure></li>
+<li><p>要在其他地方创建一个内部类的对象，则需要先创建外部类对象：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span>  </span>&#123;</span><br><span class="line">        <span class="comment">//多例模式：</span></span><br><span class="line">        Outter outter = <span class="keyword">new</span> Outter();  <span class="comment">//先创建Outter对象outter  </span></span><br><span class="line">        Outter.Inner inner = outter.<span class="function">new <span class="title">Inner</span><span class="params">()</span></span>;  <span class="comment">//通过outter对象创建其内部类对象inner</span></span><br><span class="line">         </span><br><span class="line">        <span class="comment">//单例模式：</span></span><br><span class="line">        Outter.Inner inner1 = outter.getInnerInstance();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Outter</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Inner inner = <span class="keyword">null</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Outter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         </span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">    <span class="function"><span class="keyword">public</span> Inner <span class="title">getInnerInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(inner == <span class="keyword">null</span>)</span><br><span class="line">            inner = <span class="keyword">new</span> Inner();</span><br><span class="line">        <span class="keyword">return</span> inner;</span><br><span class="line">    &#125;</span><br><span class="line">      </span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Inner</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Inner</span><span class="params">()</span> </span>&#123;</span><br><span class="line">             </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<h4 id="2-静态内部类"><a href="#2-静态内部类" class="headerlink" title="2. 静态内部类"></a>2. 静态内部类</h4><p>静态内部类 (static nested class) 就是静态的成员内部类 (Inner class)，与之不同的是静态内部类不需要依赖与外部类，相应地，静态内部类只能访问外部类的静态成员（因为非静态成员依附于具体的对象）。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span>  </span>&#123;</span><br><span class="line">        Outter.Inner inner = <span class="keyword">new</span> Outter.Inner();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="3-局部内部类"><a href="#3-局部内部类" class="headerlink" title="3. 局部内部类"></a>3. 局部内部类</h4><p>定义在一个方法或作用于里面的类，相当于一个局部变量，不能有权限修饰符，仅限于方法或作用域内部访问。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">People</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">People</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Man</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Man</span><span class="params">()</span></span>&#123;</span><br><span class="line">         </span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">    <span class="function"><span class="keyword">public</span> People <span class="title">getWoman</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="class"><span class="keyword">class</span> <span class="title">Woman</span> <span class="keyword">extends</span> <span class="title">People</span></span>&#123;   <span class="comment">//局部内部类</span></span><br><span class="line">            <span class="keyword">int</span> age =<span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Woman();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="4-匿名内部类"><a href="#4-匿名内部类" class="headerlink" title="4. 匿名内部类"></a>4. 匿名内部类</h4><p>匿名内部类用于继承其他类或是实现接口，并不需要增加额外的方法，只是对继承方法的实现或是重写。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span>  </span>&#123;</span><br><span class="line">         </span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">(<span class="keyword">final</span> <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> a = <span class="number">10</span>;</span><br><span class="line">        <span class="keyword">new</span> Thread()&#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                System.out.println(a);</span><br><span class="line">                System.out.println(b);</span><br><span class="line">            &#125;;</span><br><span class="line">        &#125;.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>匿名内部类/局部内部类只能访问局部final变量。因为内部类和外部类的生命周期可能不同，编译器会为内部类传入变量的拷贝值，同时，为了防止数据不一致，必须使用final修饰来防止内部类改变这个值。</li>
+</ul>
+<h2 id="Java-源码"><a href="#Java-源码" class="headerlink" title="Java 源码"></a>Java 源码</h2><h3 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h3><p>我们知道HashMap通过对key计算哈希值来高效存取映射关系，当遇到哈希冲突，对应位置的结点会以链表的形式向下扩展。这里具体聊一下Java 8中，HashMap的实现逻辑。</p>
+<p>首先，在调用构造函数时，如果没有指定初始大小和装载因子，会使用默认的装载因子0.75、初始阈值0、初始大小16。其中<strong>阈值</strong>的含义是当装填的因子超过该值时就扩容。注意：构造函数只是设定了参数值，并没有创建数组。</p>
+<p>当调用<code>put()</code>方法时，实际上执行的是<code>putVal()</code>方法，<code>put()</code>方法帮我们隐藏了<code>onlyIfAbsent</code>和<code>evict</code>参数。前者为true表示遇到相同键值不进行覆盖，默认为false；后者为false表示table在创造模式(creation mode)，默认为true。</p>
+<p>在<code>putVal()</code>方法中，首先判断table（hashmap数据结构的变量名）是否为null，如果为null会先通过<code>resize()</code>方法创建一个初始table。</p>
+<p><code>resize()</code>方法用于扩容和初始化，具体来说，是根据table.length和threshold两个参数判断：</p>
+<ul>
+<li>如果table.length == 0，说明哈希表还没有创建，此时分两种情况：<ul>
+<li>threshold &gt; 0：把容量设置成threshold的大小；</li>
+<li>threshold == 0：把容量设置成默认的16，threshold设置成装载因子*16；</li>
+</ul>
+</li>
+<li>如果table.length &gt; 0，说明是需要扩容，也分两种情况：<ul>
+<li>容量已经超过最大容量的阈值，不能再扩容了，只能把threshold设置成MAX_VALUE，继续使用剩下的空间；</li>
+<li>容量还没超过最大值，将容量和threshold都扩大一倍。</li>
+</ul>
+</li>
+</ul>
+<p>定好新的参数后，创建一个新的数组，把旧数组的数据拷贝到新数组上。</p>
+<p>接着，通过对key的哈希值hash取table.length的模来定位：</p>
+<ul>
+<li>如果这个位置是空的，在这个位置创建一个键值对结点；</li>
+<li>否则存在三种情况：<ul>
+<li>哈希值相等，key值也相等，说明是存在相同的键，应该覆盖；</li>
+<li>数组的这个位置存储的不是Node&lt;K, V&gt;对象，而是TreeNode&lt;K, V&gt;对象，使用<code>putTreeVal()</code>方法来插入值；</li>
+<li>否则，说明发生了哈希冲突（碰撞），应该把值加在该位置链表的末尾。插入之后，如果链表长度超过了<strong>树化</strong>的阈值，则将链表Node转为树TreeNode。</li>
+</ul>
+</li>
+</ul>
+<p>这其中有几点需要解释：</p>
+<ol>
+<li>HashMap的底层实现中，如果一个位置的链表长度超过阈值(8)，就会转为树结构（树化）；</li>
+<li>链表结构是自定义的Node&lt;K, V&gt;类，实现自Map.Entry&lt;K, V&gt;接口；树结构是自定义的TreeNode&lt;K, V&gt;类，继承自LinkedHashMap.Entry&lt;K, V&gt;类，而LinkedHashMap的Entry类实际上就是继承自HashMap本身的Node类；简单地说，它们的关系是：<ul>
+<li>Map.Entry&lt;K, V&gt;接口  &lt;=  HashMap.Node&lt;K, V&gt;类  &lt;=  LinkedHashMap.Node&lt;K, V&gt;类  &lt;=  HashMap.TreeNode&lt;K, V&gt;类</li>
+</ul>
+</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>IDEA Keymap</title>
     <url>/2021/01/31/idea-keymap/</url>
     <content><![CDATA[<p><em>本文归纳自官方文档与 <a href="https://github.com/judasn/IntelliJ-IDEA-Tutorial/blob/master/keymap-introduce.md">IntelliJ-IDEA-Tutorials</a></em></p>
@@ -922,185 +1101,6 @@
       <tags>
         <tag>IDE</tag>
         <tag>Toolbox</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Java 基础</title>
-    <url>/2021/01/28/java-basics/</url>
-    <content><![CDATA[<h2 id="Java-基础"><a href="#Java-基础" class="headerlink" title="Java 基础"></a>Java 基础</h2><h3 id="运算符优先级"><a href="#运算符优先级" class="headerlink" title="运算符优先级"></a>运算符优先级</h3><table>
-<thead>
-<tr>
-<th>优先级</th>
-<th>运算符</th>
-<th>结合性</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>1</td>
-<td>括号</td>
-<td>从左到右</td>
-</tr>
-<tr>
-<td>2</td>
-<td>正负号、非、反、自增自减</td>
-<td>从右向左</td>
-</tr>
-<tr>
-<td>3</td>
-<td>*  /  %</td>
-<td>从左到右</td>
-</tr>
-<tr>
-<td>4</td>
-<td>+(加)  -(减)</td>
-<td>从左到右</td>
-</tr>
-<tr>
-<td>5</td>
-<td>位移符号</td>
-<td>从左到右</td>
-</tr>
-<tr>
-<td>6</td>
-<td>&lt; &lt;= &gt; &gt;= instanceof</td>
-<td>从左到右</td>
-</tr>
-<tr>
-<td>7</td>
-<td>== !=</td>
-<td>从左到右</td>
-</tr>
-<tr>
-<td>8</td>
-<td>&amp;</td>
-<td>从左到右</td>
-</tr>
-<tr>
-<td>9</td>
-<td>^ (异或)</td>
-<td>从左到右</td>
-</tr>
-<tr>
-<td>10</td>
-<td>|</td>
-<td>从左到右</td>
-</tr>
-<tr>
-<td>11</td>
-<td>&amp;&amp;</td>
-<td>从左到右</td>
-</tr>
-<tr>
-<td>12</td>
-<td>||</td>
-<td>从左到右</td>
-</tr>
-<tr>
-<td>13</td>
-<td>?:</td>
-<td>从右向左</td>
-</tr>
-<tr>
-<td>14</td>
-<td>=  +=  -=  *=  /=  %=  &amp;=  |=  ^=  ~=  &lt;&lt;=  &gt;&gt;=  &gt;&gt;&gt;=</td>
-<td>从右向左</td>
-</tr>
-</tbody></table>
-<a id="more"></a>
-
-<h3 id="重载和重写"><a href="#重载和重写" class="headerlink" title="重载和重写"></a>重载和重写</h3><h4 id="重载"><a href="#重载" class="headerlink" title="重载"></a>重载</h4><p>​        多个方法可以有相同的名字和不同的参数，这种特征叫做<strong>重载</strong>。编译器通过各方法给出的参数与调用时填入的参数类型进行匹配来挑选出合适的方法，这个过程叫做<strong>重载解析</strong>(overloading resolution)。</p>
-<p>​        方法的<strong>签名</strong>(signature)包括方法名和参数类型，而不包括返回值类型。</p>
-<h4 id="重写"><a href="#重写" class="headerlink" title="重写"></a>重写</h4><ol>
-<li><p>重写发生在运行期，是子类对父类的允许访问的方法的实现过程进行重新编写。</p>
-</li>
-<li><p>抛出的异常范围小于等于父类，访问修饰符范围大于等于父类。</p>
-</li>
-<li><p>构造方法无法被重写</p>
-</li>
-<li><p>如果方法的返回类型是void和基本数据类型，则返回值重写时不可修改。但是如果方法的返回值是引用类型，重写时是可以返回该引用类型的子类的。</p>
-</li>
-</ol>
-<h3 id="面向对象编程三大特性"><a href="#面向对象编程三大特性" class="headerlink" title="面向对象编程三大特性"></a>面向对象编程三大特性</h3><h4 id="封装"><a href="#封装" class="headerlink" title="封装"></a>封装</h4><p><em>封装</em> 把一个对象的属性私有化，同时提供一些可以被外界访问的属性的方法。</p>
-<h4 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h4><p><em>继承</em> 是使用已存在的类的定义作为基础建立新类的技术，使用继承我们能够非常方便地复用以前的代码。</p>
-<h4 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h4><p><em>多态</em> 可以通过继承和接口两种方式实现</p>
-<h3 id="static和final"><a href="#static和final" class="headerlink" title="static和final"></a>static和final</h3><ul>
-<li>static是与class绑定的，在被JVM加载时跟随class放入栈空间，可以被修改，但所有实例都会共享同一份值。</li>
-<li>final关键词表示一个常量，它的值在初始化之后就不能再修改。</li>
-</ul>
-<p>嵌套类(nested class)分为静态和非静态两种，分别称为静态嵌套类(static nested class)和内部类(Inner class)。</p>
-<h3 id="按值传递"><a href="#按值传递" class="headerlink" title="按值传递"></a>按值传递</h3><p>Java中的参数变量是按值传递(called by value)的，通俗的说，不管参数是<strong>基础数据类型</strong>还是<strong>对象引用</strong>，方法接收的参数 <em>永远</em> 是参数值的副本。</p>
-<p>也就是说，如果我们在方法内修改参数的值，那么作为局部变量的副本参数在方法完成后就被丢弃了，并不会影响方法外原参数的值。不管是修改基础数据类型参数，还是修改对象引用参数，都只是作用在副本上；</p>
-<p>但是，如果要修改引用的对象内的属性，是可以生效的：因为 <strong>对象引用的副本</strong> 与 <strong>原对象引用</strong> 指向的是同一个对象，我们是根据这个引用找到对象并修改对象的值，并没有试图修改<strong>原对象引用</strong>的值。</p>
-<p>举一个例子：如果a是person对象的引用，方法接收的参数是a的副本b，那么a和b都引用的是person对象。此时我们无法通过让b引用别的对象（通过修改b的值），来让a引用别的对象（来修改a的值）；但我们能通过b修改person对象的属性，因为不管对b的引用操作还是对a的引用操作，最终都是对person操作。</p>
-<h3 id="变量的初始化"><a href="#变量的初始化" class="headerlink" title="变量的初始化"></a>变量的初始化</h3><p>一个很容易忽视的细节是，局部变量必须初始化才能使用，而类中的字段如果不初始化值，会自动初始化为默认值(0, false, null)。例如在Java8的HashMap源码中无参构造器就没有为threshold变量初始化，但其在后续的逻辑中以0生效。</p>
-<h3 id="构造器"><a href="#构造器" class="headerlink" title="构造器"></a>构造器</h3><p>如果一个类没有写任何构造器，就会有一个隐式的无参构造器，将所有实例变量设置为默认值；</p>
-<p>如果写了有参构造器，但没有无参构造器，在调用无参构造器时就会产生错误。</p>
-<h3 id="内部类"><a href="#内部类" class="headerlink" title="内部类"></a>内部类</h3><h4 id="1-成员内部类"><a href="#1-成员内部类" class="headerlink" title="1. 成员内部类"></a>1. 成员内部类</h4><p>在一个类内定义另一个内，内部的这个类就叫成员内部类，相对地，外层的类叫外部类。</p>
-<ul>
-<li><p>成员内部类可以访问外部类的<strong>所有</strong>成员属性和方法（包括private和static成员），因为编译后的字节码为内部类构造器传入了指向外部类对象的引用（指针）。</p>
-</li>
-<li><p>当成员内部类和外部类有同名的成员变量或方法时，默认调用的是内部类的成员，如果要调用外部类的同名成员，需要使用：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">外部类.<span class="keyword">this</span>.xxxVariable</span><br><span class="line">外部类.<span class="keyword">this</span>.xxxMethod</span><br></pre></td></tr></table></figure></li>
-<li><p>而外部类访问内部类的成员时，需要先创建外部类的对象，再通过外部类对象创建内部类对象</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">外部类类名.内部类类名 xxx = 外部类对象名.new 内部类类名()</span><br></pre></td></tr></table></figure></li>
-<li><p>要在其他地方创建一个内部类的对象，则需要先创建外部类对象：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span>  </span>&#123;</span><br><span class="line">        <span class="comment">//多例模式：</span></span><br><span class="line">        Outter outter = <span class="keyword">new</span> Outter();  <span class="comment">//先创建Outter对象outter  </span></span><br><span class="line">        Outter.Inner inner = outter.<span class="function">new <span class="title">Inner</span><span class="params">()</span></span>;  <span class="comment">//通过outter对象创建其内部类对象inner</span></span><br><span class="line">         </span><br><span class="line">        <span class="comment">//单例模式：</span></span><br><span class="line">        Outter.Inner inner1 = outter.getInnerInstance();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Outter</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Inner inner = <span class="keyword">null</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Outter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         </span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">    <span class="function"><span class="keyword">public</span> Inner <span class="title">getInnerInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(inner == <span class="keyword">null</span>)</span><br><span class="line">            inner = <span class="keyword">new</span> Inner();</span><br><span class="line">        <span class="keyword">return</span> inner;</span><br><span class="line">    &#125;</span><br><span class="line">      </span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Inner</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Inner</span><span class="params">()</span> </span>&#123;</span><br><span class="line">             </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-</li>
-</ul>
-<h4 id="2-静态内部类"><a href="#2-静态内部类" class="headerlink" title="2. 静态内部类"></a>2. 静态内部类</h4><p>静态内部类 (static nested class) 就是静态的成员内部类 (Inner class)，与之不同的是静态内部类不需要依赖与外部类，相应地，静态内部类只能访问外部类的静态成员（因为非静态成员依附于具体的对象）。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span>  </span>&#123;</span><br><span class="line">        Outter.Inner inner = <span class="keyword">new</span> Outter.Inner();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="3-局部内部类"><a href="#3-局部内部类" class="headerlink" title="3. 局部内部类"></a>3. 局部内部类</h4><p>定义在一个方法或作用于里面的类，相当于一个局部变量，不能有权限修饰符，仅限于方法或作用域内部访问。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">People</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">People</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Man</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Man</span><span class="params">()</span></span>&#123;</span><br><span class="line">         </span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">    <span class="function"><span class="keyword">public</span> People <span class="title">getWoman</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="class"><span class="keyword">class</span> <span class="title">Woman</span> <span class="keyword">extends</span> <span class="title">People</span></span>&#123;   <span class="comment">//局部内部类</span></span><br><span class="line">            <span class="keyword">int</span> age =<span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Woman();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="4-匿名内部类"><a href="#4-匿名内部类" class="headerlink" title="4. 匿名内部类"></a>4. 匿名内部类</h4><p>匿名内部类用于继承其他类或是实现接口，并不需要增加额外的方法，只是对继承方法的实现或是重写。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span>  </span>&#123;</span><br><span class="line">         </span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">(<span class="keyword">final</span> <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> a = <span class="number">10</span>;</span><br><span class="line">        <span class="keyword">new</span> Thread()&#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                System.out.println(a);</span><br><span class="line">                System.out.println(b);</span><br><span class="line">            &#125;;</span><br><span class="line">        &#125;.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>匿名内部类/局部内部类只能访问局部final变量。因为内部类和外部类的生命周期可能不同，编译器会为内部类传入变量的拷贝值，同时，为了防止数据不一致，必须使用final修饰来防止内部类改变这个值。</li>
-</ul>
-<h2 id="Java-源码"><a href="#Java-源码" class="headerlink" title="Java 源码"></a>Java 源码</h2><h3 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h3><p>我们知道HashMap通过对key计算哈希值来高效存取映射关系，当遇到哈希冲突，对应位置的结点会以链表的形式向下扩展。这里具体聊一下Java 8中，HashMap的实现逻辑。</p>
-<p>首先，在调用构造函数时，如果没有指定初始大小和装载因子，会使用默认的装载因子0.75、初始阈值0、初始大小16。其中<strong>阈值</strong>的含义是当装填的因子超过该值时就扩容。注意：构造函数只是设定了参数值，并没有创建数组。</p>
-<p>当调用<code>put()</code>方法时，实际上执行的是<code>putVal()</code>方法，<code>put()</code>方法帮我们隐藏了<code>onlyIfAbsent</code>和<code>evict</code>参数。前者为true表示遇到相同键值不进行覆盖，默认为false；后者为false表示table在创造模式(creation mode)，默认为true。</p>
-<p>在<code>putVal()</code>方法中，首先判断table（hashmap数据结构的变量名）是否为null，如果为null会先通过<code>resize()</code>方法创建一个初始table。</p>
-<p><code>resize()</code>方法用于扩容和初始化，具体来说，是根据table.length和threshold两个参数判断：</p>
-<ul>
-<li>如果table.length == 0，说明哈希表还没有创建，此时分两种情况：<ul>
-<li>threshold &gt; 0：把容量设置成threshold的大小；</li>
-<li>threshold == 0：把容量设置成默认的16，threshold设置成装载因子*16；</li>
-</ul>
-</li>
-<li>如果table.length &gt; 0，说明是需要扩容，也分两种情况：<ul>
-<li>容量已经超过最大容量的阈值，不能再扩容了，只能把threshold设置成MAX_VALUE，继续使用剩下的空间；</li>
-<li>容量还没超过最大值，将容量和threshold都扩大一倍。</li>
-</ul>
-</li>
-</ul>
-<p>定好新的参数后，创建一个新的数组，把旧数组的数据拷贝到新数组上。</p>
-<p>接着，通过对key的哈希值hash取table.length的模来定位：</p>
-<ul>
-<li>如果这个位置是空的，在这个位置创建一个键值对结点；</li>
-<li>否则存在三种情况：<ul>
-<li>哈希值相等，key值也相等，说明是存在相同的键，应该覆盖；</li>
-<li>数组的这个位置存储的不是Node&lt;K, V&gt;对象，而是TreeNode&lt;K, V&gt;对象，使用<code>putTreeVal()</code>方法来插入值；</li>
-<li>否则，说明发生了哈希冲突（碰撞），应该把值加在该位置链表的末尾。插入之后，如果链表长度超过了<strong>树化</strong>的阈值，则将链表Node转为树TreeNode。</li>
-</ul>
-</li>
-</ul>
-<p>这其中有几点需要解释：</p>
-<ol>
-<li>HashMap的底层实现中，如果一个位置的链表长度超过阈值(8)，就会转为树结构（树化）；</li>
-<li>链表结构是自定义的Node&lt;K, V&gt;类，实现自Map.Entry&lt;K, V&gt;接口；树结构是自定义的TreeNode&lt;K, V&gt;类，继承自LinkedHashMap.Entry&lt;K, V&gt;类，而LinkedHashMap的Entry类实际上就是继承自HashMap本身的Node类；简单地说，它们的关系是：<ul>
-<li>Map.Entry&lt;K, V&gt;接口  &lt;=  HashMap.Node&lt;K, V&gt;类  &lt;=  LinkedHashMap.Node&lt;K, V&gt;类  &lt;=  HashMap.TreeNode&lt;K, V&gt;类</li>
-</ul>
-</li>
-</ol>
-]]></content>
-      <tags>
-        <tag>Java</tag>
       </tags>
   </entry>
   <entry>
