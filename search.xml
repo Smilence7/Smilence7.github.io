@@ -273,163 +273,6 @@
       </tags>
   </entry>
   <entry>
-    <title>计算机网络</title>
-    <url>/2021/01/31/computer-network/</url>
-    <content><![CDATA[<h2 id="OSI-七层模型"><a href="#OSI-七层模型" class="headerlink" title="OSI 七层模型"></a>OSI 七层模型</h2><p><em>&#42;本节内容参考中英文维基百科</em>。</p>
-<p>OSI Model是Open System Interconnection Model的缩写，顾名思义，OSI模型是一种为规范不同设备内部结构和技术的通信过程而产生的模型。</p>
-<p>引入了服务、接口、协议、分层的概念，实际的模型结构包含七层：</p>
-<img src="/2021/01/31/computer-network/OSI.png" class="" title="OSI模型">
-
-<h3 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h3><ul>
-<li>提供为应用软件设计的<strong>接口</strong>，以设置与另一应用软件之间的通信。</li>
-<li>HTTP, HTTPS, FTP, SSH, SMTP, POP3, IMAP4</li>
-</ul>
-<h3 id="表示层"><a href="#表示层" class="headerlink" title="表示层"></a>表示层</h3><ul>
-<li>把数据转换为网络服务通用格式，包括字符编码、数据压缩、编码/解码。</li>
-</ul>
-<h3 id="会话层"><a href="#会话层" class="headerlink" title="会话层"></a>会话层</h3><ul>
-<li>负责在数据传输中维护计算机网络中两台计算机之间的通信连接和数据交换。</li>
-<li>SMTP, DNS</li>
-</ul>
-<h3 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h3><ul>
-<li>接收数据流并将其分成<strong>数据段</strong>，把传输表头（TH）加至数据段。传输表头包含了所使用的协议等发送信息。</li>
-<li>数据段使网络传输能够多路复用</li>
-<li>TCP, UDP</li>
-</ul>
-<h3 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h3><ul>
-<li>决定数据的路径选择和转寄，将网络表头（NH）加至<strong>数据包</strong>，以形成分组。网络表头包含了网络资料。</li>
-<li>管理多结点的网络，包括寻址、路由等。</li>
-<li>IP, ICMP, ARP, RARP, AKP, UUCP</li>
-</ul>
-<h3 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h3><ul>
-<li><p>负责物理层连接的两个结点的<strong>数据帧</strong>传输。</p>
-</li>
-<li><p>当表头和表尾被加至数据包时，会形成<strong>数据帧</strong>（Data Frame）。数据链表头（DLH）是包含了物理地址和错误侦测及改错的方法。数据链表尾（DLT）是一串指示数据包末端的字符串。</p>
-</li>
-<li><p>以太网、无线局域网（Wi-Fi）和通用分组无线服务（GPRS）等。</p>
-</li>
-</ul>
-<h3 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h3><ul>
-<li>提供两个网络媒体实际连接的所有物理介质。</li>
-<li>包括针脚、电压、线缆规范、集线器、中继器、网卡、主机接口卡等。</li>
-<li>IEEE 802.1A</li>
-</ul>
-<p>OSI模型并不是一个协议，而是一个制定协议时参考的框架模型。</p>
-<h2 id="TCP-IP-四层模型"><a href="#TCP-IP-四层模型" class="headerlink" title="TCP/IP 四层模型"></a>TCP/IP 四层模型</h2><p><em>&#42;本节内容参考中英文维基百科、<a href="https://www.cnblogs.com/onepixel/p/7092302.html">一像素的博客</a>  以及 <a href="https://zhuanlan.zhihu.com/p/59066874">杰杰的文章</a> 。</em></p>
-<p>个人理解：TCP/IP是指Transmission Control Protocol和Internet Protocol， 而我们常说的TCP/IP实际上是一组协议栈(protocol stack)，国外一般称为DoD模型。</p>
-<p>基本框架：</p>
-<p><img src="TCP/IP.png" title="TCP/IP协议栈"></p>
-<p>这种模型参考了OSI模型的设计，将7层精简成4层。</p>
-<h3 id="应用层-1"><a href="#应用层-1" class="headerlink" title="应用层"></a>应用层</h3><ul>
-<li>对应OSI中的应用层、表示层、会话层</li>
-<li>应用层定义数据格式，并按照对应的格式解析数据</li>
-</ul>
-<h3 id="传输层-1"><a href="#传输层-1" class="headerlink" title="传输层"></a>传输层</h3><ul>
-<li><p>对应OSI中的传输层</p>
-</li>
-<li><p>传输层定义了端口，同一台主机上的每个应用程序都要指定唯一端口号，让主机能确定是哪个应用程序要接收这个包。</p>
-</li>
-<li><p><strong>UDP协议</strong>，要求在传输数据中加上端口号：</p>
-<ul>
-<li>首部<strong>8字节</strong>，包括源端口和目标端口；</li>
-<li>数据最大65527个字节；</li>
-</ul>
-</li>
-<li><p><strong>TCP协议</strong>解决UDP协议可靠性差的问题，因为UDP协议没有确认机制，无法确定对方是否收到数据；而TCP协议是面向连接的、可靠的、基于字节流的通信协议：</p>
-<ul>
-<li><p>三次对话确认机制</p>
-<ul>
-<li>发送端告诉接收端将要开始发送数据，并告知将要使用的同步序列号(SYN1)；</li>
-<li>接收端发回自己将要使用的同步序列号和确认信号(SYN2 &amp; ACK1)，一般ACK1是发来的SYN1+1；</li>
-<li>发送端发回确认信号ACK2(SYN2+1)，表示双方的连接是稳定的，并将开始发送数据。</li>
-</ul>
-</li>
-<li><p>TCP数据包和UDP数据包一样，只是长度没有限制，但通常不会超过下一层（网络层）数据包的长度，确保不会再被分割；</p>
-</li>
-<li><p>TCP比UDP传输速度慢，消耗资源多，但更可靠。</p>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="网络层-1"><a href="#网络层-1" class="headerlink" title="网络层"></a>网络层</h3><ul>
-<li>对应OSI中的网络层；</li>
-<li>引入<strong>IP协议</strong>(Internet Protocol)指定一套IP地址，用来判断主机所属的网络和在网络内的地址：<ul>
-<li>IP地址有IPv4和IPv6两个版本，其中IPv4是32位地址，分为四部分，每部分用0~255的十进制数字表示；IPv6有128位地址；</li>
-<li>以C类地址为例：<ul>
-<li>IP地址前三部分（24位）表示网络地址，第四部分（8位）表示主机地址；</li>
-<li>子网掩码前三部分为255（24位都为1），第四部分为0（8位都为0）；</li>
-<li>把子网掩码和IP地址按位与就能得到网络地址；</li>
-</ul>
-</li>
-<li>通过比较两个网络地址就能判断两台主机是否在同一个子网。</li>
-</ul>
-</li>
-<li>引入<strong>ARP协议</strong>(Address Resolution Protocol)根据IP地址获取MAC地址：<ul>
-<li>ARP获取到目标IP地址，如果在缓存中找不到对应的MAC地址，就发起一个数据包来<strong>请求</strong>目标IP对应的MAC地址，并等待接收返回消息；</li>
-<li>这个请求数据包与普通数据包一样在链路层包装为数据帧（见下段），通过以太网协议<strong>广播</strong>到子网内的所有主机；</li>
-<li>主机收到请求，比对首部的IP地址，如果匹配就发回自己的MAC地址，否则丢弃数据包；</li>
-<li>ARP接受到发回的MAC地址，存入缓存中。</li>
-</ul>
-</li>
-<li>引入<strong>路由协议</strong>，因为ARP只能提供<strong>子网内</strong>的MAC地址解析。<ul>
-<li>先通过IP协议判断两台主机是否在同一个子网中：<ul>
-<li>如果在，则直接使用ARP协议查询MAC地址；</li>
-<li>否则，把ARP数据包转发给子网的网关进行路由（网关可以连接到其他子网的网关）。</li>
-</ul>
-</li>
-<li>经过多次路由转发，最后到达目标IP所在的子网，子网内再用ARP广播形式发送，并以相同的方式发回源IP地址。</li>
-</ul>
-</li>
-<li>在网络层包装的数据包叫<strong>IP数据包</strong>，因为它主要包含IP地址信息。IP数据包包含：<ul>
-<li><strong>20字节</strong>的首部，主要包含目标IP地址和源IP地址；</li>
-<li>65515字节的数据。</li>
-</ul>
-</li>
-</ul>
-<h3 id="链路层"><a href="#链路层" class="headerlink" title="链路层"></a>链路层</h3><ul>
-<li>对应OSI中的数据链路层、物理层；</li>
-<li>将0、1电信号分组，按分组顺序依次发送；</li>
-<li>以太网协议：规定一个分组为一个<strong>数据帧</strong>，并以MAC地址作为网卡间通信的唯一身份标识包含：<ul>
-<li>14字节的<strong>首部</strong>，包含目标MAC地址，源MAC地址和帧类型；</li>
-<li>46~1500字节的<strong>数据</strong>；</li>
-<li>4字节的<strong>尾部</strong>，包含校验序列。</li>
-</ul>
-</li>
-<li>以太网采用<strong>广播</strong>形式把数据帧发送给所有<strong>子网内</strong>的主机，每台主机比对目标MAC地址，当匹配时就保留，否则丢弃。</li>
-</ul>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><blockquote>
-<p><strong>“ 配送车就是物理介质，配送站就是网关， 快递员就是路由器，收货地址就是IP地址，联系方式就是MAC地址。”</strong></p>
-<p><strong>当你输入一个网址并按下回车键的时候，首先，应用层协议对该请求包做了格式定义；紧接着传输层协议加上了双方的端口号，确认了双方通信的应用程序；然后网络协议加上了双方的IP地址，确认了双方的网络位置；最后链路层协议加上了双方的MAC地址，确认了双方的物理位置，同时将数据进行分组，形成数据帧，采用广播方式，通过传输介质发送给对方主机。而对于不同网段，该数据包首先会转发给网关路由器，经过多次转发后，最终被发送到目标主机。目标机接收到数据包后，采用对应的协议，对帧数据进行组装，然后再通过一层一层的协议进行解析，最终被应用层的协议解析并交给服务器处理。</strong></p>
-</blockquote>
-<h3 id="ARP扩展知识"><a href="#ARP扩展知识" class="headerlink" title="ARP扩展知识"></a>ARP扩展知识</h3><p>ARP请求包在通信时也需要经过链路层包装成数据帧，但又不知道目标MAC地址，怎么办呢？</p>
-<p>以太网数据帧首部用<strong>帧类型</strong>来区分ARP请求包和IP数据包，ARP请求包的帧类型为0x0806，而IP数据包的帧类型为0x0800；而ARP请求包内的目标MAC地址值为FF-FF-FF-FF-FF-FF。</p>
-<img src="/2021/01/31/computer-network/ARP.jpg" class="" title="ARP数据包封装在以太网帧的格式">
-
-<ul>
-<li><p>硬件类型，表示要知道目标网卡的硬件类型，其中，值为1表示以太网地址；</p>
-</li>
-<li><p>协议类型，0x0800表示IP协议，其他还可能是ICMP/IGMP协议等；</p>
-</li>
-<li><p>硬件地址长度，指出该报文中硬件地址的长度，对于以太网硬件类型，它的值为6；</p>
-</li>
-<li><p>协议地址长度，如果是ARP协议、IP协议等，该值为4；</p>
-</li>
-<li><p>op字段，用于记录ARP操作的类型，分别是：</p>
-<ul>
-<li>ARP请求，其值为1。</li>
-<li>ARP应答，其值为2。</li>
-<li>RARP请求，其值为3。</li>
-<li>RARP应答，其值为4。</li>
-</ul>
-<p>其中RARP是逆地址解析协议，已经基本被淘汰。</p>
-</li>
-</ul>
-]]></content>
-      <tags>
-        <tag>Interview, Computer Basics</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Hexo Installation &amp; Configuration</title>
     <url>/2021/01/23/hexo/</url>
     <content><![CDATA[<p>因为搭建博客的命令步骤都很容易理解，所以本文只是简单的记录过程中用到的命令和配置，可供参考和回查。</p>
@@ -925,6 +768,70 @@
       </tags>
   </entry>
   <entry>
+    <title>Singleton Pattern</title>
+    <url>/2021/01/28/singleton-pattern/</url>
+    <content><![CDATA[<p>This post references <a href="https://www.journaldev.com/1377/java-singleton-design-pattern-best-practices-examples">JournalDev</a>, and was written by English for personnal practicing.</p>
+<h1 id="Singleton-Pattern"><a href="#Singleton-Pattern" class="headerlink" title="Singleton Pattern"></a>Singleton Pattern</h1><p>Singleton pattern restricts the instantiation of a class and ensures that only one instance of the class exists in the Java virtual machine.</p>
+<p>To implement a singleton pattern, we should follow three concepts.</p>
+<ul>
+<li>Private constructor to prevent new instantiation act from other class.</li>
+<li>Private static variable of the same class that is the only instance of the class.</li>
+<li>Public static method that returns the instance of the class, providing the only way for outer programs to get the instance of the singleton class.</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="Implemention-practices"><a href="#Implemention-practices" class="headerlink" title="Implemention practices"></a>Implemention practices</h2><h3 id="1-Eager-initialization"><a href="#1-Eager-initialization" class="headerlink" title="1. Eager initialization"></a>1. Eager initialization</h3><p>In eager initialization, the instance of singleton class is created when class is loaded by Java virtual machine. While it is the easiest way to create a singleton class, it has a drawback that instance is created even if it may not be used by any program.</p>
+<p>Implemention is as follows.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EagerInitializedSingleton</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> EagerInitializedSingleton instance = <span class="keyword">new</span> EagerInitializedSingleton();</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">EagerInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> EagerInitializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-Static-block-initialization"><a href="#2-Static-block-initialization" class="headerlink" title="2. Static block initialization"></a>2. Static block initialization</h3><p>Static block initialization is similar to eager initialization, but implement by using static block and exception throwing.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticBlockSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> StaticBlockSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">StaticBlockSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">static</span>&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            instance = <span class="keyword">new</span> StaticBlockSingleton();</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;Exception occured in creating singleton instance&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StaticBlockSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-Lazy-Initialization"><a href="#3-Lazy-Initialization" class="headerlink" title="3. Lazy Initialization"></a>3. Lazy Initialization</h3><p>Lazy initialization implementation only creates instance at the first time accessed.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazyInitializedSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazyInitializedSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazyInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LazyInitializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">            instance = <span class="keyword">new</span> LazyInitializedSingleton();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>This implemention is not thread-safe. When two threads are inside the if condition at the same time, they will get different instances of the “singleton” class.</p>
+<h3 id="4-Thread-Safe-Singleton"><a href="#4-Thread-Safe-Singleton" class="headerlink" title="4. Thread Safe Singleton"></a>4. Thread Safe Singleton</h3><p>To make above program thread-safe, the easiest way is adding <code>synchronized</code> to the method <code>getInstance()</code>. But notice that we only need to create the instance at the first time (when first few thread in the if condition) method is called. </p>
+<p>To avoid extra time-consuming, <strong>double checked locking</strong> principle is used. In this approach, synchronized block is used outside the instance initialization code, with two if condition inside and outside the synchronized block respectively.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazyInitializedSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazyInitializedSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazyInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ThreadSafeSingleton <span class="title">getInstanceUsingDoubleLocking</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (ThreadSafeSingleton.class) &#123;</span><br><span class="line">                <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">                    instance = <span class="keyword">new</span> ThreadSafeSingleton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The double check part is to prevent later threads in first <code>if</code> block (which wait and get the lock) from creating new instances.</p>
+<h3 id="5-Bill-Pugh-Singleton-Implementation"><a href="#5-Bill-Pugh-Singleton-Implementation" class="headerlink" title="5. Bill Pugh Singleton Implementation"></a>5. Bill Pugh Singleton Implementation</h3><p>Still, above implemention used to fail in certain scenarios where large amount of threads try to get the instance simultaneously. So Bill Pugh came up with a different approach to create the Singleton class using an <a href="https://www.journaldev.com/996/java-inner-class">inner static helper class</a>.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BillPughSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">BillPughSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHelper</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> BillPughSingleton INSTANCE = <span class="keyword">new</span> BillPughSingleton();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> BillPughSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHelper.INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SingletonHelper is a static nested/inner class, which gets loaded only when someone calls the <em>getInstance</em> method.</p>
+<h3 id="6-Enum-Singleton"><a href="#6-Enum-Singleton" class="headerlink" title="6. Enum Singleton"></a>6. Enum Singleton</h3><p>Enum singleton is used to overcome <strong><em>reflection</em></strong> problem (which can destroy singleton pattern we talked above).</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">EnumSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    INSTANCE;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="7-SerializedSingleton"><a href="#7-SerializedSingleton" class="headerlink" title="7. SerializedSingleton"></a>7. SerializedSingleton</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SerializedSingleton</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">7604766932017737115L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">SerializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHelper</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> SerializedSingleton instance = <span class="keyword">new</span> SerializedSingleton();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> SerializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHelper.instance;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>The problem with serialized singleton class is that whenever we deserialize it, it will create a new instance of the class.</p>
+</blockquote>
+<p><strong><em>Mark to update later.</em></strong></p>
+]]></content>
+      <tags>
+        <tag>Design Patterns</tag>
+        <tag>Singleton</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringBoot2</title>
+    <url>/2021/02/04/spring-boot/</url>
+    <content><![CDATA[<h3 id="Web-开发"><a href="#Web-开发" class="headerlink" title="Web 开发"></a>Web 开发</h3><h4 id="1-静态资源访问"><a href="#1-静态资源访问" class="headerlink" title="1. 静态资源访问"></a>1. 静态资源访问</h4><h5 id="1-1-路径"><a href="#1-1-路径" class="headerlink" title="1.1 路径"></a>1.1 路径</h5><p>静态资源路径包括 <code>/static</code>、 <code>/public</code>、 <code>/resources</code> 、<code>/META-INF/resources</code> ，访问 <em>根路径 + 静态资源名</em> 即可访问对应的静态资源，如： /picture123.jpg</p>
+<p>其原理是使用静态映射/**，当访问请求找不到对应的Controller，再交给静态资源处理器，如果静态资源处理器也找不到就返回404。</p>
+<p>在application.yaml文件中使用<code>  static-path-pattern</code>修改配置</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">	<span class="attr">mvc:</span></span><br><span class="line">	<span class="attr">static-path-pattern:</span> <span class="string">/resources/**</span></span><br></pre></td></tr></table></figure>
+<p>相应地，<code>static-location: [classpath: /xxx/]</code> 用来重新设置多个静态资源路径</p>
+<a id="more"></a>
+
+
+
+
+
+
+
+
+
+]]></content>
+      <tags>
+        <tag>Framework</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Java 基础</title>
     <url>/2021/01/28/java-basics/</url>
     <content><![CDATA[<h2 id="Java-基础"><a href="#Java-基础" class="headerlink" title="Java 基础"></a>Java 基础</h2><h3 id="运算符优先级"><a href="#运算符优先级" class="headerlink" title="运算符优先级"></a>运算符优先级</h3><table>
@@ -1044,7 +951,7 @@
 <li><p>而外部类访问内部类的成员时，需要先创建外部类的对象，再通过外部类对象创建内部类对象</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">外部类类名.内部类类名 xxx = 外部类对象名.new 内部类类名()</span><br></pre></td></tr></table></figure></li>
 <li><p>要在其他地方创建一个内部类的对象，则需要先创建外部类对象：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span>  </span>&#123;</span><br><span class="line">        <span class="comment">//多例模式：</span></span><br><span class="line">        Outter outter = <span class="keyword">new</span> Outter();  <span class="comment">//先创建Outter对象outter  </span></span><br><span class="line">        Outter.Inner inner = outter.<span class="function">new <span class="title">Inner</span><span class="params">()</span></span>;  <span class="comment">//通过outter对象创建其内部类对象inner</span></span><br><span class="line">         </span><br><span class="line">        <span class="comment">//单例模式：</span></span><br><span class="line">        Outter.Inner inner1 = outter.getInnerInstance();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Outter</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Inner inner = <span class="keyword">null</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Outter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         </span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">    <span class="function"><span class="keyword">public</span> Inner <span class="title">getInnerInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(inner == <span class="keyword">null</span>)</span><br><span class="line">            inner = <span class="keyword">new</span> Inner();</span><br><span class="line">        <span class="keyword">return</span> inner;</span><br><span class="line">    &#125;</span><br><span class="line">      </span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Inner</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Inner</span><span class="params">()</span> </span>&#123;</span><br><span class="line">             </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span>  </span>&#123;</span><br><span class="line">        <span class="comment">//多例模式：</span></span><br><span class="line">        Outter outter = <span class="keyword">new</span> Outter();  <span class="comment">//先创建Outter对象outter  </span></span><br><span class="line">        Outter.Inner inner = outter.n<span class="function">ew <span class="title">Inner</span><span class="params">()</span></span>;  <span class="comment">//通过outter对象创建其内部类对象inner</span></span><br><span class="line">         </span><br><span class="line">        <span class="comment">//单例模式：</span></span><br><span class="line">        Outter.Inner inner1 = outter.getInnerInstance();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Outter</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Inner inner = <span class="keyword">null</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Outter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         </span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line">    <span class="function"><span class="keyword">public</span> Inner <span class="title">getInnerInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(inner == <span class="keyword">null</span>)</span><br><span class="line">            inner = <span class="keyword">new</span> Inner();</span><br><span class="line">        <span class="keyword">return</span> inner;</span><br><span class="line">    &#125;</span><br><span class="line">      </span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Inner</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Inner</span><span class="params">()</span> </span>&#123;</span><br><span class="line">             </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 </li>
@@ -1104,67 +1011,160 @@
       </tags>
   </entry>
   <entry>
-    <title>Singleton Pattern</title>
-    <url>/2021/01/28/singleton-pattern/</url>
-    <content><![CDATA[<p>This post references <a href="https://www.journaldev.com/1377/java-singleton-design-pattern-best-practices-examples">JournalDev</a>, and was written by English for personnal practicing.</p>
-<h1 id="Singleton-Pattern"><a href="#Singleton-Pattern" class="headerlink" title="Singleton Pattern"></a>Singleton Pattern</h1><p>Singleton pattern restricts the instantiation of a class and ensures that only one instance of the class exists in the Java virtual machine.</p>
-<p>To implement a singleton pattern, we should follow three concepts.</p>
-<ul>
-<li>Private constructor to prevent new instantiation act from other class.</li>
-<li>Private static variable of the same class that is the only instance of the class.</li>
-<li>Public static method that returns the instance of the class, providing the only way for outer programs to get the instance of the singleton class.</li>
+    <title>计算机网络</title>
+    <url>/2021/01/31/computer-network/</url>
+    <content><![CDATA[<h2 id="OSI-七层模型"><a href="#OSI-七层模型" class="headerlink" title="OSI 七层模型"></a>OSI 七层模型</h2><p><em>&#42;本节内容参考中英文维基百科</em>。</p>
+<p>OSI Model是Open System Interconnection Model的缩写，顾名思义，OSI模型是一种为规范不同设备内部结构和技术的通信过程而产生的模型。</p>
+<p>引入了服务、接口、协议、分层的概念，实际的模型结构包含七层：</p>
+<img src="/2021/01/31/computer-network/OSI.png" class="" title="OSI模型">
+
+<h3 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h3><ul>
+<li>提供为应用软件设计的<strong>接口</strong>，以设置与另一应用软件之间的通信。</li>
+<li>HTTP, HTTPS, FTP, SSH, SMTP, POP3, IMAP4</li>
 </ul>
-<a id="more"></a>
-
-<h2 id="Implemention-practices"><a href="#Implemention-practices" class="headerlink" title="Implemention practices"></a>Implemention practices</h2><h3 id="1-Eager-initialization"><a href="#1-Eager-initialization" class="headerlink" title="1. Eager initialization"></a>1. Eager initialization</h3><p>In eager initialization, the instance of singleton class is created when class is loaded by Java virtual machine. While it is the easiest way to create a singleton class, it has a drawback that instance is created even if it may not be used by any program.</p>
-<p>Implemention is as follows.</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EagerInitializedSingleton</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> EagerInitializedSingleton instance = <span class="keyword">new</span> EagerInitializedSingleton();</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">EagerInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> EagerInitializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="2-Static-block-initialization"><a href="#2-Static-block-initialization" class="headerlink" title="2. Static block initialization"></a>2. Static block initialization</h3><p>Static block initialization is similar to eager initialization, but implement by using static block and exception throwing.</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticBlockSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> StaticBlockSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">StaticBlockSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">static</span>&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            instance = <span class="keyword">new</span> StaticBlockSingleton();</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;Exception occured in creating singleton instance&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StaticBlockSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="3-Lazy-Initialization"><a href="#3-Lazy-Initialization" class="headerlink" title="3. Lazy Initialization"></a>3. Lazy Initialization</h3><p>Lazy initialization implementation only creates instance at the first time accessed.</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazyInitializedSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazyInitializedSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazyInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LazyInitializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">            instance = <span class="keyword">new</span> LazyInitializedSingleton();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>This implemention is not thread-safe. When two threads are inside the if condition at the same time, they will get different instances of the “singleton” class.</p>
-<h3 id="4-Thread-Safe-Singleton"><a href="#4-Thread-Safe-Singleton" class="headerlink" title="4. Thread Safe Singleton"></a>4. Thread Safe Singleton</h3><p>To make above program thread-safe, the easiest way is adding <code>synchronized</code> to the method <code>getInstance()</code>. But notice that we only need to create the instance at the first time (when first few thread in the if condition) method is called. </p>
-<p>To avoid extra time-consuming, <strong>double checked locking</strong> principle is used. In this approach, synchronized block is used outside the instance initialization code, with two if condition inside and outside the synchronized block respectively.</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazyInitializedSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazyInitializedSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazyInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ThreadSafeSingleton <span class="title">getInstanceUsingDoubleLocking</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (ThreadSafeSingleton.class) &#123;</span><br><span class="line">                <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">                    instance = <span class="keyword">new</span> ThreadSafeSingleton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>The double check part is to prevent later threads in first <code>if</code> block (which wait and get the lock) from creating new instances.</p>
-<h3 id="5-Bill-Pugh-Singleton-Implementation"><a href="#5-Bill-Pugh-Singleton-Implementation" class="headerlink" title="5. Bill Pugh Singleton Implementation"></a>5. Bill Pugh Singleton Implementation</h3><p>Still, above implemention used to fail in certain scenarios where large amount of threads try to get the instance simultaneously. So Bill Pugh came up with a different approach to create the Singleton class using an <a href="https://www.journaldev.com/996/java-inner-class">inner static helper class</a>.</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BillPughSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">BillPughSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHelper</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> BillPughSingleton INSTANCE = <span class="keyword">new</span> BillPughSingleton();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> BillPughSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHelper.INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>SingletonHelper is a static nested/inner class, which gets loaded only when someone calls the <em>getInstance</em> method.</p>
-<h3 id="6-Enum-Singleton"><a href="#6-Enum-Singleton" class="headerlink" title="6. Enum Singleton"></a>6. Enum Singleton</h3><p>Enum singleton is used to overcome <strong><em>reflection</em></strong> problem (which can destroy singleton pattern we talked above).</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">EnumSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    INSTANCE;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="7-SerializedSingleton"><a href="#7-SerializedSingleton" class="headerlink" title="7. SerializedSingleton"></a>7. SerializedSingleton</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SerializedSingleton</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">7604766932017737115L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">SerializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHelper</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> SerializedSingleton instance = <span class="keyword">new</span> SerializedSingleton();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> SerializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHelper.instance;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>The problem with serialized singleton class is that whenever we deserialize it, it will create a new instance of the class.</p>
+<h3 id="表示层"><a href="#表示层" class="headerlink" title="表示层"></a>表示层</h3><ul>
+<li>把数据转换为网络服务通用格式，包括字符编码、数据压缩、编码/解码。</li>
+</ul>
+<h3 id="会话层"><a href="#会话层" class="headerlink" title="会话层"></a>会话层</h3><ul>
+<li>负责在数据传输中维护计算机网络中两台计算机之间的通信连接和数据交换。</li>
+<li>SMTP, DNS</li>
+</ul>
+<h3 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h3><ul>
+<li>接收数据流并将其分成<strong>数据段</strong>，把传输表头（TH）加至数据段。传输表头包含了所使用的协议等发送信息。</li>
+<li>数据段使网络传输能够多路复用</li>
+<li>TCP, UDP</li>
+</ul>
+<h3 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h3><ul>
+<li>决定数据的路径选择和转寄，将网络表头（NH）加至<strong>数据包</strong>，以形成分组。网络表头包含了网络资料。</li>
+<li>管理多结点的网络，包括寻址、路由等。</li>
+<li>IP, ICMP, ARP, RARP, AKP, UUCP</li>
+</ul>
+<h3 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h3><ul>
+<li><p>负责物理层连接的两个结点的<strong>数据帧</strong>传输。</p>
+</li>
+<li><p>当表头和表尾被加至数据包时，会形成<strong>数据帧</strong>（Data Frame）。数据链表头（DLH）是包含了物理地址和错误侦测及改错的方法。数据链表尾（DLT）是一串指示数据包末端的字符串。</p>
+</li>
+<li><p>以太网、无线局域网（Wi-Fi）和通用分组无线服务（GPRS）等。</p>
+</li>
+</ul>
+<h3 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h3><ul>
+<li>提供两个网络媒体实际连接的所有物理介质。</li>
+<li>包括针脚、电压、线缆规范、集线器、中继器、网卡、主机接口卡等。</li>
+<li>IEEE 802.1A</li>
+</ul>
+<p>OSI模型并不是一个协议，而是一个制定协议时参考的框架模型。</p>
+<h2 id="TCP-IP-四层模型"><a href="#TCP-IP-四层模型" class="headerlink" title="TCP/IP 四层模型"></a>TCP/IP 四层模型</h2><p><em>&#42;本节内容参考中英文维基百科、<a href="https://www.cnblogs.com/onepixel/p/7092302.html">一像素的博客</a>  以及 <a href="https://zhuanlan.zhihu.com/p/59066874">杰杰的文章</a> 。</em></p>
+<p>个人理解：TCP/IP是指Transmission Control Protocol和Internet Protocol， 而我们常说的TCP/IP实际上是一组协议栈(protocol stack)，国外一般称为DoD模型。</p>
+<p>基本框架：</p>
+<p><img src="TCP/IP.png" title="TCP/IP协议栈"></p>
+<p>这种模型参考了OSI模型的设计，将7层精简成4层。</p>
+<h3 id="应用层-1"><a href="#应用层-1" class="headerlink" title="应用层"></a>应用层</h3><ul>
+<li>对应OSI中的应用层、表示层、会话层</li>
+<li>应用层定义数据格式，并按照对应的格式解析数据</li>
+</ul>
+<h3 id="传输层-1"><a href="#传输层-1" class="headerlink" title="传输层"></a>传输层</h3><ul>
+<li><p>对应OSI中的传输层</p>
+</li>
+<li><p>传输层定义了端口，同一台主机上的每个应用程序都要指定唯一端口号，让主机能确定是哪个应用程序要接收这个包。</p>
+</li>
+<li><p><strong>UDP协议</strong>，要求在传输数据中加上端口号：</p>
+<ul>
+<li>首部<strong>8字节</strong>，包括源端口和目标端口；</li>
+<li>数据最大65527个字节；</li>
+</ul>
+</li>
+<li><p><strong>TCP协议</strong>解决UDP协议可靠性差的问题，因为UDP协议没有确认机制，无法确定对方是否收到数据；而TCP协议是面向连接的、可靠的、基于字节流的通信协议：</p>
+<ul>
+<li><p>三次对话确认机制</p>
+<ul>
+<li>发送端告诉接收端将要开始发送数据，并告知将要使用的同步序列号(SYN1)；</li>
+<li>接收端发回自己将要使用的同步序列号和确认信号(SYN2 &amp; ACK1)，一般ACK1是发来的SYN1+1；</li>
+<li>发送端发回确认信号ACK2(SYN2+1)，表示双方的连接是稳定的，并将开始发送数据。</li>
+</ul>
+</li>
+<li><p>TCP数据包和UDP数据包一样，只是长度没有限制，但通常不会超过下一层（网络层）数据包的长度，确保不会再被分割；</p>
+</li>
+<li><p>TCP比UDP传输速度慢，消耗资源多，但更可靠。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="网络层-1"><a href="#网络层-1" class="headerlink" title="网络层"></a>网络层</h3><ul>
+<li>对应OSI中的网络层；</li>
+<li>引入<strong>IP协议</strong>(Internet Protocol)指定一套IP地址，用来判断主机所属的网络和在网络内的地址：<ul>
+<li>IP地址有IPv4和IPv6两个版本，其中IPv4是32位地址，分为四部分，每部分用0~255的十进制数字表示；IPv6有128位地址；</li>
+<li>以C类地址为例：<ul>
+<li>IP地址前三部分（24位）表示网络地址，第四部分（8位）表示主机地址；</li>
+<li>子网掩码前三部分为255（24位都为1），第四部分为0（8位都为0）；</li>
+<li>把子网掩码和IP地址按位与就能得到网络地址；</li>
+</ul>
+</li>
+<li>通过比较两个网络地址就能判断两台主机是否在同一个子网。</li>
+</ul>
+</li>
+<li>引入<strong>ARP协议</strong>(Address Resolution Protocol)根据IP地址获取MAC地址：<ul>
+<li>ARP获取到目标IP地址，如果在缓存中找不到对应的MAC地址，就发起一个数据包来<strong>请求</strong>目标IP对应的MAC地址，并等待接收返回消息；</li>
+<li>这个请求数据包与普通数据包一样在链路层包装为数据帧（见下段），通过以太网协议<strong>广播</strong>到子网内的所有主机；</li>
+<li>主机收到请求，比对首部的IP地址，如果匹配就发回自己的MAC地址，否则丢弃数据包；</li>
+<li>ARP接受到发回的MAC地址，存入缓存中。</li>
+</ul>
+</li>
+<li>引入<strong>路由协议</strong>，因为ARP只能提供<strong>子网内</strong>的MAC地址解析。<ul>
+<li>先通过IP协议判断两台主机是否在同一个子网中：<ul>
+<li>如果在，则直接使用ARP协议查询MAC地址；</li>
+<li>否则，把ARP数据包转发给子网的网关进行路由（网关可以连接到其他子网的网关）。</li>
+</ul>
+</li>
+<li>经过多次路由转发，最后到达目标IP所在的子网，子网内再用ARP广播形式发送，并以相同的方式发回源IP地址。</li>
+</ul>
+</li>
+<li>在网络层包装的数据包叫<strong>IP数据包</strong>，因为它主要包含IP地址信息。IP数据包包含：<ul>
+<li><strong>20字节</strong>的首部，主要包含目标IP地址和源IP地址；</li>
+<li>65515字节的数据。</li>
+</ul>
+</li>
+</ul>
+<h3 id="链路层"><a href="#链路层" class="headerlink" title="链路层"></a>链路层</h3><ul>
+<li>对应OSI中的数据链路层、物理层；</li>
+<li>将0、1电信号分组，按分组顺序依次发送；</li>
+<li>以太网协议：规定一个分组为一个<strong>数据帧</strong>，并以MAC地址作为网卡间通信的唯一身份标识包含：<ul>
+<li>14字节的<strong>首部</strong>，包含目标MAC地址，源MAC地址和帧类型；</li>
+<li>46~1500字节的<strong>数据</strong>；</li>
+<li>4字节的<strong>尾部</strong>，包含校验序列。</li>
+</ul>
+</li>
+<li>以太网采用<strong>广播</strong>形式把数据帧发送给所有<strong>子网内</strong>的主机，每台主机比对目标MAC地址，当匹配时就保留，否则丢弃。</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><blockquote>
+<p><strong>“ 配送车就是物理介质，配送站就是网关， 快递员就是路由器，收货地址就是IP地址，联系方式就是MAC地址。”</strong></p>
+<p><strong>当你输入一个网址并按下回车键的时候，首先，应用层协议对该请求包做了格式定义；紧接着传输层协议加上了双方的端口号，确认了双方通信的应用程序；然后网络协议加上了双方的IP地址，确认了双方的网络位置；最后链路层协议加上了双方的MAC地址，确认了双方的物理位置，同时将数据进行分组，形成数据帧，采用广播方式，通过传输介质发送给对方主机。而对于不同网段，该数据包首先会转发给网关路由器，经过多次转发后，最终被发送到目标主机。目标机接收到数据包后，采用对应的协议，对帧数据进行组装，然后再通过一层一层的协议进行解析，最终被应用层的协议解析并交给服务器处理。</strong></p>
 </blockquote>
-<p><strong><em>Mark to update later.</em></strong></p>
+<h3 id="ARP扩展知识"><a href="#ARP扩展知识" class="headerlink" title="ARP扩展知识"></a>ARP扩展知识</h3><p>ARP请求包在通信时也需要经过链路层包装成数据帧，但又不知道目标MAC地址，怎么办呢？</p>
+<p>以太网数据帧首部用<strong>帧类型</strong>来区分ARP请求包和IP数据包，ARP请求包的帧类型为0x0806，而IP数据包的帧类型为0x0800；而ARP请求包内的目标MAC地址值为FF-FF-FF-FF-FF-FF。</p>
+<img src="/2021/01/31/computer-network/ARP.jpg" class="" title="ARP数据包封装在以太网帧的格式">
+
+<ul>
+<li><p>硬件类型，表示要知道目标网卡的硬件类型，其中，值为1表示以太网地址；</p>
+</li>
+<li><p>协议类型，0x0800表示IP协议，其他还可能是ICMP/IGMP协议等；</p>
+</li>
+<li><p>硬件地址长度，指出该报文中硬件地址的长度，对于以太网硬件类型，它的值为6；</p>
+</li>
+<li><p>协议地址长度，如果是ARP协议、IP协议等，该值为4；</p>
+</li>
+<li><p>op字段，用于记录ARP操作的类型，分别是：</p>
+<ul>
+<li>ARP请求，其值为1。</li>
+<li>ARP应答，其值为2。</li>
+<li>RARP请求，其值为3。</li>
+<li>RARP应答，其值为4。</li>
+</ul>
+<p>其中RARP是逆地址解析协议，已经基本被淘汰。</p>
+</li>
+</ul>
 ]]></content>
       <tags>
-        <tag>Design Patterns</tag>
-        <tag>Singleton</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SpringBoot2</title>
-    <url>/2021/02/04/spring-boot/</url>
-    <content><![CDATA[<h3 id="Web-开发"><a href="#Web-开发" class="headerlink" title="Web 开发"></a>Web 开发</h3><h4 id="1-静态资源访问"><a href="#1-静态资源访问" class="headerlink" title="1. 静态资源访问"></a>1. 静态资源访问</h4><h5 id="1-1-路径"><a href="#1-1-路径" class="headerlink" title="1.1 路径"></a>1.1 路径</h5><p>静态资源路径包括 <code>/static</code>、 <code>/public</code>、 <code>/resources</code> 、<code>/META-INF/resources</code> ，访问 <em>根路径 + 静态资源名</em> 即可访问对应的静态资源，如： /picture123.jpg</p>
-<p>其原理是使用静态映射/**，当访问请求找不到对应的Controller，再交给静态资源处理器，如果静态资源处理器也找不到就返回404。</p>
-<p>在application.yaml文件中使用<code>  static-path-pattern</code>修改配置</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">	<span class="attr">mvc:</span></span><br><span class="line">	<span class="attr">static-path-pattern:</span> <span class="string">/resources/**</span></span><br></pre></td></tr></table></figure>
-<p>相应地，<code>static-location: [classpath: /xxx/]</code> 用来重新设置多个静态资源路径</p>
-<a id="more"></a>
-
-
-
-
-
-
-
-
-
-]]></content>
-      <tags>
-        <tag>Framework</tag>
+        <tag>Interview, Computer Basics</tag>
       </tags>
   </entry>
   <entry>

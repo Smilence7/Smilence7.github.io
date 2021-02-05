@@ -95,7 +95,7 @@
 
   <url>
     <loc>https://zayeum.com/</loc>
-    <lastmod>2021-02-04</lastmod>
+    <lastmod>2021-02-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -103,84 +103,84 @@
   
   <url>
     <loc>https://zayeum.com/tags/algorithm/</loc>
-    <lastmod>2021-02-04</lastmod>
+    <lastmod>2021-02-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://zayeum.com/tags/data-structure/</loc>
-    <lastmod>2021-02-04</lastmod>
+    <lastmod>2021-02-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://zayeum.com/tags/Interview/</loc>
-    <lastmod>2021-02-04</lastmod>
+    <lastmod>2021-02-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://zayeum.com/tags/Computer-Basics/</loc>
-    <lastmod>2021-02-04</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/tags/Interview-Computer-Basics/</loc>
-    <lastmod>2021-02-04</lastmod>
+    <lastmod>2021-02-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://zayeum.com/tags/Blog/</loc>
-    <lastmod>2021-02-04</lastmod>
+    <lastmod>2021-02-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://zayeum.com/tags/IDE/</loc>
-    <lastmod>2021-02-04</lastmod>
+    <lastmod>2021-02-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://zayeum.com/tags/Toolbox/</loc>
-    <lastmod>2021-02-04</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/tags/Java/</loc>
-    <lastmod>2021-02-04</lastmod>
+    <lastmod>2021-02-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://zayeum.com/tags/Design-Patterns/</loc>
-    <lastmod>2021-02-04</lastmod>
+    <lastmod>2021-02-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://zayeum.com/tags/Singleton/</loc>
-    <lastmod>2021-02-04</lastmod>
+    <lastmod>2021-02-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://zayeum.com/tags/Framework/</loc>
-    <lastmod>2021-02-04</lastmod>
+    <lastmod>2021-02-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/Java/</loc>
+    <lastmod>2021-02-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/Interview-Computer-Basics/</loc>
+    <lastmod>2021-02-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
