@@ -1048,6 +1048,8 @@
 <li>每个处理器通过嗅探在总线上传播的数据来检查自己的缓存是否失效；</li>
 <li>处理器将过期的缓存标记，当要用到对应数据时，从主存中把新数据读到本地缓存中，防止读脏数据。</li>
 </ol>
+<a id="more"></a>
+
 <h4 id="volatile机制下的处理过程"><a href="#volatile机制下的处理过程" class="headerlink" title="volatile机制下的处理过程"></a>volatile机制下的处理过程</h4><ol>
 <li>带Lock前缀的指令触发处理器缓存写回主存；</li>
 <li>其他处理器感知到，把自己的缓存标记为失效；</li>
@@ -1065,11 +1067,6 @@
 </ul>
 </li>
 </ol>
-
-
-<html>
-<td style="vertical-align:middle; text-align:center;">
-
 <table>
    <tr>
       <td colspan="1">是否能重排序</td>
@@ -1100,12 +1097,54 @@
       <td>x</td>
    </tr>
 </table>
-</td>
-</html>
 
 
 
-]]></content>
+
+
+<style>
+  table {
+    table-layout: fixed;
+    width: 1000px; /*表格宽度*/
+    max-width: 1000px; /*表格最大宽度，避免表格过宽*/
+    border: 1px solid #dedede; /*表格外边框设置*/
+    margin: 15px auto; /*外边距*/
+    border-collapse: collapse; /*使用单一线条的边框*/
+    word-break:break-all;
+    word-wrap:break-word;
+    empty-cells: show; /*单元格无内容依旧绘制边框*/
+  }
+  table th,
+  table td {
+    height: 35px; /*统一每一行的默认高度*/
+    border: 1px solid #dedede; /*内部边框样式*/
+    padding: 0 10px; /*内边距*/
+    text-align: center !important;
+  }
+  table th {
+    font-weight: bold; /*加粗*/
+    text-align: center !important; /*内容居中，加上 !important 避免被 Markdown 样式覆盖*/
+    background: rgba(158,188,226,0.2); /*背景色*/
+  }
+  table tbody tr:nth-child(2n) {
+    background: rgba(158,188,226,0.12);
+  }
+  table th {
+    white-space: nowrap; /*表头内容强制在一行显示*/
+  }
+  table th:nth-of-type(1){
+    width: 20%;
+  }
+  table th:nth-of-type(2){
+    width: 20%;
+  }
+  table th:nth-of-type(3){
+    width: 20%;
+  }
+  table th:nth-of-type(4){
+    width: 40%;
+  }
+</style>]]></content>
       <categories>
         <category>Multithread &amp; Concurrency</category>
       </categories>

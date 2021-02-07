@@ -2,41 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://zayeum.com/2021/02/07/volatile/</loc>
-    
-    <lastmod>2021-02-07</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/about/index.html</loc>
-    
-    <lastmod>2021-02-07</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/categories/index.html</loc>
-    
-    <lastmod>2021-02-07</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/tags/index.html</loc>
-    
-    <lastmod>2021-02-07</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/2021/02/04/spring-boot/</loc>
-    
-    <lastmod>2021-02-07</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://zayeum.com/2021/02/01/binary-search-tree/</loc>
     
     <lastmod>2021-02-07</lastmod>
@@ -51,7 +16,7 @@
   </url>
   
   <url>
-    <loc>https://zayeum.com/2021/01/31/computer-network/</loc>
+    <loc>https://zayeum.com/2021/02/04/spring-boot/</loc>
     
     <lastmod>2021-02-07</lastmod>
     
@@ -80,6 +45,41 @@
   
   <url>
     <loc>https://zayeum.com/2021/01/23/hexo/</loc>
+    
+    <lastmod>2021-02-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/2021/01/31/computer-network/</loc>
+    
+    <lastmod>2021-02-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/2021/02/07/volatile/</loc>
+    
+    <lastmod>2021-02-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/about/index.html</loc>
+    
+    <lastmod>2021-02-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/categories/index.html</loc>
+    
+    <lastmod>2021-02-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/index.html</loc>
     
     <lastmod>2021-02-07</lastmod>
     
