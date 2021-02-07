@@ -1039,6 +1039,80 @@
       </tags>
   </entry>
   <entry>
+    <title>volatile 关键字</title>
+    <url>/2021/02/07/volatile/</url>
+    <content><![CDATA[<h4 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h4><p>volatile解决的问题：针对变量的轻量级同步解决方案。</p>
+<p>由于cpu读写速度与主存之间存在巨大的差异，所以Java的内存模型中，每个cpu的线程把共享变量从主存拷贝到自己cpu内的工作内存，来保证处理速度。这就会产生各线程的工作内存间数据不可见的问题。解决数据可见性，就解决了针对变量级别的同步机制。</p>
+<h4 id="volatile机制的原理"><a href="#volatile机制的原理" class="headerlink" title="volatile机制的原理"></a>volatile机制的原理</h4><ol>
+<li>当对volatile变量进行写操作时，JVM会向处理器发送带Lock前缀的指令，处理器收到这种指令会马上将本地缓存写回主存；</li>
+<li>每个处理器通过嗅探在总线上传播的数据来检查自己的缓存是否失效；</li>
+<li>处理器将过期的缓存标记，当要用到对应数据时，从主存中把新数据读到本地缓存中，防止读脏数据。</li>
+</ol>
+<h4 id="volatile机制下的处理过程"><a href="#volatile机制下的处理过程" class="headerlink" title="volatile机制下的处理过程"></a>volatile机制下的处理过程</h4><ol>
+<li>带Lock前缀的指令触发处理器缓存写回主存；</li>
+<li>其他处理器感知到，把自己的缓存标记为失效；</li>
+<li>当用到的变量是失效的，处理器从主存中重新读取该数据到本地缓存。</li>
+</ol>
+<h4 id="volatile的happens-before"><a href="#volatile的happens-before" class="headerlink" title="volatile的happens-before"></a>volatile的happens-before</h4><p>对一个volatile域的写，happens-before于任意后续对这个volatile域的读。</p>
+<h4 id="volatile的实现方法："><a href="#volatile的实现方法：" class="headerlink" title="volatile的实现方法："></a>volatile的实现方法：</h4><p>JMM在保证happens-before关系的前提下，尽可能允许编译器和处理器对指令序列重排序。为了实现这一点，做了两件事：</p>
+<ol>
+<li>创造出<strong>内存屏障</strong>指令，根据读写顺序对应四种指令，分别是LoadLoad, StoreStore, LoadStore, StoreLoad。通过在指令序列中间插入这些屏障指令，来禁止特定类型的处理器重排序；</li>
+<li>找到所有不符合happens-before原则的指令序列（下表）。需要注意的是，编译器难以做到为一个程序找到能插入最少屏障次数的重排序方案，所以为了覆盖图中的情况，并且简化逻辑，用4条规则来覆盖这些情况（覆盖范围会多出一点，但保证了规则的简单）：<ul>
+<li><strong>volatile写</strong>操作<strong>前</strong>插入StoreStore屏障</li>
+<li><strong>volatile写</strong>操作<strong>后</strong>插入StoreLoad屏障</li>
+<li><strong>volatile读</strong>操作<strong>后</strong>插入LoadLoad屏障</li>
+<li><strong>volatile读</strong>操作<strong>后</strong>插入LoadStore屏障</li>
+</ul>
+</li>
+</ol>
+<html>
+<td style="vertical-align:middle; text-align:center;">
+
+<table>
+   <tr>
+      <td colspan="1">是否能重排序</td>
+      <td colspan="3">第二个操作</td>
+   </tr>
+   <tr>
+      <td>第一个操作</td>
+      <td>普通读/写</td>
+      <td>volatile读</td>
+      <td>volatile写</td>
+   </tr>
+   <tr>
+      <td>普通读/写</td>
+      <td></td>
+      <td></td>
+      <td>x</td>
+   </tr>
+   <tr>
+      <td>volatile读</td>
+      <td>x</td>
+      <td>x</td>
+      <td>x</td>
+   </tr>
+   <tr>
+      <td>volatile写</td>
+      <td></td>
+      <td>x</td>
+      <td>x</td>
+   </tr>
+</table>
+</td>
+</html>
+
+
+
+]]></content>
+      <categories>
+        <category>Multithread &amp; Concurrency</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>Multithread &amp; Concurrency</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Wordpress Docker部署</title>
     <url>/2021/01/23/wordpress/</url>
     <content><![CDATA[<h4 id="安装-docker"><a href="#安装-docker" class="headerlink" title="安装 docker"></a>安装 docker</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">yum install docker-ce</span><br><span class="line">sudo systemctl start docker</span><br><span class="line">sudo systemctl <span class="built_in">enable</span> docker</span><br></pre></td></tr></table></figure>
