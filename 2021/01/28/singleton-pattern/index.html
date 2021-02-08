@@ -315,6 +315,20 @@
     </span>
 
   
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/2021/01/28/singleton-pattern/#waline-comments" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" id="/2021/01/28/singleton-pattern/" data-xid="/2021/01/28/singleton-pattern/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
       </div>
       <div class="post-meta">
     <span class="post-meta-item" title="本文字数">
@@ -408,6 +422,7 @@
 
 
 
+    <div class="comments" id="waline-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -547,7 +562,18 @@ document.addEventListener('pjax:success', () => {
       });
       });
   </script>
-
+<script>
+NexT.utils.loadComments('#waline-comments', () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js', () => {
+    new Waline(Object.assign({
+      lang: 'zh-CN'
+    }, {"enable":true,"serverURL":"https://comment-api-seven.vercel.app","placeholder":"欢迎在这里评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"visitor":false,"comment_count":false,"requiredFields":["nick"],"lang":"zh-cn","libUrl":null}, {
+      el: '#waline-comments',
+      path: "/2021/01/28/singleton-pattern/",
+    }));
+  }, window.Waline);
+});
+</script>
 <script type="text/javascript" src="/js/fold_action.js"></script>
 
     </div>

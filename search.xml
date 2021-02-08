@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>查找树系列</title>
-    <url>/2021/02/01/binary-search-tree/</url>
+    <url>/2021/02/04/binary-search-tree/</url>
     <content><![CDATA[<h2 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h2><p>二叉查找树定义每个结点的左子树里的元素值都小于该节点、右子树里的元素都大于该节点，这样的定义使它的中序遍历就是升序的有序数据，时间复杂度为O(n)。</p>
 <p>查找操作：从根节点出发，小于就递归左子树，大于就递归右子树，直到等于根节点就返回。</p>
 <p>插入操作：一直递归比较，直到找到该分支底部的位置（左小右大向下查找，直到左/右子树为空，就新建一个结点放到左/右子结点）。</p>
@@ -35,7 +35,7 @@
 <h3 id="将一颗2-3树转换成红黑树"><a href="#将一颗2-3树转换成红黑树" class="headerlink" title="将一颗2-3树转换成红黑树"></a>将一颗2-3树转换成红黑树</h3><p>2结点就是二叉结点，令它作为黑色结点；</p>
 <p>3结点可以拆成两个结点，遵循查找树的特性，有左倾和右倾两种转换形式，父结点为黑，子结点为红；</p>
 <p>(如果是2-3-4树转换为红黑树，同理，4结点用3个值里中间的那个作为黑色根结点，连接左右两个红色子结点。)</p>
-<img src="/2021/02/01/binary-search-tree/2-3%E6%A0%91%E4%B8%8E%E7%BA%A2%E9%BB%91%E6%A0%91.jpg" class="" title="2-3树与红黑树">
+<img src="/2021/02/04/binary-search-tree/2-3%E6%A0%91%E4%B8%8E%E7%BA%A2%E9%BB%91%E6%A0%91.jpg" class="" title="2-3树与红黑树">
 
 <p>如果把所有的3结点都按左倾的方式处理，就形成了图中的对应关系，即所有3结点的第一个数作为左子结点，第二个数作为父结点。</p>
 <h3 id="2-3-4-树的插入删除"><a href="#2-3-4-树的插入删除" class="headerlink" title="2-3(-4)树的插入删除"></a>2-3(-4)树的插入删除</h3><h4 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h4><p>对于2结点的插入，直接转为3结点。对应红黑树中在黑结点下插入元素(红结点)。</p>
@@ -77,7 +77,7 @@
 <p>最先被发明的 <em>AVL树</em> 是严格的平衡二叉查找树，而后面的平衡查找树并没有严格符合高度差不超过1，只需要大致平衡。</p>
 <p>因为维护一个严格平衡的树需要更多的操作，使得维护<strong>近似平衡</strong>的树虽然会增加一些(红黑树中两倍)结点数量产生额外的开销，但相比维护<strong>严格平衡</strong>的树带来的开销还是更小的。</p>
 <h4 id="为什么红黑树是近似平衡的"><a href="#为什么红黑树是近似平衡的" class="headerlink" title="为什么红黑树是近似平衡的"></a>为什么红黑树是近似平衡的</h4><p>不失一般性，当一颗红黑树包含m个红结点和n个黑结点，如果我们把这棵树按2-3-4树的形态来看，那么它的高度只跟黑结点有关，即高度等于logn。同时，由于定义了红结点不能直接相连，所以红结点的个数m一定小于n，因此整个树算上红结点的高度一定小于2logn，所以插入删除算法的时间复杂度仍然是O(logn)级别的。</p>
-<img src="/2021/02/01/binary-search-tree/RBTree.jpg" class="" title="黑色结点高度">
+<img src="/2021/02/04/binary-search-tree/RBTree.jpg" class="" title="黑色结点高度">
 
 <h4 id="如果一颗红黑树只有黑色结点会怎样"><a href="#如果一颗红黑树只有黑色结点会怎样" class="headerlink" title="如果一颗红黑树只有黑色结点会怎样"></a>如果一颗红黑树只有黑色结点会怎样</h4><p>根据前面引入的B树与红黑树的关系理解，如果一棵红黑树没有红色结点，也就是说对应B树里的所有结点都是2结点，也就是平衡二叉树。因此一颗只有黑色结点的红黑树就成为了一颗AVL树（严格平衡）。所以串起上文，红色结点就是红黑树<strong>近似平衡</strong>的特性中<strong>不稳定</strong>的那部分(根据上文，最坏情况也可以接受)。</p>
 <h3 id=""><a href="#" class="headerlink" title=""></a></h3><p><em>码好再更新，To be continued…</em></p>
@@ -1061,30 +1061,42 @@
       </tags>
   </entry>
   <entry>
-    <title>SpringBoot 2</title>
-    <url>/2021/02/04/spring-boot/</url>
-    <content><![CDATA[<h3 id="Web-开发"><a href="#Web-开发" class="headerlink" title="Web 开发"></a>Web 开发</h3><h4 id="1-静态资源访问"><a href="#1-静态资源访问" class="headerlink" title="1. 静态资源访问"></a>1. 静态资源访问</h4><h5 id="1-1-路径"><a href="#1-1-路径" class="headerlink" title="1.1 路径"></a>1.1 路径</h5><p>静态资源路径包括 <code>/static</code>、 <code>/public</code>、 <code>/resources</code> 、<code>/META-INF/resources</code> ，访问 <em>根路径 + 静态资源名</em> 即可访问对应的静态资源，如： /picture123.jpg</p>
-<p>其原理是使用静态映射/**，当访问请求找不到对应的Controller，再交给静态资源处理器，如果静态资源处理器也找不到就返回404。</p>
-<p>在application.yaml文件中使用<code>  static-path-pattern</code>修改配置</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">	<span class="attr">mvc:</span></span><br><span class="line">	<span class="attr">static-path-pattern:</span> <span class="string">/resources/**</span></span><br></pre></td></tr></table></figure>
-<p>相应地，<code>static-location: [classpath: /xxx/]</code> 用来重新设置多个静态资源路径</p>
-<a id="more"></a>
+    <title>Wordpress Docker部署</title>
+    <url>/2021/01/23/wordpress/</url>
+    <content><![CDATA[<h4 id="安装-docker"><a href="#安装-docker" class="headerlink" title="安装 docker"></a>安装 docker</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">yum install docker-ce</span><br><span class="line">sudo systemctl start docker</span><br><span class="line">sudo systemctl <span class="built_in">enable</span> docker</span><br></pre></td></tr></table></figure>
 
 
+<h4 id="安装-docker-compose"><a href="#安装-docker-compose" class="headerlink" title="安装 docker-compose"></a>安装 docker-compose</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">chown -R nz /usr/<span class="built_in">local</span>/bin</span><br><span class="line">sudo curl -L https://get.daocloud.io/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` &gt; /usr/<span class="built_in">local</span>/bin/docker-compose</span><br><span class="line">chmod +x /usr/<span class="built_in">local</span>/bin/docker-compose</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/docker-compose /usr/bin/docker-compose <span class="comment">#把它放入PATH中，这样才能sudo</span></span><br></pre></td></tr></table></figure>
 
 
+<h4 id="卸载-docker"><a href="#卸载-docker" class="headerlink" title="卸载 docker"></a>卸载 docker</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">yum list installed|grep docker</span><br><span class="line">yum -y remove</span><br><span class="line">rm -rf /var/lib/docker</span><br><span class="line"></span><br><span class="line">sudo yum remove docker \</span><br><span class="line">                  docker-client \</span><br><span class="line">                  docker-client-latest \</span><br><span class="line">                  docker-common \</span><br><span class="line">                  docker-latest \</span><br><span class="line">                  docker-latest-logrotate \</span><br><span class="line">                  docker-logrotate \</span><br><span class="line">                  docker-engine</span><br></pre></td></tr></table></figure>
 
 
+<h4 id="卸载-docker-compose"><a href="#卸载-docker-compose" class="headerlink" title="卸载 docker-compose"></a>卸载 docker-compose</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo rm /usr/<span class="built_in">local</span>/bin/docker-compose</span><br></pre></td></tr></table></figure>
 
+
+<h4 id="docker-国内镜像"><a href="#docker-国内镜像" class="headerlink" title="docker 国内镜像"></a>docker 国内镜像</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">vim /etc/docker/daemon.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;registry-mirrors&quot;</span>: [<span class="string">&quot;https://docker.mirrors.ustc.edu.cn/&quot;</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="修改docker内的mysql表ip地址"><a href="#修改docker内的mysql表ip地址" class="headerlink" title="修改docker内的mysql表ip地址"></a>修改docker内的mysql表ip地址</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo docker exec -it my_wordpress_db_1 bash</span><br><span class="line">mysql -u wordpress -p</span><br><span class="line">Enter password: wordpress</span><br><span class="line">show databases;</span><br><span class="line">USE wordpress</span><br><span class="line">select * from wp_options limit 2;</span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> UPDATE wp_options SET option_value=<span class="string">&quot;zayeum.com&quot;</span> WHERE option_name=<span class="string">&quot;siteurl&quot;</span>;</span></span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> UPDATE wp_options SET option_value=<span class="string">&quot;zayeum.com&quot;</span> WHERE option_name=<span class="string">&quot;home&quot;</span>;</span></span><br><span class="line">update wp_options set option_value=&#x27;http://www.zayeum.com:80&#x27; where option_name in (&#x27;siteurl&#x27;,&#x27;home&#x27;);</span><br><span class="line">update wp_options set option_value=&#x27;localhost:9977&#x27; where option_name in (&#x27;siteurl&#x27;,&#x27;home&#x27;);</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="Docker-服务管理"><a href="#Docker-服务管理" class="headerlink" title="Docker 服务管理"></a>Docker 服务管理</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo systemctl start docker</span><br><span class="line">sudo systemctl restart  dockers</span><br><span class="line">sudo systemctl stop docker</span><br><span class="line">sudo service docker restart</span><br><span class="line">sudo service docker stop</span><br><span class="line">sudo systemctl daemon-reload  <span class="comment"># 重启守护进程</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="防火墙"><a href="#防火墙" class="headerlink" title="防火墙"></a>防火墙</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo systemctl start firewalld</span><br><span class="line"></span><br><span class="line">sudo firewall-cmd --zone=public --add-port=80/tcp --permanent</span><br><span class="line">sudo firewall-cmd  --reload</span><br><span class="line">sudo firewall-cmd --zone=public --list-ports</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="Docker-容器管理"><a href="#Docker-容器管理" class="headerlink" title="Docker 容器管理"></a>Docker 容器管理</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo docker stop $(docker ps -aq)</span><br><span class="line">sudo docker container prune</span><br><span class="line">sudo docker image prune</span><br><span class="line">sudo docker-compose down</span><br></pre></td></tr></table></figure>
 
 
 ]]></content>
       <categories>
-        <category>Framework</category>
+        <category>Blog</category>
       </categories>
       <tags>
-        <tag>Spring Boot</tag>
-        <tag>Framework</tag>
+        <tag>Blog</tag>
+        <tag>Wordpress</tag>
       </tags>
   </entry>
   <entry>
@@ -1203,42 +1215,30 @@
       </tags>
   </entry>
   <entry>
-    <title>Wordpress Docker部署</title>
-    <url>/2021/01/23/wordpress/</url>
-    <content><![CDATA[<h4 id="安装-docker"><a href="#安装-docker" class="headerlink" title="安装 docker"></a>安装 docker</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">yum install docker-ce</span><br><span class="line">sudo systemctl start docker</span><br><span class="line">sudo systemctl <span class="built_in">enable</span> docker</span><br></pre></td></tr></table></figure>
+    <title>SpringBoot 2</title>
+    <url>/2021/02/01/spring-boot/</url>
+    <content><![CDATA[<h3 id="Web-开发"><a href="#Web-开发" class="headerlink" title="Web 开发"></a>Web 开发</h3><h4 id="1-静态资源访问"><a href="#1-静态资源访问" class="headerlink" title="1. 静态资源访问"></a>1. 静态资源访问</h4><h5 id="1-1-路径"><a href="#1-1-路径" class="headerlink" title="1.1 路径"></a>1.1 路径</h5><p>静态资源路径包括 <code>/static</code>、 <code>/public</code>、 <code>/resources</code> 、<code>/META-INF/resources</code> ，访问 <em>根路径 + 静态资源名</em> 即可访问对应的静态资源，如： /picture123.jpg</p>
+<p>其原理是使用静态映射/**，当访问请求找不到对应的Controller，再交给静态资源处理器，如果静态资源处理器也找不到就返回404。</p>
+<p>在application.yaml文件中使用<code>  static-path-pattern</code>修改配置</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">	<span class="attr">mvc:</span></span><br><span class="line">	<span class="attr">static-path-pattern:</span> <span class="string">/resources/**</span></span><br></pre></td></tr></table></figure>
+<p>相应地，<code>static-location: [classpath: /xxx/]</code> 用来重新设置多个静态资源路径</p>
+<a id="more"></a>
 
 
-<h4 id="安装-docker-compose"><a href="#安装-docker-compose" class="headerlink" title="安装 docker-compose"></a>安装 docker-compose</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">chown -R nz /usr/<span class="built_in">local</span>/bin</span><br><span class="line">sudo curl -L https://get.daocloud.io/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` &gt; /usr/<span class="built_in">local</span>/bin/docker-compose</span><br><span class="line">chmod +x /usr/<span class="built_in">local</span>/bin/docker-compose</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/docker-compose /usr/bin/docker-compose <span class="comment">#把它放入PATH中，这样才能sudo</span></span><br></pre></td></tr></table></figure>
 
 
-<h4 id="卸载-docker"><a href="#卸载-docker" class="headerlink" title="卸载 docker"></a>卸载 docker</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">yum list installed|grep docker</span><br><span class="line">yum -y remove</span><br><span class="line">rm -rf /var/lib/docker</span><br><span class="line"></span><br><span class="line">sudo yum remove docker \</span><br><span class="line">                  docker-client \</span><br><span class="line">                  docker-client-latest \</span><br><span class="line">                  docker-common \</span><br><span class="line">                  docker-latest \</span><br><span class="line">                  docker-latest-logrotate \</span><br><span class="line">                  docker-logrotate \</span><br><span class="line">                  docker-engine</span><br></pre></td></tr></table></figure>
 
 
-<h4 id="卸载-docker-compose"><a href="#卸载-docker-compose" class="headerlink" title="卸载 docker-compose"></a>卸载 docker-compose</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo rm /usr/<span class="built_in">local</span>/bin/docker-compose</span><br></pre></td></tr></table></figure>
 
-
-<h4 id="docker-国内镜像"><a href="#docker-国内镜像" class="headerlink" title="docker 国内镜像"></a>docker 国内镜像</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">vim /etc/docker/daemon.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;registry-mirrors&quot;</span>: [<span class="string">&quot;https://docker.mirrors.ustc.edu.cn/&quot;</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="修改docker内的mysql表ip地址"><a href="#修改docker内的mysql表ip地址" class="headerlink" title="修改docker内的mysql表ip地址"></a>修改docker内的mysql表ip地址</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo docker exec -it my_wordpress_db_1 bash</span><br><span class="line">mysql -u wordpress -p</span><br><span class="line">Enter password: wordpress</span><br><span class="line">show databases;</span><br><span class="line">USE wordpress</span><br><span class="line">select * from wp_options limit 2;</span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> UPDATE wp_options SET option_value=<span class="string">&quot;zayeum.com&quot;</span> WHERE option_name=<span class="string">&quot;siteurl&quot;</span>;</span></span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> UPDATE wp_options SET option_value=<span class="string">&quot;zayeum.com&quot;</span> WHERE option_name=<span class="string">&quot;home&quot;</span>;</span></span><br><span class="line">update wp_options set option_value=&#x27;http://www.zayeum.com:80&#x27; where option_name in (&#x27;siteurl&#x27;,&#x27;home&#x27;);</span><br><span class="line">update wp_options set option_value=&#x27;localhost:9977&#x27; where option_name in (&#x27;siteurl&#x27;,&#x27;home&#x27;);</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="Docker-服务管理"><a href="#Docker-服务管理" class="headerlink" title="Docker 服务管理"></a>Docker 服务管理</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo systemctl start docker</span><br><span class="line">sudo systemctl restart  dockers</span><br><span class="line">sudo systemctl stop docker</span><br><span class="line">sudo service docker restart</span><br><span class="line">sudo service docker stop</span><br><span class="line">sudo systemctl daemon-reload  <span class="comment"># 重启守护进程</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<h4 id="防火墙"><a href="#防火墙" class="headerlink" title="防火墙"></a>防火墙</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo systemctl start firewalld</span><br><span class="line"></span><br><span class="line">sudo firewall-cmd --zone=public --add-port=80/tcp --permanent</span><br><span class="line">sudo firewall-cmd  --reload</span><br><span class="line">sudo firewall-cmd --zone=public --list-ports</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="Docker-容器管理"><a href="#Docker-容器管理" class="headerlink" title="Docker 容器管理"></a>Docker 容器管理</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo docker stop $(docker ps -aq)</span><br><span class="line">sudo docker container prune</span><br><span class="line">sudo docker image prune</span><br><span class="line">sudo docker-compose down</span><br></pre></td></tr></table></figure>
 
 
 ]]></content>
       <categories>
-        <category>Blog</category>
+        <category>Framework</category>
       </categories>
       <tags>
-        <tag>Blog</tag>
-        <tag>Wordpress</tag>
+        <tag>Spring Boot</tag>
+        <tag>Framework</tag>
       </tags>
   </entry>
 </search>

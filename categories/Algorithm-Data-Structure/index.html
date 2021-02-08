@@ -278,14 +278,14 @@
     <header class="post-header">
       <div class="post-meta-container">
         <time itemprop="dateCreated"
-              datetime="2021-02-01T00:00:00+08:00"
-              content="2021-02-01">
-          02-01
+              datetime="2021-02-04T00:00:00+08:00"
+              content="2021-02-04">
+          02-04
         </time>
       </div>
 
       <div class="post-title">
-          <a class="post-title-link" href="/2021/02/01/binary-search-tree/" itemprop="url">
+          <a class="post-title-link" href="/2021/02/04/binary-search-tree/" itemprop="url">
             <span itemprop="name">查找树系列</span>
           </a>
       </div>
@@ -439,7 +439,18 @@ document.addEventListener('pjax:success', () => {
       });
       });
   </script>
-
+<script>
+NexT.utils.loadComments('#waline-comments', () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js', () => {
+    new Waline(Object.assign({
+      lang: 'zh-CN'
+    }, {"enable":true,"serverURL":"https://comment-api-seven.vercel.app","placeholder":"欢迎在这里评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"visitor":false,"comment_count":false,"requiredFields":["nick"],"lang":"zh-cn","libUrl":null}, {
+      el: '#waline-comments',
+      path: "/categories/Algorithm-Data-Structure/",
+    }));
+  }, window.Waline);
+});
+</script>
 <script type="text/javascript" src="/js/fold_action.js"></script>
 
     </div>

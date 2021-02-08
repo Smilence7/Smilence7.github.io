@@ -320,6 +320,20 @@
     </span>
 
   
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/2021/01/31/computer-network/#waline-comments" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" id="/2021/01/31/computer-network/" data-xid="/2021/01/31/computer-network/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
       </div>
       <div class="post-meta">
     <span class="post-meta-item" title="本文字数">
@@ -592,8 +606,8 @@
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/02/01/binary-search-tree/" rel="next" title="查找树系列">
-                  查找树系列 <i class="fa fa-chevron-right"></i>
+                <a href="/2021/02/01/spring-boot/" rel="next" title="SpringBoot 2">
+                  SpringBoot 2 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -606,6 +620,7 @@
 
 
 
+    <div class="comments" id="waline-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -745,7 +760,18 @@ document.addEventListener('pjax:success', () => {
       });
       });
   </script>
-
+<script>
+NexT.utils.loadComments('#waline-comments', () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js', () => {
+    new Waline(Object.assign({
+      lang: 'zh-CN'
+    }, {"enable":true,"serverURL":"https://comment-api-seven.vercel.app","placeholder":"欢迎在这里评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"visitor":false,"comment_count":false,"requiredFields":["nick"],"lang":"zh-cn","libUrl":null}, {
+      el: '#waline-comments',
+      path: "/2021/01/31/computer-network/",
+    }));
+  }, window.Waline);
+});
+</script>
 <script type="text/javascript" src="/js/fold_action.js"></script>
 
     </div>

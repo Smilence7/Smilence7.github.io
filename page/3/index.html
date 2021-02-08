@@ -309,6 +309,8 @@
     </span>
 
   
+  
+  
       </div>
       <div class="post-meta">
     <span class="post-meta-item" title="本文字数">
@@ -412,6 +414,8 @@
         </span>
     </span>
 
+  
+  
   
       </div>
       <div class="post-meta">
@@ -685,7 +689,18 @@ document.addEventListener('pjax:success', () => {
       });
       });
   </script>
-
+<script>
+NexT.utils.loadComments('#waline-comments', () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js', () => {
+    new Waline(Object.assign({
+      lang: 'zh-CN'
+    }, {"enable":true,"serverURL":"https://comment-api-seven.vercel.app","placeholder":"欢迎在这里评论...","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"visitor":false,"comment_count":false,"requiredFields":["nick"],"lang":"zh-cn","libUrl":null}, {
+      el: '#waline-comments',
+      path: "/page/3/",
+    }));
+  }, window.Waline);
+});
+</script>
 <script type="text/javascript" src="/js/fold_action.js"></script>
 
     </div>
