@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>二叉查找树</title>
+    <title>查找树系列</title>
     <url>/2021/02/01/binary-search-tree/</url>
-    <content><![CDATA[<p><em>本文是一篇复习笔记，参考自<a href="https://time.geekbang.org/column/intro/126">王争的《数据结构与算法之美》</a>。</em></p>
-<h2 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h2><p>二叉查找树定义每个结点的左子树里的元素值都小于该节点、右子树里的元素都大于该节点，这样的定义使它的中序遍历就是升序的有序数据，时间复杂度为O(n)。</p>
+    <content><![CDATA[<h2 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h2><p>二叉查找树定义每个结点的左子树里的元素值都小于该节点、右子树里的元素都大于该节点，这样的定义使它的中序遍历就是升序的有序数据，时间复杂度为O(n)。</p>
 <p>查找操作：从根节点出发，小于就递归左子树，大于就递归右子树，直到等于根节点就返回。</p>
 <p>插入操作：一直递归比较，直到找到该分支底部的位置（左小右大向下查找，直到左/右子树为空，就新建一个结点放到左/右子结点）。</p>
 <a id="more"></a>
@@ -16,34 +15,80 @@
 <li>如果该位置有两个子结点，查找右子树中最小的结点，用它的值覆盖待删除位置，再递归地删除新的待删除结点。</li>
 </ul>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">delete</span><span class="params">(<span class="keyword">int</span> data)</span> </span>&#123;</span><br><span class="line">  Node p = tree; <span class="comment">// p指向要删除的节点，初始化指向根节点</span></span><br><span class="line">  Node pp = <span class="keyword">null</span>; <span class="comment">// pp记录的是p的父节点</span></span><br><span class="line">  <span class="keyword">while</span> (p != <span class="keyword">null</span> &amp;&amp; p.data != data) &#123;</span><br><span class="line">    pp = p;</span><br><span class="line">    <span class="keyword">if</span> (data &gt; p.data) p = p.right;</span><br><span class="line">    <span class="keyword">else</span> p = p.left;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (p == <span class="keyword">null</span>) <span class="keyword">return</span>; <span class="comment">// 没有找到</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 要删除的节点有两个子节点</span></span><br><span class="line">  <span class="keyword">if</span> (p.left != <span class="keyword">null</span> &amp;&amp; p.right != <span class="keyword">null</span>) &#123; <span class="comment">// 查找右子树中最小节点</span></span><br><span class="line">    Node minP = p.right;</span><br><span class="line">    Node minPP = p; <span class="comment">// minPP表示minP的父节点</span></span><br><span class="line">    <span class="keyword">while</span> (minP.left != <span class="keyword">null</span>) &#123;</span><br><span class="line">      minPP = minP;</span><br><span class="line">      minP = minP.left;</span><br><span class="line">    &#125;</span><br><span class="line">    p.data = minP.data; <span class="comment">// 将minP的数据替换到p中</span></span><br><span class="line">    p = minP; <span class="comment">// 下面就变成了删除minP了</span></span><br><span class="line">    pp = minPP;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 删除节点是叶子节点或者仅有一个子节点</span></span><br><span class="line">  Node child; <span class="comment">// p的子节点</span></span><br><span class="line">  <span class="keyword">if</span> (p.left != <span class="keyword">null</span>) child = p.left;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (p.right != <span class="keyword">null</span>) child = p.right;</span><br><span class="line">  <span class="keyword">else</span> child = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (pp == <span class="keyword">null</span>) tree = child; <span class="comment">// 删除的是根节点</span></span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (pp.left == p) pp.left = child;</span><br><span class="line">  <span class="keyword">else</span> pp.right = child;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>前驱结点：比该结点小的最大结点。</p>
-<p>后继结点：比该结点大的最小结点。</p>
+<p>前驱结点：比该结点小的最大结点。后继结点：比该结点大的最小结点。</p>
+<p>前驱结点和后继结点在后面说到的平衡树中有重要的作用，因为平衡的过程中需要调整结点位置而不改变查找树左大右小的性质，因此需要找到并移动前驱或后继结点。</p>
 <p>支持重复数值：如果存储的是对象，并通过其中一个成员变量来判断大小，那么就可能存在重复值。对于重复值的处理很简单：后出现的重复值看作大于前面出现的值就可以了。在插入时，新出现的重复值被插入前一个的右子树；在查找时，每查找到一个就存入结果，并继续往右子树查找，直到遇到叶子结点才结束；删除时同理。</p>
 <p>时间复杂度：完全二叉树O(logn)，极端不平衡的二叉树退化成链表O(logn)。</p>
 <p>二叉查找树 v.s. 哈希表：二叉查找树存储的是有序数据，且性能稳定，而哈希表会遇到散列冲突、扩容等情况；哈希表大多数情况比二叉查找树快，因为O(1)与O(logn)的差别，只有n特别小时，哈希函数的复杂度加上常量级的查找时间也可能超过O(logn)。</p>
-<h2 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h2><p>完全二叉树是只有最后一层不满，且结点靠左排列的二叉树。</p>
-<p>严格平衡二叉树：任意结点的左右子树高度差不大于1。因此平衡二叉树不一定是完全二叉树。</p>
-<p>最先被发明的 <em>AVL树</em> 是严格的平衡二叉查找树，而后面的平衡查找树并没有严格符合高度差不超过1，只需要大致平衡。</p>
-<h4 id="为什么红黑树是近似平衡的"><a href="#为什么红黑树是近似平衡的" class="headerlink" title="为什么红黑树是近似平衡的"></a>为什么红黑树是近似平衡的</h4><p><strong>红黑树</strong>的结点有两种颜色，并规定：</p>
+<h2 id="平衡树"><a href="#平衡树" class="headerlink" title="平衡树"></a>平衡树</h2><p>平衡树就是B树(Balance Tree, B-Tree)。</p>
+<h2 id="二叉平衡树"><a href="#二叉平衡树" class="headerlink" title="二叉平衡树"></a>二叉平衡树</h2><p>平衡树的二叉树版本，通常称为AVL树。</p>
+<h2 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h2><p><em>整理自 <a href="https://www.zhihu.com/question/312327402/answer/1560653215">敖丙的知乎回答</a></em>  </p>
+<h3 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h3><p>红黑树是对概念模型<strong>2-3-4树</strong>的一种实现。2-3-4树是阶数为4的B树(平衡多路查找树)。</p>
+<p>2-3-4 树可以包含三种结点：</p>
 <ul>
-<li>根节点是黑色；</li>
-<li>相邻节点不能同时为红色；</li>
-<li>每个结点到达其可达叶子结点的所有路径，都包含相同数目的黑色结点。</li>
-<li>叶子结点是黑色空结点（方便代码实现）</li>
+<li>2结点：结点有1个值，二叉，分别对应小于该结点和大于该结点的子树；</li>
+<li>3结点：结点有2个值，三叉，同理；</li>
+<li>4结点：结点有3个值，四叉，同理。</li>
 </ul>
-<p>基于这种定义，红黑树的黑色结点会比完全二叉树矮，因为去掉红色结点后，树会变成：</p>
+<p>而红黑树是把这种4阶树实现在<strong>二叉树</strong>上，通过引入结点颜色并相应地设计一套规则，减小了调整平衡的时间开销。</p>
+<p>为简化理解难度，我们先理解一下2-3树到红黑树的转换过程，再了解2-3树的调平方式，从而理解红黑树的调平策略。</p>
+<h3 id="将一颗2-3树转换成红黑树"><a href="#将一颗2-3树转换成红黑树" class="headerlink" title="将一颗2-3树转换成红黑树"></a>将一颗2-3树转换成红黑树</h3><p>2结点就是二叉结点，令它作为黑色结点；</p>
+<p>3结点可以拆成两个结点，遵循查找树的特性，有左倾和右倾两种转换形式，父结点为黑，子结点为红；</p>
+<p>(如果是2-3-4树转换为红黑树，同理，4结点用3个值里中间的那个作为黑色根结点，连接左右两个红色子结点。)</p>
+<img src="/2021/02/01/binary-search-tree/2-3%E6%A0%91%E4%B8%8E%E7%BA%A2%E9%BB%91%E6%A0%91.jpg" class="" title="2-3树与红黑树">
+
+<p>如果把所有的3结点都按左倾的方式处理，就形成了图中的对应关系，即所有3结点的第一个数作为左子结点，第二个数作为父结点。</p>
+<h3 id="2-3-4-树的插入删除"><a href="#2-3-4-树的插入删除" class="headerlink" title="2-3(-4)树的插入删除"></a>2-3(-4)树的插入删除</h3><h4 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h4><p>对于2结点的插入，直接转为3结点。对应红黑树中在黑结点下插入元素(红结点)。</p>
+<p>对于3结点，如果是2-3树，先产生临时的4结点，再向上分裂（中间值左为父结点）；如果是2-3-4树，直接转为4结点。融合出临时4结点后的分裂操作对应红黑树中插入红结点后对双红结点旋转的操作。</p>
+<p>对于4结点，先将4结点向上分裂，在找到插入元素所应该在的2结点，将其转为3结点。</p>
+<h4 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h4><p>删除元素在3结点中，直接删除。</p>
+<p>删除元素在2结点中，直接删除这个结点会破坏树的平衡。对应插入过程中的分裂，删除时可以从兄弟和父结点中借元素。</p>
+<ul>
+<li><p>兄弟结点是2结点，父结点为3结点：父结点下移一个元素给当前结点，此时当前结点有2个元素，与兄弟结点的2个元素合并成一个临时4结点，再删除元素成为3结点。</p>
+</li>
+<li><p>兄弟结点是3结点：兄弟结点上移一个元素给父结点，父结点下移一个元素给当前结点，再删除对应元素。</p>
+</li>
+<li><p>兄弟结点和父结点都是2结点：三者合并成一个临时4结点，再删除元素成为3结点。</p>
+</li>
+</ul>
+<h3 id="通过2-3树理解红黑树的定义"><a href="#通过2-3树理解红黑树的定义" class="headerlink" title="通过2-3树理解红黑树的定义"></a>通过2-3树理解红黑树的定义</h3><ol>
+<li><p>结点颜色分为红色和黑色</p>
+<p>对应2-3树中的3结点，令其中一个是黑色一个是红色</p>
+</li>
+<li><p>根结点为黑色</p>
+<p>2-3树中的2结点自然是黑结点，因此根2结点是黑色；对于根3结点，定义其中一个元素为黑色根结点(取决于左倾还是右倾)。</p>
+</li>
+<li><p>叶子结点是黑色（空结点）</p>
+<p>实际上是所有叶子结点指向同一个黑色空结点，方便代码实现。</p>
+</li>
+<li><p>每个结点到任意叶子结点的路径中经过的黑色节点数相同</p>
+<p>参考上面的图，所有的红色结点和其父结点在2-3树中是同一个结点，自然不会贡献高度；而2-3树的定义就有结点到任意叶子结点的距离相同。</p>
+</li>
+<li><p>红色结点不能直接连接</p>
+<p>连续红色结点代表2-3-4树中的3结点，在红黑树中是作为左右子结点隔开的。</p>
+</li>
+</ol>
+<h3 id="二叉查找树的调平"><a href="#二叉查找树的调平" class="headerlink" title="二叉查找树的调平"></a>二叉查找树的调平</h3><p>前面介绍二叉查找树的时候提到，查找前驱结点和后继结点是十分重要的功能。<em>待填</em></p>
+<h3 id="左倾红黑树的插入删除"><a href="#左倾红黑树的插入删除" class="headerlink" title="左倾红黑树的插入删除"></a>左倾红黑树的插入删除</h3><p><em>待填</em></p>
+<h4 id="插入-1"><a href="#插入-1" class="headerlink" title="插入"></a>插入</h4><p><em>待填</em></p>
+<h4 id="删除-1"><a href="#删除-1" class="headerlink" title="删除"></a>删除</h4><p><em>待填</em></p>
+<h3 id="普通红黑树的插入"><a href="#普通红黑树的插入" class="headerlink" title="普通红黑树的插入"></a>普通红黑树的插入</h3><p><em>代填</em></p>
+<h3 id="值得思考的问题"><a href="#值得思考的问题" class="headerlink" title="值得思考的问题"></a>值得思考的问题</h3><h4 id="为什么HashMap底层实现用红黑树而不是AVL树"><a href="#为什么HashMap底层实现用红黑树而不是AVL树" class="headerlink" title="为什么HashMap底层实现用红黑树而不是AVL树"></a>为什么HashMap底层实现用红黑树而不是AVL树</h4><p>严格平衡二叉树：任意结点的左右子树高度差不大于1。因此平衡二叉树不一定是完全二叉树。</p>
+<p>最先被发明的 <em>AVL树</em> 是严格的平衡二叉查找树，而后面的平衡查找树并没有严格符合高度差不超过1，只需要大致平衡。</p>
+<p>因为维护一个严格平衡的树需要更多的操作，使得维护<strong>近似平衡</strong>的树虽然会增加一些(红黑树中两倍)结点数量产生额外的开销，但相比维护<strong>严格平衡</strong>的树带来的开销还是更小的。</p>
+<h4 id="为什么红黑树是近似平衡的"><a href="#为什么红黑树是近似平衡的" class="headerlink" title="为什么红黑树是近似平衡的"></a>为什么红黑树是近似平衡的</h4><p>不失一般性，当一颗红黑树包含m个红结点和n个黑结点，如果我们把这棵树按2-3-4树的形态来看，那么它的高度只跟黑结点有关，即高度等于logn。同时，由于定义了红结点不能直接相连，所以红结点的个数m一定小于n，因此整个树算上红结点的高度一定小于2logn，所以插入删除算法的时间复杂度仍然是O(logn)级别的。</p>
 <img src="/2021/02/01/binary-search-tree/RBTree.jpg" class="" title="黑色结点高度">
 
-<p>同样数量的结点下，黑色树的高度不会超过其完全二叉树log<del>2</del>n，而又定义了红色结点必须用黑色结点隔开，所以红色结点数量不会超过黑色结点——合起来的树也就不会超过2*log<del>2</del>n，所以性能也是O(logn)级别的。</p>
-<h4 id="插入操作"><a href="#插入操作" class="headerlink" title="插入操作"></a>插入操作</h4><p><em>码好再更新，To be continued…</em></p>
+<h4 id="如果一颗红黑树只有黑色结点会怎样"><a href="#如果一颗红黑树只有黑色结点会怎样" class="headerlink" title="如果一颗红黑树只有黑色结点会怎样"></a>如果一颗红黑树只有黑色结点会怎样</h4><p>根据前面引入的B树与红黑树的关系理解，如果一棵红黑树没有红色结点，也就是说对应B树里的所有结点都是2结点，也就是平衡二叉树。因此一颗只有黑色结点的红黑树就成为了一颗AVL树（严格平衡）。所以串起上文，红色结点就是红黑树<strong>近似平衡</strong>的特性中<strong>不稳定</strong>的那部分(根据上文，最坏情况也可以接受)。</p>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3><p><em>码好再更新，To be continued…</em></p>
 ]]></content>
       <categories>
-        <category>Algorithm</category>
         <category>Data Structure</category>
+        <category>Algorithm</category>
       </categories>
       <tags>
-        <tag>Algorithm</tag>
         <tag>Data Structure</tag>
+        <tag>Algorithm</tag>
       </tags>
   </entry>
   <entry>
@@ -968,50 +1013,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Singleton Pattern</title>
-    <url>/2021/01/28/singleton-pattern/</url>
-    <content><![CDATA[<p>This post references <a href="https://www.journaldev.com/1377/java-singleton-design-pattern-best-practices-examples">JournalDev</a>, and was written in English for personnal practicing.</p>
-<h1 id="Singleton-Pattern"><a href="#Singleton-Pattern" class="headerlink" title="Singleton Pattern"></a>Singleton Pattern</h1><p>Singleton pattern restricts the instantiation of a class and ensures that only one instance of the class exists in the Java virtual machine.</p>
-<p>To implement a singleton pattern, we should follow three concepts.</p>
-<ul>
-<li>Private constructor to prevent new instantiation act from other class.</li>
-<li>Private static variable of the same class that is the only instance of the class.</li>
-<li>Public static method that returns the instance of the class, providing the only way for outer programs to get the instance of the singleton class.</li>
-</ul>
-<a id="more"></a>
-
-<h2 id="Implemention-practices"><a href="#Implemention-practices" class="headerlink" title="Implemention practices"></a>Implemention practices</h2><h3 id="1-Eager-initialization"><a href="#1-Eager-initialization" class="headerlink" title="1. Eager initialization"></a>1. Eager initialization</h3><p>In eager initialization, the instance of singleton class is created when class is loaded by Java virtual machine. While it is the easiest way to create a singleton class, it has a drawback that instance is created even if it may not be used by any program.</p>
-<p>Implemention is as follows.</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EagerInitializedSingleton</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> EagerInitializedSingleton instance = <span class="keyword">new</span> EagerInitializedSingleton();</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">EagerInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> EagerInitializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="2-Static-block-initialization"><a href="#2-Static-block-initialization" class="headerlink" title="2. Static block initialization"></a>2. Static block initialization</h3><p>Static block initialization is similar to eager initialization, but implement by using static block and exception throwing.</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticBlockSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> StaticBlockSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">StaticBlockSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">static</span>&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            instance = <span class="keyword">new</span> StaticBlockSingleton();</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;Exception occured in creating singleton instance&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StaticBlockSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="3-Lazy-Initialization"><a href="#3-Lazy-Initialization" class="headerlink" title="3. Lazy Initialization"></a>3. Lazy Initialization</h3><p>Lazy initialization implementation only creates instance at the first time accessed.</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazyInitializedSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazyInitializedSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazyInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LazyInitializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">            instance = <span class="keyword">new</span> LazyInitializedSingleton();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>This implemention is not thread-safe. When two threads are inside the if condition at the same time, they will get different instances of the “singleton” class.</p>
-<h3 id="4-Thread-Safe-Singleton"><a href="#4-Thread-Safe-Singleton" class="headerlink" title="4. Thread Safe Singleton"></a>4. Thread Safe Singleton</h3><p>To make above program thread-safe, the easiest way is adding <code>synchronized</code> to the method <code>getInstance()</code>. But notice that we only need to create the instance at the first time (when first few thread in the if condition) method is called. </p>
-<p>To avoid extra time-consuming, <strong>double checked locking</strong> principle is used. In this approach, synchronized block is used outside the instance initialization code, with two if condition inside and outside the synchronized block respectively.</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazyInitializedSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazyInitializedSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazyInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ThreadSafeSingleton <span class="title">getInstanceUsingDoubleLocking</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (ThreadSafeSingleton.class) &#123;</span><br><span class="line">                <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">                    instance = <span class="keyword">new</span> ThreadSafeSingleton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>The double check part is to prevent later threads in first <code>if</code> block (which wait and get the lock) from creating new instances.</p>
-<h3 id="5-Bill-Pugh-Singleton-Implementation"><a href="#5-Bill-Pugh-Singleton-Implementation" class="headerlink" title="5. Bill Pugh Singleton Implementation"></a>5. Bill Pugh Singleton Implementation</h3><p>Still, above implemention used to fail in certain scenarios where large amount of threads try to get the instance simultaneously. So Bill Pugh came up with a different approach to create the Singleton class using an <a href="https://www.journaldev.com/996/java-inner-class">inner static helper class</a>.</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BillPughSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">BillPughSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHelper</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> BillPughSingleton INSTANCE = <span class="keyword">new</span> BillPughSingleton();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> BillPughSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHelper.INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>SingletonHelper is a static nested/inner class, which gets loaded only when someone calls the <em>getInstance</em> method.</p>
-<h3 id="6-Enum-Singleton"><a href="#6-Enum-Singleton" class="headerlink" title="6. Enum Singleton"></a>6. Enum Singleton</h3><p>Enum singleton is used to overcome <strong><em>reflection</em></strong> problem (which can destroy singleton pattern we talked above).</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">EnumSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    INSTANCE;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="7-SerializedSingleton"><a href="#7-SerializedSingleton" class="headerlink" title="7. SerializedSingleton"></a>7. SerializedSingleton</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SerializedSingleton</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">7604766932017737115L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">SerializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHelper</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> SerializedSingleton instance = <span class="keyword">new</span> SerializedSingleton();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> SerializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHelper.instance;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>The problem with serialized singleton class is that whenever we deserialize it, it will create a new instance of the class.</p>
-</blockquote>
-<p><strong><em>Mark to update later.</em></strong></p>
-]]></content>
-      <categories>
-        <category>Design Patterns</category>
-      </categories>
-      <tags>
-        <tag>Design Patterns</tag>
-        <tag>Singleton</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SpringBoot 2</title>
     <url>/2021/02/04/spring-boot/</url>
     <content><![CDATA[<h3 id="Web-开发"><a href="#Web-开发" class="headerlink" title="Web 开发"></a>Web 开发</h3><h4 id="1-静态资源访问"><a href="#1-静态资源访问" class="headerlink" title="1. 静态资源访问"></a>1. 静态资源访问</h4><h5 id="1-1-路径"><a href="#1-1-路径" class="headerlink" title="1.1 路径"></a>1.1 路径</h5><p>静态资源路径包括 <code>/static</code>、 <code>/public</code>、 <code>/resources</code> 、<code>/META-INF/resources</code> ，访问 <em>根路径 + 静态资源名</em> 即可访问对应的静态资源，如： /picture123.jpg</p>
@@ -1190,6 +1191,50 @@
       <tags>
         <tag>Blog</tag>
         <tag>Wordpress</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Singleton Pattern</title>
+    <url>/2021/01/28/singleton-pattern/</url>
+    <content><![CDATA[<p>This post references <a href="https://www.journaldev.com/1377/java-singleton-design-pattern-best-practices-examples">JournalDev</a>, and was written in English for personnal practicing.</p>
+<h1 id="Singleton-Pattern"><a href="#Singleton-Pattern" class="headerlink" title="Singleton Pattern"></a>Singleton Pattern</h1><p>Singleton pattern restricts the instantiation of a class and ensures that only one instance of the class exists in the Java virtual machine.</p>
+<p>To implement a singleton pattern, we should follow three concepts.</p>
+<ul>
+<li>Private constructor to prevent new instantiation act from other class.</li>
+<li>Private static variable of the same class that is the only instance of the class.</li>
+<li>Public static method that returns the instance of the class, providing the only way for outer programs to get the instance of the singleton class.</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="Implemention-practices"><a href="#Implemention-practices" class="headerlink" title="Implemention practices"></a>Implemention practices</h2><h3 id="1-Eager-initialization"><a href="#1-Eager-initialization" class="headerlink" title="1. Eager initialization"></a>1. Eager initialization</h3><p>In eager initialization, the instance of singleton class is created when class is loaded by Java virtual machine. While it is the easiest way to create a singleton class, it has a drawback that instance is created even if it may not be used by any program.</p>
+<p>Implemention is as follows.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EagerInitializedSingleton</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> EagerInitializedSingleton instance = <span class="keyword">new</span> EagerInitializedSingleton();</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">EagerInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> EagerInitializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-Static-block-initialization"><a href="#2-Static-block-initialization" class="headerlink" title="2. Static block initialization"></a>2. Static block initialization</h3><p>Static block initialization is similar to eager initialization, but implement by using static block and exception throwing.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticBlockSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> StaticBlockSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">StaticBlockSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">static</span>&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            instance = <span class="keyword">new</span> StaticBlockSingleton();</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;Exception occured in creating singleton instance&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StaticBlockSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-Lazy-Initialization"><a href="#3-Lazy-Initialization" class="headerlink" title="3. Lazy Initialization"></a>3. Lazy Initialization</h3><p>Lazy initialization implementation only creates instance at the first time accessed.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazyInitializedSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazyInitializedSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazyInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LazyInitializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">            instance = <span class="keyword">new</span> LazyInitializedSingleton();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>This implemention is not thread-safe. When two threads are inside the if condition at the same time, they will get different instances of the “singleton” class.</p>
+<h3 id="4-Thread-Safe-Singleton"><a href="#4-Thread-Safe-Singleton" class="headerlink" title="4. Thread Safe Singleton"></a>4. Thread Safe Singleton</h3><p>To make above program thread-safe, the easiest way is adding <code>synchronized</code> to the method <code>getInstance()</code>. But notice that we only need to create the instance at the first time (when first few thread in the if condition) method is called. </p>
+<p>To avoid extra time-consuming, <strong>double checked locking</strong> principle is used. In this approach, synchronized block is used outside the instance initialization code, with two if condition inside and outside the synchronized block respectively.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazyInitializedSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazyInitializedSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazyInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ThreadSafeSingleton <span class="title">getInstanceUsingDoubleLocking</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (ThreadSafeSingleton.class) &#123;</span><br><span class="line">                <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">                    instance = <span class="keyword">new</span> ThreadSafeSingleton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The double check part is to prevent later threads in first <code>if</code> block (which wait and get the lock) from creating new instances.</p>
+<h3 id="5-Bill-Pugh-Singleton-Implementation"><a href="#5-Bill-Pugh-Singleton-Implementation" class="headerlink" title="5. Bill Pugh Singleton Implementation"></a>5. Bill Pugh Singleton Implementation</h3><p>Still, above implemention used to fail in certain scenarios where large amount of threads try to get the instance simultaneously. So Bill Pugh came up with a different approach to create the Singleton class using an <a href="https://www.journaldev.com/996/java-inner-class">inner static helper class</a>.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BillPughSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">BillPughSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHelper</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> BillPughSingleton INSTANCE = <span class="keyword">new</span> BillPughSingleton();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> BillPughSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHelper.INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SingletonHelper is a static nested/inner class, which gets loaded only when someone calls the <em>getInstance</em> method.</p>
+<h3 id="6-Enum-Singleton"><a href="#6-Enum-Singleton" class="headerlink" title="6. Enum Singleton"></a>6. Enum Singleton</h3><p>Enum singleton is used to overcome <strong><em>reflection</em></strong> problem (which can destroy singleton pattern we talked above).</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">EnumSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    INSTANCE;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="7-SerializedSingleton"><a href="#7-SerializedSingleton" class="headerlink" title="7. SerializedSingleton"></a>7. SerializedSingleton</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SerializedSingleton</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">7604766932017737115L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">SerializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHelper</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> SerializedSingleton instance = <span class="keyword">new</span> SerializedSingleton();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> SerializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHelper.instance;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>The problem with serialized singleton class is that whenever we deserialize it, it will create a new instance of the class.</p>
+</blockquote>
+<p><strong><em>Mark to update later.</em></strong></p>
+]]></content>
+      <categories>
+        <category>Design Patterns</category>
+      </categories>
+      <tags>
+        <tag>Design Patterns</tag>
+        <tag>Singleton</tag>
       </tags>
   </entry>
 </search>
