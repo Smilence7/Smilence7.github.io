@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://zayeum.com/2021/02/07/volatile/</loc>
+    
+    <lastmod>2021-02-10</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://zayeum.com/2021/02/04/binary-search-tree/</loc>
     
     <lastmod>2021-02-10</lastmod>
@@ -31,13 +38,6 @@
   
   <url>
     <loc>https://zayeum.com/2021/01/23/wordpress/</loc>
-    
-    <lastmod>2021-02-08</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/2021/02/07/volatile/</loc>
     
     <lastmod>2021-02-08</lastmod>
     
@@ -165,13 +165,6 @@
   </url>
   
   <url>
-    <loc>https://zayeum.com/tags/Multithread-Concurrency/</loc>
-    <lastmod>2021-02-10</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zayeum.com/tags/Spring-Boot/</loc>
     <lastmod>2021-02-10</lastmod>
     <changefreq>daily</changefreq>
@@ -187,6 +180,13 @@
   
   <url>
     <loc>https://zayeum.com/tags/Wordpress/</loc>
+    <lastmod>2021-02-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/Multithread-Concurrency/</loc>
     <lastmod>2021-02-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -251,14 +251,14 @@
   </url>
   
   <url>
-    <loc>https://zayeum.com/categories/Multithread-Concurrency/</loc>
+    <loc>https://zayeum.com/categories/Framework/</loc>
     <lastmod>2021-02-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zayeum.com/categories/Framework/</loc>
+    <loc>https://zayeum.com/categories/Multithread-Concurrency/</loc>
     <lastmod>2021-02-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
