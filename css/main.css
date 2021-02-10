@@ -1234,12 +1234,12 @@ pre code {
 }
 .site-title {
   font-family: Dancing Script, Noto Serif SC, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  font-size: 1.375em;
+  font-size: 1.6em;
   font-weight: normal;
   margin: 0;
 }
 .site-subtitle {
-  color: #ddd;
+  color: #f2f2f2;
   font-size: 0.8125em;
   margin: 10px 0;
 }
