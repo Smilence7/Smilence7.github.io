@@ -1123,46 +1123,7 @@
 <p>其中RARP是逆地址解析协议，已经基本被淘汰。</p>
 </li>
 </ul>
-<h2 id="TCP-协议"><a href="#TCP-协议" class="headerlink" title="TCP 协议"></a>TCP 协议</h2><h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><p>当客户端要向服务器发送请求，首先需要通过三次握手协议建立TCP连接：</p>
-<ul>
-<li>Client端告诉Server端将要开始发送数据，并告知将要使用的同步位和序列号(SYN_bit=1,  seq_A=x)；</li>
-<li>Server端发回自己将要使用的同步位和序列号(SYN_bit=1, seq=y)，以及对Client端的确认信号(ACK_A=x+1)；</li>
-<li>Client端发回确认信号ACK_B=y+1，表示双方的连接是稳定的，并将开始发送数据。</li>
-</ul>
-
-
-
-
-<h3 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h3><p>当客户端和服务端完成了通信，需要关闭连接时，采用四次挥手协议：</p>
-<p>如果是Client端向Server端提出关闭连接（反之同理），</p>
-<ul>
-<li><p>Client端发送FIN_A报文，表示自己这边的数据已经发完了，进入FIN_WAI_1状态；</p>
-</li>
-<li><p>Server端收到FIN_A报文，发回ACK_A报文，作为收到FIN报文的确认；</p>
-<ul>
-<li>Client端收到ACK_A报文，进入FIN_WAIT_2状态，继续接收Server端的数据；</li>
-</ul>
-</li>
-<li><p>Server端的数据也发完了，向Client端发送FIN_B报文；</p>
-</li>
-<li><p>Client端收到FIN_B报文也向Server端返回一个ACK_B报文，通知对方准备可以关闭连接了，自己进入TIME_WAIT状态；</p>
-<ul>
-<li><p>Server端收到ACK_B报文，关闭连接；</p>
-</li>
-<li><p>Client端TIME_WAIT时间用完，关闭连接。</p>
-</li>
-</ul>
-</li>
-</ul>
-
-
-
-
-<h3 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h3><p><em>代填</em></p>
-<h3 id="keepalive"><a href="#keepalive" class="headerlink" title="keepalive"></a>keepalive</h3><p><em>代填</em></p>
-<h3 id="值得注意的问题"><a href="#值得注意的问题" class="headerlink" title="值得注意的问题"></a>值得注意的问题</h3><h4 id="为什么连接的时候是三次握手，关闭的时候却是四次握手？"><a href="#为什么连接的时候是三次握手，关闭的时候却是四次握手？" class="headerlink" title="为什么连接的时候是三次握手，关闭的时候却是四次握手？"></a>为什么连接的时候是三次握手，关闭的时候却是四次握手？</h4><p>因为建立连接时，当Server端收到Client端的SYN连接请求报文后，可以直接发送SYN+ACK报文。其中ACK报文是用来应答的，SYN报文是用来同步的。</p>
-<p>但是关闭连接时，当Server端收到FIN报文时，先回复ACK报文。等到Server端所有的数据都发送完了，才发送FIN报文。因为两个报文不能一起发送。故需要四步握手。</p>
-<h2 id="HTTP-协议"><a href="#HTTP-协议" class="headerlink" title="HTTP 协议"></a>HTTP 协议</h2><h3 id="Request-报文"><a href="#Request-报文" class="headerlink" title="Request 报文"></a>Request 报文</h3><p>状态行、请求头、消息主体：</p>
+<h2 id="应用层协议"><a href="#应用层协议" class="headerlink" title="应用层协议"></a>应用层协议</h2><h3 id="HTTP-协议"><a href="#HTTP-协议" class="headerlink" title="HTTP 协议"></a>HTTP 协议</h3><h4 id="Request-报文"><a href="#Request-报文" class="headerlink" title="Request 报文"></a>Request 报文</h4><p>状态行、请求头、消息主体：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">method</span>&gt;</span> <span class="tag">&lt;<span class="name">request-URL</span>&gt;</span> <span class="tag">&lt;<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">headers</span>&gt;</span></span><br><span class="line">  </span><br><span class="line"><span class="tag">&lt;<span class="name">entity-body</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>其中method有四种：GET, POST, PUT, DELETE, 分别是对资源的查增改删；</p>
 <p>URL就是资源的地址，描述method的操作对象。</p>
@@ -1172,7 +1133,7 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">POST &#x2F; HTTP&#x2F;1.1</span><br><span class="line">Host: www.example.com</span><br><span class="line">User-Agent: Mozilla&#x2F;5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.6)</span><br><span class="line">Gecko&#x2F;20050225 Firefox&#x2F;1.0.1</span><br><span class="line">Content-Type: application&#x2F;x-www-form-urlencoded</span><br><span class="line">Content-Length: 40</span><br><span class="line">Connection: Keep-Alive</span><br><span class="line"></span><br><span class="line">sex&#x3D;man&amp;name&#x3D;Professional</span><br></pre></td></tr></table></figure>
 <p>GET请求的长度受到特定浏览器及服务器的限制；POST请求理论上没有大小限制，服务器处于安全因素考虑会有一定的限制。</p>
 <p>POST的content-type 可以是 <code>application/x-www-form-urlencoded</code> 或<code>multipart/form-data</code>。前者如<code>sex=man&amp;name=Professional</code>，后者是指定一个boundary，消息主体通过*<code>--boundary</code><em>分隔不同字段，并以</em><code>--boundary--</code>*结束。还有新的content-type，如<code>application/json</code>, <code>text/xml</code>,  <code>application/x-protobuf</code>。</p>
-<h3 id="Response-报文"><a href="#Response-报文" class="headerlink" title="Response 报文"></a>Response 报文</h3><p>状态行、响应头、响应正文（对应Request），如：</p>
+<h4 id="Response-报文"><a href="#Response-报文" class="headerlink" title="Response 报文"></a>Response 报文</h4><p>状态行、响应头、响应正文（对应Request），如：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line"></span><br><span class="line">Server:Apache Tomcat/5.0.12  </span><br><span class="line">Date:Mon,6Oct2003 13:23:42 GMT</span><br><span class="line">Content-Length:112</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span>...</span><br></pre></td></tr></table></figure>
 <p>状态码有：</p>
 <ul>
@@ -1187,34 +1148,22 @@
 <li><code>500 Internal Server Error</code> 服务器发生不可预期的错误，导致无法完成客户端的请求。</li>
 <li><code>503 Service Unavailable</code> 服务器当前不能够处理客户端的请求，在一段时间之后，服务器可能会恢复正常。</li>
 </ul>
-<h3 id="Keep-alive"><a href="#Keep-alive" class="headerlink" title="Keep-alive"></a>Keep-alive</h3><p>HTTP1.0中，默认采取完成“请求-应答”后关闭连接的方式，也就是HTTP协议的无连接特点。而Keep-Alive模式不会立刻关闭连接，避免了重新建立连接。如果客户端浏览器支持Keep-Alive，就在请求头中设置字段 <code>Connection: Keep-Alive</code>，如果服务器也支持这种模式，会在相应头中也设置同样的字段，这样Keep-Alive模式就开启了。</p>
+<h4 id="Keep-alive"><a href="#Keep-alive" class="headerlink" title="Keep-alive"></a>Keep-alive</h4><p>HTTP1.0中，默认采取完成“请求-应答”后关闭连接的方式，也就是HTTP协议的无连接特点。而Keep-Alive模式不会立刻关闭连接，避免了重新建立连接。如果客户端浏览器支持Keep-Alive，就在请求头中设置字段 <code>Connection: Keep-Alive</code>，如果服务器也支持这种模式，会在相应头中也设置同样的字段，这样Keep-Alive模式就开启了。</p>
 <p>HTTP1.1中，默认采取Keep-Alive模式，如果设置字段 <code>Connection: close</code>才关闭。而目前大多数浏览器都是用HTTP1.1协议，这种情况下能否开启Keep-Alive模式取决于服务器的设置。</p>
 <p>Keep-Alive的作用是保持下层的TCP连接，并且要求设置一个<strong>超时阈值</strong>和<strong>最大接受请求次数的阈值</strong>，达到阈值会断开连接。</p>
 <p>需要注意的是，Keep-Alive只允许保持连接，但HTTP仍然是无状态的，也就是说不同的请求-响应内容仍然是<strong>独立、互不影响</strong>的。此外，程序不应该依赖它的保持连接特性，因为连接会因为各种原因断开。</p>
-<h3 id="Chunked-传输"><a href="#Chunked-传输" class="headerlink" title="Chunked 传输"></a>Chunked 传输</h3><p>如果在HTTP消息头部设置字段<code>Transfer-Encoding: chunked</code>，则表示消息分块传输。</p>
+<h4 id="Chunked-传输"><a href="#Chunked-传输" class="headerlink" title="Chunked 传输"></a>Chunked 传输</h4><p>如果在HTTP消息头部设置字段<code>Transfer-Encoding: chunked</code>，则表示消息分块传输。</p>
 <p>每一个非空块都由<code>块字节数 + CRLF + 数据</code>组成，最后一块是空块，由<code>0+CRLF</code>组成，表示本次传输数据结束。</p>
 <p>例如：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HTTP&#x2F;1.1 200 OK</span><br><span class="line">Content-Type: text&#x2F;plain</span><br><span class="line">Transfer-Encoding: chunked</span><br><span class="line"></span><br><span class="line">25</span><br><span class="line">This is the data in the first chunk</span><br><span class="line"></span><br><span class="line">1A</span><br><span class="line">and this is the second one</span><br><span class="line">0</span><br></pre></td></tr></table></figure>
 <p>优点：使用chunked传输可以边生成内容边发送。</p>
 <p>缺点：chunked 传输的接收方事先不知道全部数据的长度，所以无法实现进度追踪。</p>
-<h3 id="内容劫持-HTTP劫持"><a href="#内容劫持-HTTP劫持" class="headerlink" title="内容劫持(HTTP劫持)"></a>内容劫持(HTTP劫持)</h3><p>采用http协议的TCP数据包在传输时会经过网关，网关（如ISP）通过篡改服务器发回的数据包中响应报文的内容，抢先回复客户端，使真正的响应数据包被丢弃，自己篡改的数据包被接受，从而达到目的（修改的内容）。</p>
+<h4 id="HTTP劫持-内容劫持"><a href="#HTTP劫持-内容劫持" class="headerlink" title="HTTP劫持 (内容劫持)"></a>HTTP劫持 (内容劫持)</h4><p>采用http协议的TCP数据包在传输时会经过网关，网关（如ISP）通过篡改服务器发回的数据包中响应报文的内容，抢先回复客户端，使真正的响应数据包被丢弃，自己篡改的数据包被接受，从而达到目的（修改的内容）。</p>
 <p>其中修改内容的方式可以是插入静态脚本，插入html content，或使用Iframe植入内容。</p>
-<h3 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h3><p>HTTPS协议是HTTP over SSL的缩写，也就是在SSL协议之上的HTTP协议。HTTP是第一个使用SSL协议保障安全的应用层协议，邮件系统也能支持SSL协议，如：SMTP，POP3、IMAP。在SSLv3之后有了TLS1.1, TLS1.2, TLS1.3。</p>
+<h4 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h4><p>HTTPS协议是HTTP over SSL的缩写，也就是在SSL协议之上的HTTP协议。HTTP是第一个使用SSL协议保障安全的应用层协议，邮件系统也能支持SSL协议，如：SMTP，POP3、IMAP。在SSLv3之后有了TLS1.1, TLS1.2, TLS1.3。</p>
 <p>对SSL协议和TLS协议的总结见本文对应章节。</p>
-<h2 id="密钥"><a href="#密钥" class="headerlink" title="密钥"></a>密钥</h2><h3 id="非对称密钥"><a href="#非对称密钥" class="headerlink" title="非对称密钥"></a>非对称密钥</h3><p>非对称密钥英文是public-key cryptography，即公钥加密。服务器生成一对密钥，加密和解密使用不同的密钥，因此称为非对称密钥。非对称密钥可以用来加密、解密信息，也可以制作数字签名。两者的区别是应用场景不同，前者是所有客户端都可以加密，而解密只能是服务器；后者是所有人都可以解密，而加密者是唯一的。</p>
-<h4 id="加密解密"><a href="#加密解密" class="headerlink" title="加密解密"></a>加密解密</h4><p>以RSA加密算法为例，服务器生成一对公钥和私钥，自己保留私钥，并把公钥发送给客户端，客户端发送的报文都用这个公钥加密，这样就只有服务器的唯一私钥可以解密，防止其他人获取报文中的信息。</p>
-<h4 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h4><p>因为公钥是可以被他人截取到的，所以为了防止服务器发出的报文被他人替换成假报文发给客户端，可以使用数字签名。首先将要发送的报文用hash算法生成摘要，再将摘要用私钥加密，作为数字签名，在发送报文时加上数字签名。这样，客户端能够：</p>
-<ul>
-<li>收到报文后可以用公钥解密数字签名部分，得到hash摘要信息。</li>
-<li>计算明文报文部分的hash摘要，和解密出的摘要对比，如果相同就说明报文没有被篡改。</li>
-</ul>
-<h4 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h4><p>数字签名解决了发回的报文被他人修改冒充的问题，那么如果有人在最开始，服务器向客户端发送公钥的阶段就冒充呢？如果有人截取到服务器发出的公钥信息，并向客户端发自己的公钥，那么客户端加密的所有报文都能被这个人截取并且解密，不仅如此，冒充者还能用私钥生成数字签名，破解上述的防护措施。</p>
-<p>数字证书(Certificate Authority, CA)就是解决这个问题的。被认证的权威机构用自己的私钥加密真实服务器的公钥，产生数字证书发给客户端，客户端再用CA的公钥解密获得真实服务器的公钥，这个过程也就是对”服务器公钥”的加密解密。这样，权威机构加密的真实公钥就不怕被替换了。</p>
-<p>问题来了，CA机构颁发的数字证书不怕被他人伪造吗？实际上这里还有证书的分级，根证书是预装在操作系统里的，从根证书开始每一级保证下一级证书的可信度，到CA机构的证书，构成一条信用链，因此只要上级证书可信，当前证书就可信。</p>
-<h3 id="对称密钥"><a href="#对称密钥" class="headerlink" title="对称密钥"></a>对称密钥</h3><p>对称密钥算法中，加密和解密都是用同一个密钥，因此称为对称密钥。使用对称密钥的优势是加/解密速度快，适合于对大数据量进行加密。密钥越长越难破解，加解密速度越慢，反之同理。但问题在于，加解密钥相同就意味着要把这个密钥发送给目标客户端时，他人只要截取了这个密钥，就既能加密也能解密了。</p>
-<p>通常为保证安全性，采用非对称密钥加密对称密钥，这样密钥能够安全送到客户端手上，并且之后的通信就可以使用对称密钥快速加解密了。</p>
-<h3 id="SSL协议"><a href="#SSL协议" class="headerlink" title="SSL协议"></a>SSL协议</h3><p><em><a href="https://cshihong.github.io/2019/05/09/SSL%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/">曹世宏的博客</a></em></p>
-<p>SSL协议建立在TCP协议和应用层协议之间，整个协议体系包含两层：下层(下接TCP层)是SSL记录(record)协议层，上层(上接应用层)是SSL握手协议层。</p>
+<h2 id="中间层——安全协议"><a href="#中间层——安全协议" class="headerlink" title="中间层——安全协议"></a>中间层——安全协议</h2><h3 id="SSL协议"><a href="#SSL协议" class="headerlink" title="SSL协议"></a>SSL协议</h3><p><em><a href="https://cshihong.github.io/2019/05/09/SSL%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/">曹世宏的博客</a></em></p>
+<p>SSL协议建立在TCP协议和应用层协议之间，它实现在应用层，用于保障传输层TCP协议的安全。整个SSL协议体系包含两层：下层(下接TCP层)是SSL记录(record)协议层，上层(上接应用层)是SSL握手协议层。</p>
 <p>上层协议包括SSL握手协议(SSL HandShake Protocol)、SSL密码参数修改协议(SSL Change Cipher Spec Protocol)和SSL告警协议(SSL Alert Protocol)。其中握手协议负责实际数据传输开始前的身份验证、协商加密算法、交换加密密钥等。而下层负责给上层协议提供压缩解压、加密解密、计算和校验MAC等功能。</p>
 <p>SSL会话分为握手阶段和数据传输阶段两个阶段。</p>
 <h4 id="握手阶段"><a href="#握手阶段" class="headerlink" title="握手阶段"></a>握手阶段</h4><p>握手阶段包含以下几个步骤：</p>
@@ -1292,6 +1241,94 @@
 <p>另一种是session ticket。服务器将双方协商的密钥等通信信息加密为session ticket附在extension中并发给客户端，由客户端保存。当需要会话恢复时，服务器能够对session ticket进行解密，从而获得会话密钥，重新建立会话连接。</p>
 <p>类似于http协议中的session(服务器保存)和cookie(客户端保存)。</p>
 <p>详细的会话恢复通信过程见参考博客。</p>
+<h2 id="传输层协议"><a href="#传输层协议" class="headerlink" title="传输层协议"></a>传输层协议</h2><h3 id="TCP协议"><a href="#TCP协议" class="headerlink" title="TCP协议"></a>TCP协议</h3><h4 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h4><p>当客户端要向服务器发送请求，首先需要通过三次握手协议建立TCP连接：</p>
+<ul>
+<li>Client端告诉Server端将要开始发送数据，并告知将要使用的同步位和序列号(SYN_bit=1,  seq_A=x)；</li>
+<li>Server端发回自己将要使用的同步位和序列号(SYN_bit=1, seq=y)，以及对Client端的确认信号(ACK_A=x+1)；</li>
+<li>Client端发回确认信号ACK_B=y+1，表示双方的连接是稳定的，并将开始发送数据。</li>
+</ul>
+
+
+<h4 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h4><p>当客户端和服务端完成了通信，需要关闭连接时，采用四次挥手协议：</p>
+<p>如果是Client端向Server端提出关闭连接（反之同理），</p>
+<ul>
+<li><p>Client端发送FIN_A报文，表示自己这边的数据已经发完了，进入FIN_WAI_1状态；</p>
+</li>
+<li><p>Server端收到FIN_A报文，发回ACK_A报文，作为收到FIN报文的确认；</p>
+<ul>
+<li>Client端收到ACK_A报文，进入FIN_WAIT_2状态，继续接收Server端的数据；</li>
+</ul>
+</li>
+<li><p>Server端的数据也发完了，向Client端发送FIN_B报文；</p>
+</li>
+<li><p>Client端收到FIN_B报文也向Server端返回一个ACK_B报文，通知对方准备可以关闭连接了，自己进入TIME_WAIT状态；</p>
+<ul>
+<li><p>Server端收到ACK_B报文，关闭连接；</p>
+</li>
+<li><p>Client端TIME_WAIT时间用完，关闭连接。</p>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h4 id="SYN-攻击"><a href="#SYN-攻击" class="headerlink" title="SYN 攻击"></a>SYN 攻击</h4><h5 id="攻击原理"><a href="#攻击原理" class="headerlink" title="攻击原理"></a>攻击原理</h5><p>前文介绍过TCP协议建立连接的三次握手，其中第一步是客户端向服务器发送SYN，服务器回复SYN+ACK，并等待客户端的ACK。在服务器等待客户端的第三次握手时，TCP连接处于半开连接(half-open connect)状态，服务器将这种连接存储在一个半连接队列里，当收到客户端的第三次握手ACK，就将对应的半连接从队列里移到连接队列。</p>
+<p>SYN攻击属于DoS攻击的一种，DoS(Denial of Service)攻击意为拒绝服务攻击，就是利用三次握手的缺陷，不断向服务器发送SYN包(第一次握手)，而又不答复ACK包(第三次握手)，使服务器的半开连接堆满了半连接队列，这时正常用户发送到服务器的连接建立请求包就会被丢弃。此外，服务器维护大量的半连接耗费大量的资源和存储空间，可能造成系统瘫痪，且大量的数据传输可能引起网络拥堵。</p>
+<p>普通的SYN攻击使用同一个真实IP伪造大量的SYN包发给服务器。显然这种攻击很容易被服务器识别，只需要在防火墙中禁止掉相应IP的访问就能防御攻击。攻击者还可以伪造大量不同的IP来混淆防御者的视线，或指使不同的真实ip发起DoS攻击，从而构成分布式DoS攻击，也就是DDoS(Distributed DoS)攻击。</p>
+<h5 id="防御方法"><a href="#防御方法" class="headerlink" title="防御方法"></a>防御方法</h5><ol>
+<li><p>扩大半连接容量</p>
+<p>对于服务器来说，可以通过提高半连接队列容量，但会导致服务器维护半连接的负担比原先更大。</p>
+</li>
+<li><p>缩短超时阈值</p>
+<p>服务器还可以减少半连接的超时阈值，但需要根据实际情况设置阈值，如果设置过小，会影响正常的通讯吞吐量。</p>
+</li>
+<li><p>SYN代理</p>
+<p>设置一台SYN代理，代替服务器完成握手过程，将被攻击的风险转移到代理服务器上，从而保护目标服务器。</p>
+</li>
+<li><p>SYN Cookies</p>
+<p>当半连接队列满了之后，服务器继续接收客户端的SYN包，但此时服务器发回的数据包中的初始SYN按照SYN Cookies算法生成，当客户端收到SYN+ACK后，返回的ACK应该是收到的SYN+1，这是服务器收到ACK减去1，再与发去的SYN cookie比对，如果符合就从cookies中解码出相应的信息，用来重构SYN连接条目。</p>
+</li>
+</ol>
+<h4 id="CLOSE-WAIT-和-TIME-WAIT"><a href="#CLOSE-WAIT-和-TIME-WAIT" class="headerlink" title="CLOSE_WAIT 和 TIME_WAIT"></a>CLOSE_WAIT 和 TIME_WAIT</h4><p>在TCP的四次挥手中，接收端收到发送端的FIN报文、回复ACK之后，就会进入CLOSE_WAIT状态，此时发送端收到ACK进入FIN_WAIT_2状态。这时，在这两个状态中，接收端仍有数据没发完或正要发完，而发送端在等待接收端发完并发来FIN报文。</p>
+<p>当接收端准备好关闭连接后，向发送端发送FIN报文，此时接收端进入LAST_ACK状态，等待最后一个ACK；发送端等来FIN报文，回复最后一个ACK，就进入TIME_WAIT状态，在TIME_WAIT状态等待2个MSL (Maximum Segment Lifetime) ，才关闭连接；而接收方收到最后一个ACK就随即关闭连接。</p>
+<p>主动关闭连接的一端只所以需要在TIME_WAIT状态等2个MSL时间，主要是防止发生几种情况：</p>
+<ol>
+<li>自己的ACK在传输过程中丢失了，被动关闭的一方没有收到ACK，一直处于LAST_ACK状态。这时，主动方认为连接已经关闭，而被动方认为连接还没关闭，主动方如果需要再次开启连接，会被被动方拒绝，因为端口复用+端口号被占用。</li>
+<li>如果双方正常地立即关闭了连接，而又因为需求重新建立了连接，且端口还是原来的端口，这时上个连接中丢失的数据包(网络拥堵等原因)最终姗姗来迟传输到了对方主机，序列号也正好是新连接进行到的序列号，就会被错误接收，而真正的数据包被丢弃。</li>
+</ol>
+<p>因此，等待一段时间是有效的解决方法。而2个MSL时间确保ACK丢失后，被关闭方重发的FIN能够赶在关闭方关闭连接之前发到。MSL的值在RFC中建议为2分钟，在实际工程实现中多为30秒。</p>
+<h4 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h4><p>如果数据传输时每次发送一个数据包都需要等待ACK才发送下一个，显然会浪费大量的时间用于等待ACK，而在对方能容纳的范围内尽量地连续发送数据能够最大地提升通信效率。在TCP中，接收方向发送方告知自己能接收的窗口大小，而发送方就按照窗口大小连续地发送数据，每当收到一个累计ACK后，就将窗口相应地往右滑动，将已确认的数据包从左边移出窗口，将新的等待发送的数据从右边加入窗口，这就是TCP的滑动窗口方法。</p>
+<p>从上面的流程中，我们应该知道，在发送窗口内的数据是按顺序依次发送的，所以窗口内的数据一定有两种状态：<strong>已经发出但还没收到确认的</strong>和<strong>未发出但能够发出</strong>的。</p>
+<p>让我们分别从发送方和接收方的视角来看：</p>
+<p>对于接收方来说，数据缓存分为三块：已确认未使用，未确认 (因为累计确认机制) ，空余区域。因此，接收方可以根据空余区域的大小向发送方提出发送窗口。</p>
+<p>对于发送方来说，上层应用要发送的数据分为四种 (按时间顺序) ：已发送已收到确认，已发送未收到确认，未发送可发送，未发送不可发送。其中的第二和第三部分就是滑动窗口覆盖的部分，发送方根据接收方提出的窗口大小发送数据，当收到一组确认，就把窗口对应地移动。</p>
+<h4 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h4><p>滑动窗口机制避免了发送方和接收方的拥塞，而本节要介绍的拥塞控制解决的是网络中的拥塞。根据控制条件不同，产生了不同的拥塞控制算法：基于丢包(Reno)、基于时延(Vegas)、基于容量(Google BBR)、基于学习(Renny)。</p>
+<h5 id="Reno"><a href="#Reno" class="headerlink" title="Reno"></a>Reno</h5><p>快重传：当接收方收到时序报文段时立即重复发出确认，而发送方收到三次重复确认后要立即重传缺失报文段。</p>
+<p>慢启动：发送窗口的大小从1开始，每次增大一倍(*2)，当达到<strong>慢启动阈值</strong>，进入拥塞避免阶段；或者收到三次重复确认，触发<strong>快恢复</strong>。</p>
+<p>拥塞避免：发送窗口的大小每次加1，直到收到三次重复确认，触发<strong>快恢复</strong>。</p>
+<p>快恢复：当发生快重传，说明网络状况不良，应该减小发送窗口，因此将<strong>慢启动阈值</strong>减半，并在新的阈值处直接进入拥塞避免阶段。</p>
+<h5 id="BBR"><a href="#BBR" class="headerlink" title="BBR"></a>BBR</h5><p>通过瓶颈带宽和最大时延的延迟评估当前链路的状况、调整发送窗口的大小。</p>
+<h4 id="重传机制"><a href="#重传机制" class="headerlink" title="重传机制"></a>重传机制</h4><h5 id="超时重传"><a href="#超时重传" class="headerlink" title="超时重传"></a>超时重传</h5><p>在超时重传方法中，通过计时器和超时阈值来判断数据包是否需要重新发送。这个判断标准如果选择一个固定的经验值，则会因为不同场景网络状况不同而产生糟糕的效果。因此使用实际网路的往返时间(Round Trip Time, RTT) 来辅助判断。</p>
+<p>经典的RTT计算方法是平滑RTT(SRTT)，每次对历史SRTT值和最新的RTT值计算加权平均，并更新SRTT。而重传阈值(Retransmission Time Out, RTO)将SRTT乘以一个参数后限制上下限得到。</p>
+<p>现在的标准方法是计算rttvar，将rttvar和RTT的误差(|RTT-SRTT|)加权得到。而RTO = SRTT + 4 * rttvar。</p>
+<h5 id="快速重传"><a href="#快速重传" class="headerlink" title="快速重传"></a>快速重传</h5><p>即拥塞控制Reno中的快重传机制，详见上文。</p>
+<h5 id="SACK"><a href="#SACK" class="headerlink" title="SACK"></a>SACK</h5><p>选择确认(Selective Acknowledgement, SACK)方法在快速重传的基础上实现，当收到乱序报文段，就返回最近收到的乱序包的左右边界。</p>
+<h5 id="DSACK"><a href="#DSACK" class="headerlink" title="DSACK"></a>DSACK</h5><p>重复选择确认(Duplicated SACK)</p>
+<h4 id="keepalive"><a href="#keepalive" class="headerlink" title="keepalive"></a>keepalive</h4><p><em>待填</em></p>
+<h4 id="值得注意的问题"><a href="#值得注意的问题" class="headerlink" title="值得注意的问题"></a>值得注意的问题</h4><h5 id="为什么连接的时候是三次握手，关闭的时候却是四次握手？"><a href="#为什么连接的时候是三次握手，关闭的时候却是四次握手？" class="headerlink" title="为什么连接的时候是三次握手，关闭的时候却是四次握手？"></a>为什么连接的时候是三次握手，关闭的时候却是四次握手？</h5><p>因为建立连接时，当Server端收到Client端的SYN连接请求报文后，可以直接发送SYN+ACK报文。其中ACK报文是用来应答的，SYN报文是用来同步的。</p>
+<p>但是关闭连接时，当Server端收到FIN报文时，先回复ACK报文。等到Server端所有的数据都发送完了，才发送FIN报文。因为两个报文不能一起发送。故需要四步握手。</p>
+<h2 id="密钥"><a href="#密钥" class="headerlink" title="密钥"></a>密钥</h2><h3 id="非对称密钥"><a href="#非对称密钥" class="headerlink" title="非对称密钥"></a>非对称密钥</h3><p>非对称密钥英文是public-key cryptography，即公钥加密。服务器生成一对密钥，加密和解密使用不同的密钥，因此称为非对称密钥。非对称密钥可以用来加密、解密信息，也可以制作数字签名。两者的区别是应用场景不同，前者是所有客户端都可以加密，而解密只能是服务器；后者是所有人都可以解密，而加密者是唯一的。</p>
+<h4 id="加密解密"><a href="#加密解密" class="headerlink" title="加密解密"></a>加密解密</h4><p>以RSA加密算法为例，服务器生成一对公钥和私钥，自己保留私钥，并把公钥发送给客户端，客户端发送的报文都用这个公钥加密，这样就只有服务器的唯一私钥可以解密，防止其他人获取报文中的信息。</p>
+<h4 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h4><p>因为公钥是可以被他人截取到的，所以为了防止服务器发出的报文被他人替换成假报文发给客户端，可以使用数字签名。首先将要发送的报文用hash算法生成摘要，再将摘要用私钥加密，作为数字签名，在发送报文时加上数字签名。这样，客户端能够：</p>
+<ul>
+<li>收到报文后可以用公钥解密数字签名部分，得到hash摘要信息。</li>
+<li>计算明文报文部分的hash摘要，和解密出的摘要对比，如果相同就说明报文没有被篡改。</li>
+</ul>
+<h4 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h4><p>数字签名解决了发回的报文被他人修改冒充的问题，那么如果有人在最开始，服务器向客户端发送公钥的阶段就冒充呢？如果有人截取到服务器发出的公钥信息，并向客户端发自己的公钥，那么客户端加密的所有报文都能被这个人截取并且解密，不仅如此，冒充者还能用私钥生成数字签名，破解上述的防护措施。</p>
+<p>数字证书(Certificate Authority, CA)就是解决这个问题的。被认证的权威机构用自己的私钥加密真实服务器的公钥，产生数字证书发给客户端，客户端再用CA的公钥解密获得真实服务器的公钥，这个过程也就是对”服务器公钥”的加密解密。这样，权威机构加密的真实公钥就不怕被替换了。</p>
+<p>问题来了，CA机构颁发的数字证书不怕被他人伪造吗？实际上这里还有证书的分级，根证书是预装在操作系统里的，从根证书开始每一级保证下一级证书的可信度，到CA机构的证书，构成一条信用链，因此只要上级证书可信，当前证书就可信。</p>
+<h3 id="对称密钥"><a href="#对称密钥" class="headerlink" title="对称密钥"></a>对称密钥</h3><p>对称密钥算法中，加密和解密都是用同一个密钥，因此称为对称密钥。使用对称密钥的优势是加/解密速度快，适合于对大数据量进行加密。密钥越长越难破解，加解密速度越慢，反之同理。但问题在于，加解密钥相同就意味着要把这个密钥发送给目标客户端时，他人只要截取了这个密钥，就既能加密也能解密了。</p>
+<p>通常为保证安全性，采用非对称密钥加密对称密钥，这样密钥能够安全送到客户端手上，并且之后的通信就可以使用对称密钥快速加解密了。</p>
 <h2 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h2><h3 id="域名解析过程"><a href="#域名解析过程" class="headerlink" title="域名解析过程"></a>域名解析过程</h3><p><em>代填</em></p>
 <h3 id="DNS劫持"><a href="#DNS劫持" class="headerlink" title="DNS劫持"></a>DNS劫持</h3><p>通过攻击域名解析服务器、修改服务器中某些域名的解析结果，使所有向其发出该域名解析请求的客户端拿到的都是被篡改的ip地址。</p>
 <p>或者伪装成域名解析器，做成钓鱼服务器，当接受到域名解析请求，就像客户端返回冒充的ip地址。</p>
