@@ -33,7 +33,7 @@
 <meta property="og:description" content="设计模式模式是你必须在应用程序中自己实现的形式化的最佳实践。 工厂模式工厂模式的设计意图是将对象的创建过程封装，通过同一个工厂类或接口来管理对象的创建过程。 简单工厂模式(Simple Factory Pattern)简单工厂模式也叫静态工厂方法模式，通过定义一个工厂类，来对不同的参数输入返回不同类的实例。在这种模式中，工厂主要就是负责创建不同实例的逻辑，而创建出的实例是产品接口的实现类，符合产品">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-02-13T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-02-14T09:44:10.309Z">
+<meta property="article:modified_time" content="2021-02-14T10:35:31.456Z">
 <meta property="article:author" content="Zayeum">
 <meta property="article:tag" content="Factory Pattern">
 <meta property="article:tag" content="Adapter Pattern">
@@ -297,7 +297,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-02-14 00:00:00 / 修改时间：17:44:10" itemprop="dateCreated datePublished" datetime="2021-02-14T00:00:00+08:00">2021-02-14</time>
+      <time title="创建时间：2021-02-14 00:00:00 / 修改时间：18:35:31" itemprop="dateCreated datePublished" datetime="2021-02-14T00:00:00+08:00">2021-02-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -358,6 +358,8 @@
 <li>工厂可以返回目标产品的实现类或子类，比如：<strong>文件日志工厂</strong>属于<strong>日志工厂接口</strong>的实现类，文件日志工厂可以创建并返回<strong>日志接口的实现类</strong>——<strong>文件日志</strong>，而用户只需要用日志接口接收这个返回值。</li>
 <li>可以添加新的工厂实现类来拓展功能。</li>
 </ul>
+<a id="more"></a>
+
 <h4 id="抽象工厂模式-Abstract-Factory-Pattern"><a href="#抽象工厂模式-Abstract-Factory-Pattern" class="headerlink" title="抽象工厂模式(Abstract Factory Pattern)"></a>抽象工厂模式(Abstract Factory Pattern)</h4><p>抽象工厂模式中，工厂接口可以根据需求选择代工厂(子接口)来完成生产工作，而用户只需要使用这个总工厂，不用自己找代工厂。即：工厂通过静态方法帮用户<strong>选择</strong>对应的代工厂，并给用户<strong>返回</strong>代工厂的<strong>实现类</strong>。这样，用户不用关心选哪个代工厂，而是利用多态性，用最上层接口(总工厂)声明引用。</p>
 <p>如果工厂还支持不同的产品加工方法，那么所有代工厂可以使用同一套方法名，从而对用户透明，用户仍然不必知道是哪个代工厂。</p>
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>如果说工厂方法是对<strong>产品类型</strong>的透明，那么抽象工厂就是对<strong>子工厂类型</strong>的透明。</p>
