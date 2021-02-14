@@ -126,13 +126,13 @@
 <p>远程代理：负责把方法访问转换成远程调用，然后返回结果。</p>
 ]]></content>
       <categories>
-        <category>Design pattern</category>
+        <category>Design patterns</category>
       </categories>
       <tags>
         <tag>Factory Pattern</tag>
         <tag>Adapter Pattern</tag>
         <tag>Agent Pattern</tag>
-        <tag>Design Pattern</tag>
+        <tag>Design Patterns</tag>
       </tags>
   </entry>
   <entry>
@@ -825,33 +825,6 @@
       </tags>
   </entry>
   <entry>
-    <title>SpringBoot 2</title>
-    <url>/2021/02/01/spring-boot/</url>
-    <content><![CDATA[<h3 id="Web-开发"><a href="#Web-开发" class="headerlink" title="Web 开发"></a>Web 开发</h3><h4 id="1-静态资源访问"><a href="#1-静态资源访问" class="headerlink" title="1. 静态资源访问"></a>1. 静态资源访问</h4><h5 id="1-1-路径"><a href="#1-1-路径" class="headerlink" title="1.1 路径"></a>1.1 路径</h5><p>静态资源路径包括 <code>/static</code>、 <code>/public</code>、 <code>/resources</code> 、<code>/META-INF/resources</code> ，访问 <em>根路径 + 静态资源名</em> 即可访问对应的静态资源，如： /picture123.jpg</p>
-<p>其原理是使用静态映射/**，当访问请求找不到对应的Controller，再交给静态资源处理器，如果静态资源处理器也找不到就返回404。</p>
-<p>在application.yaml文件中使用<code>  static-path-pattern</code>修改配置</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">	<span class="attr">mvc:</span></span><br><span class="line">	<span class="attr">static-path-pattern:</span> <span class="string">/resources/**</span></span><br></pre></td></tr></table></figure>
-<p>相应地，<code>static-location: [classpath: /xxx/]</code> 用来重新设置多个静态资源路径</p>
-<a id="more"></a>
-
-
-
-
-
-
-
-
-
-]]></content>
-      <categories>
-        <category>Framework</category>
-      </categories>
-      <tags>
-        <tag>Spring Boot</tag>
-        <tag>Framework</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Singleton Pattern</title>
     <url>/2021/01/28/singleton-pattern/</url>
     <content><![CDATA[<p>This post references <a href="https://www.journaldev.com/1377/java-singleton-design-pattern-best-practices-examples">JournalDev</a>, and was written in English for personnal practicing.</p>
@@ -892,7 +865,34 @@
       </categories>
       <tags>
         <tag>Design Patterns</tag>
-        <tag>Singleton</tag>
+        <tag>Singleton Pattern</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringBoot 2</title>
+    <url>/2021/02/01/spring-boot/</url>
+    <content><![CDATA[<h3 id="Web-开发"><a href="#Web-开发" class="headerlink" title="Web 开发"></a>Web 开发</h3><h4 id="1-静态资源访问"><a href="#1-静态资源访问" class="headerlink" title="1. 静态资源访问"></a>1. 静态资源访问</h4><h5 id="1-1-路径"><a href="#1-1-路径" class="headerlink" title="1.1 路径"></a>1.1 路径</h5><p>静态资源路径包括 <code>/static</code>、 <code>/public</code>、 <code>/resources</code> 、<code>/META-INF/resources</code> ，访问 <em>根路径 + 静态资源名</em> 即可访问对应的静态资源，如： /picture123.jpg</p>
+<p>其原理是使用静态映射/**，当访问请求找不到对应的Controller，再交给静态资源处理器，如果静态资源处理器也找不到就返回404。</p>
+<p>在application.yaml文件中使用<code>  static-path-pattern</code>修改配置</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">	<span class="attr">mvc:</span></span><br><span class="line">	<span class="attr">static-path-pattern:</span> <span class="string">/resources/**</span></span><br></pre></td></tr></table></figure>
+<p>相应地，<code>static-location: [classpath: /xxx/]</code> 用来重新设置多个静态资源路径</p>
+<a id="more"></a>
+
+
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>Framework</category>
+      </categories>
+      <tags>
+        <tag>Spring Boot</tag>
+        <tag>Framework</tag>
       </tags>
   </entry>
   <entry>
