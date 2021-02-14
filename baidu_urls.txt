@@ -1,5 +1,5 @@
 https://zayeum.com/2021/02/15/io-models/
-https://zayeum.com/2021/02/15/io_models/
 https://zayeum.com/2021/02/14/design-pattern/
 https://zayeum.com/2021/02/07/volatile/
 https://zayeum.com/2021/02/04/binary-search-tree/
+https://zayeum.com/2021/02/01/spring-boot/

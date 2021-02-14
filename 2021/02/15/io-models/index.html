@@ -25,16 +25,18 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"zayeum.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
-<meta name="description" content="Wanna be a mage, a great mage.">
+<meta name="description" content="IO模型各种IO模型阻塞 IO缺省情形下，所有文件操作都是阻塞的。在进程空间中进行系统调用 (比如recvfrom)，系统切换到内核态准备接受数据，并将数据从内核拷贝到用户空间(进程内存)，返回成功提示，期间进程一直等待操作完成的返回结果。 非阻塞 IO进程执行系统调用后，如果内核IO操作没完成就返回一个错误；进程通过轮询的方式不断执行系统调用确认操作是否完成，直到返回成功提示。虽然这种方式是非阻">
 <meta property="og:type" content="article">
-<meta property="og:title" content="io_models">
+<meta property="og:title" content="I&#x2F;O 模型">
 <meta property="og:url" content="https://zayeum.com/2021/02/15/io-models/index.html">
 <meta property="og:site_name" content="Zayeum&#39;s Carriage">
-<meta property="og:description" content="Wanna be a mage, a great mage.">
+<meta property="og:description" content="IO模型各种IO模型阻塞 IO缺省情形下，所有文件操作都是阻塞的。在进程空间中进行系统调用 (比如recvfrom)，系统切换到内核态准备接受数据，并将数据从内核拷贝到用户空间(进程内存)，返回成功提示，期间进程一直等待操作完成的返回结果。 非阻塞 IO进程执行系统调用后，如果内核IO操作没完成就返回一个错误；进程通过轮询的方式不断执行系统调用确认操作是否完成，直到返回成功提示。虽然这种方式是非阻">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-02-14T16:08:11.000Z">
-<meta property="article:modified_time" content="2021-02-14T16:08:11.335Z">
+<meta property="article:published_time" content="2021-02-14T16:05:15.281Z">
+<meta property="article:modified_time" content="2021-02-14T16:07:53.343Z">
 <meta property="article:author" content="Zayeum">
+<meta property="article:tag" content="I&#x2F;O models">
+<meta property="article:tag" content="Operation System">
 <meta name="twitter:card" content="summary">
 
 
@@ -50,7 +52,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>io_models | Zayeum's Carriage</title>
+<title>I/O 模型 | Zayeum's Carriage</title>
   
 
 
@@ -175,7 +177,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -188,6 +190,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#IO%E6%A8%A1%E5%9E%8B"><span class="nav-text">IO模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%84%E7%A7%8DIO%E6%A8%A1%E5%9E%8B"><span class="nav-text">各种IO模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%BB%E5%A1%9E-IO"><span class="nav-text">阻塞 IO</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%9E%E9%98%BB%E5%A1%9E-IO"><span class="nav-text">非阻塞 IO</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IO%E5%A4%8D%E7%94%A8"><span class="nav-text">IO复用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%A9%B1%E5%8A%A8IO"><span class="nav-text">信号驱动IO</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5IO"><span class="nav-text">异步IO</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%92%E5%88%86%E6%96%B9%E5%BC%8F"><span class="nav-text">划分方式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BIO-NIO-AIO"><span class="nav-text">BIO, NIO, AIO</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -203,7 +206,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -280,7 +283,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          io_models
+          I/O 模型
         </h1>
 
         <div class="post-meta-container">
@@ -290,8 +293,18 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2021-02-15 00:08:11" itemprop="dateCreated datePublished" datetime="2021-02-15T00:08:11+08:00">2021-02-15</time>
+      <time title="创建时间：2021-02-15 00:05:15 / 修改时间：00:07:53" itemprop="dateCreated datePublished" datetime="2021-02-15T00:05:15+08:00">2021-02-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Operation-System/" itemprop="url" rel="index"><span itemprop="name">Operation System</span></a>
+        </span>
     </span>
 
   
@@ -316,7 +329,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>0</span>
+      <span>1.5k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -334,7 +347,21 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        
+        <h2 id="IO模型"><a href="#IO模型" class="headerlink" title="IO模型"></a>IO模型</h2><h3 id="各种IO模型"><a href="#各种IO模型" class="headerlink" title="各种IO模型"></a>各种IO模型</h3><h4 id="阻塞-IO"><a href="#阻塞-IO" class="headerlink" title="阻塞 IO"></a>阻塞 IO</h4><p>缺省情形下，所有文件操作都是阻塞的。在进程空间中进行系统调用 (比如<code>recvfrom</code>)，系统切换到内核态准备接受数据，并将数据从内核拷贝到用户空间(进程内存)，返回成功提示，期间进程一直等待操作完成的返回结果。</p>
+<h4 id="非阻塞-IO"><a href="#非阻塞-IO" class="headerlink" title="非阻塞 IO"></a>非阻塞 IO</h4><p>进程执行系统调用后，如果内核IO操作没完成就返回一个错误；进程通过轮询的方式不断执行系统调用确认操作是否完成，直到返回成功提示。虽然这种方式是非阻塞的，但在获得成功返回之后执行的IO操作是阻塞的，所以整体上是同步的。</p>
+<h4 id="IO复用"><a href="#IO复用" class="headerlink" title="IO复用"></a>IO复用</h4><p>IO复用模型用一个进程管理多个fd(file description)，将fd构成的数据结构传给<code>select</code> / <code>poll</code> 系统调用，并阻塞在调用处。系统调用顺序扫描fd是否就绪(可读)，当有就绪的数据时返回可读(有一个线程不断轮询多个socket的状态)；进程在阻塞状态直至收到返回值，再调用<code>recvfrom</code>系统调用把数据从内核拷贝到进程中。<code>select</code>只支持默认1024个fd，而<code>poll</code>没有数量限制；<code>select</code>使用的数据结构名为<code>fdset</code>，而<code>poll</code>使用<code>pollfd</code>类型数组。<code>select</code>和<code>poll</code>会有多次调用，因为fd不是同时就绪的，而每次调用都要复制所有fd到内核，因此速度慢。</p>
+<p><code>epoll</code>系统调用有一组方法，调用<code>epoll_create</code>创建一个eventpoll对象，有了对象后通过<code>epoll_ctl</code>向内核注册新fd或是改变fd的状态(而不是把fd集合拷贝到内核)，内核使用红黑树维护已注册的fd，并使用双向链表实现就绪队列，每当用户态调用<code>epoll_wait</code>获得就序队列。在水平触发模式下，进程可以不立即处理，因为下次调用<code>epoll_wait</code>时会再次获得；在边沿触发模式下，就序事件仅通知一次，进程需要立即处理。</p>
+<h4 id="信号驱动IO"><a href="#信号驱动IO" class="headerlink" title="信号驱动IO"></a>信号驱动IO</h4><p>信号处理IO是一种非阻塞模型，进程用系统调用<code>signaction</code>注册信号处理方法，然后立即返回(非阻塞)，当内核数据就序会递交一个信号给进程的信号处理方法，这时进程再阻塞调用<code>recvfrom</code>拷贝数据到进程中。</p>
+<h4 id="异步IO"><a href="#异步IO" class="headerlink" title="异步IO"></a>异步IO</h4><p>同样是进程系统调用<code>aio_read</code>之后立即返回，但内核不仅完成数据就序工作，还会自动把数据拷贝到进程中，再递交系统调用中指定的信号。它与信号驱动的异步IO的区别在于：信号驱动IO在数据就序时通知，由进程调用数据拷贝操作；异步IO由内核进行数据拷贝，在拷贝完成时通知。</p>
+<h3 id="划分方式"><a href="#划分方式" class="headerlink" title="划分方式"></a>划分方式</h3><p>同步、非同步和阻塞、非阻塞很容易混淆，它们的区别很明显，如果把IO分为两个阶段：发起IO请求(内核准备数据报)和执行IO操作(内核内存拷贝至进程内存)。那么阻塞/非阻塞就在于发起IO请求是否被阻塞，前面介绍的阻塞IO和IO复用都是在第一步阻塞，所以是阻塞IO；而同步/非同步在于执行IO操作是否被阻塞，前四种模型在执行IO操作时都在第二步阻塞，所以是同步IO。</p>
+<h2 id="BIO-NIO-AIO"><a href="#BIO-NIO-AIO" class="headerlink" title="BIO, NIO, AIO"></a>BIO, NIO, AIO</h2><p>BIO是同步阻塞IO(block)，适用于连接数目<strong>少</strong>且固定的架构；</p>
+<p>NIO是同步非阻塞IO(Non-block)，适用于连接数目<strong>多</strong>但连接时间<strong>较短</strong>的架构，JDK1.4开始支持；</p>
+<p>AIO是异步非阻塞IO(Asynchronous)，适用于连接数目<strong>多</strong>且连接持续时间<strong>较长</strong>的架构，JDK7开始支持。</p>
+<p>JavaBIO：服务器采用一个连接对应一个线程的模式，客户端有连接请求时服务器启动一个线程进行处理；</p>
+<p>JavaNIO：服务期采用一个IO请求对应一个线程的模式，客户端发送的连接请求注册到多路复用器上，当轮询到有IO请求时才启动一个线程进行处理。(epoll实现)</p>
+<p>JavaAIO(NIO 2.0)：服务器采用一个有效IO请求对应一个线程，客户端的IO请求由内核先完成再通知服务器启动线程进行处理。</p>
+<p>与前面介绍的IO模型基础思想进行对照就很好理解。</p>
+
     </div>
 
     
@@ -342,13 +369,17 @@
     
 
     <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/I-O-models/" rel="tag"><i class="fa fa-tag"></i> I/O models</a>
+              <a href="/tags/Operation-System/" rel="tag"><i class="fa fa-tag"></i> Operation System</a>
+          </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/02/15/io_models/" rel="prev" title="I/O 模型">
-                  <i class="fa fa-chevron-left"></i> I/O 模型
+                <a href="/2021/02/14/design-pattern/" rel="prev" title="设计模式">
+                  <i class="fa fa-chevron-left"></i> 设计模式
                 </a>
             </div>
             <div class="post-nav-item">
