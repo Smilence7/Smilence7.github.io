@@ -1,48 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hexo 快速部署</title>
-    <url>/2021/01/23/hexo/</url>
-    <content><![CDATA[<p>因为搭建博客的命令步骤都很容易理解，所以本文只是简单的记录过程中用到的命令和配置，可供参考和回查。</p>
-<h4 id="安装nodejs"><a href="#安装nodejs" class="headerlink" title="安装nodejs"></a>安装nodejs</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo wget https://npm.taobao.org/mirrors/node/latest-v14.x/node-v14.15.4.tar.gz</span><br><span class="line">sudo tar zxvf node-v14.15.4.tar.gz</span><br><span class="line">yum install gcc gcc-c++</span><br><span class="line">mv node-v14.15.4-linux-x64 nodejs</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/node /usr/bin/node </span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npm /usr/bin/npm</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npx /usr/bin/npx</span><br><span class="line"><span class="comment"># 换源</span></span><br><span class="line">npm install -g cnpm --registry=https://registry.npm.taobao.org</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/cnpm /usr/bin/cnpm</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-
-<h4 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo cnpm install -g hexo-cli</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/hexo /usr/bin/hexo</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 依赖</span></span><br><span class="line">yum -y install curl-devel expat-devel gettext-devel openssl-devel zlib-devel gcc</span><br><span class="line">sudo tar -zxf git-2.21.0.tar.gz</span><br><span class="line"><span class="built_in">cd</span> git-2.21.0</span><br><span class="line">sudo make</span><br><span class="line">sudo make install prefix=/usr/<span class="built_in">local</span>/git</span><br><span class="line"><span class="comment"># 添加环境变量</span></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/usr/<span class="built_in">local</span>/git/bin</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br><span class="line"><span class="comment"># 或建立软连接</span></span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/git/bin/git /usr/<span class="built_in">local</span>/bin/</span><br><span class="line"><span class="comment"># 配置身份</span></span><br><span class="line">git config --global user.name <span class="string">&quot;zayeum&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;smilence7@outlook.com&quot;</span></span><br></pre></td></tr></table></figure>
-
-
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo hexo init</span><br><span class="line">sudo hexo s  <span class="comment"># start local server</span></span><br><span class="line">sudo npm install hexo-deployer-git --save</span><br><span class="line">sudo vim _config.yml</span><br><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: <span class="string">&#x27;git&#x27;</span></span><br><span class="line">  repo: <span class="string">&#x27;https://github.com/Smilence7/Smilence7.github.io&#x27;</span></span><br><span class="line">  branch: <span class="string">&#x27;master&#x27;</span></span><br><span class="line">sudo hexo clean</span><br><span class="line">sudo hexo g  <span class="comment"># generate</span></span><br><span class="line">sudo hexo d  <span class="comment"># deploy</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<h4 id="多端部署"><a href="#多端部署" class="headerlink" title="多端部署"></a>多端部署</h4><p>主要参考 <a href="https://leooo48.github.io/2017/07/12/hexo-github/">这篇博客</a></p>
-<p>从base端上传源文件到github的hexo branch下</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog</span><br><span class="line"><span class="comment"># 先删除theme中的.git文件夹</span></span><br><span class="line">sudo git init</span><br><span class="line">sudo git add -A</span><br><span class="line">sudo git commit -m <span class="string">&quot;all blog source files&quot;</span></span><br><span class="line">sudo git branch hexo</span><br><span class="line">sudo git checkout hexo</span><br><span class="line">sudo git remote add origin https://github.com/Smilence7/Smilence7.github.io.git</span><br><span class="line">sudo git push origin hexo -f</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>在新环境中安装Git, Nodejs</p>
-</li>
-<li><p>从github repo中克隆源文件</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> -b hexo https://github.com/Smilence7/Smilence7.github.io.git</span><br></pre></td></tr></table></figure></li>
-<li><p>安装hexo</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># windows</span></span><br><span class="line">npm install hexo-cli -g</span><br><span class="line">npm install</span><br><span class="line"><span class="comment"># Ubuntu</span></span><br><span class="line">npm install hexo --save</span><br></pre></td></tr></table></figure>
-
-
-</li>
-</ul>
-<h4 id="配置域名"><a href="#配置域名" class="headerlink" title="配置域名"></a>配置域名</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog/<span class="built_in">source</span></span><br><span class="line"><span class="comment"># 创建CNAME文件绑定域名</span></span><br><span class="line">vim CNAME</span><br><span class="line">zayeum.com</span><br><span class="line"><span class="comment"># 在域名管理页面中配置DNS解析</span></span><br><span class="line"><span class="comment"># 解析类型为CNAME，ip为Smilence7.github.io</span></span><br></pre></td></tr></table></figure>
-
-
-]]></content>
-      <categories>
-        <category>Blog</category>
-      </categories>
-      <tags>
-        <tag>Hexo</tag>
-        <tag>Blog</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>查找树系列</title>
     <url>/2021/02/04/binary-search-tree/</url>
     <content><![CDATA[<h2 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h2><p>二叉查找树定义每个结点的左子树里的元素值都小于该节点、右子树里的元素都大于该节点，这样的定义使它的中序遍历就是升序的有序数据，时间复杂度为O(n)。</p>
@@ -130,6 +88,91 @@
       <tags>
         <tag>Data Structure</tag>
         <tag>Algorithm</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>设计模式</title>
+    <url>/2021/02/14/design-pattern/</url>
+    <content><![CDATA[<h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><p>模式是你必须在应用程序中自己实现的形式化的最佳实践。</p>
+<h3 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h3><p>工厂模式的设计意图是将对象的创建过程封装，通过同一个工厂类或接口来管理对象的创建过程。</p>
+<h4 id="简单工厂模式-Simple-Factory-Pattern"><a href="#简单工厂模式-Simple-Factory-Pattern" class="headerlink" title="简单工厂模式(Simple Factory Pattern)"></a>简单工厂模式(Simple Factory Pattern)</h4><p>简单工厂模式也叫静态工厂方法模式，通过定义一个工厂类，来对不同的参数输入返回不同类的实例。在这种模式中，工厂主要就是<strong>负责创建不同实例</strong>的逻辑，而创建出的实例是产品接口的实现类，符合产品接口的要求。</p>
+<h4 id="工厂方法模式-Factory-Method-Pattern"><a href="#工厂方法模式-Factory-Method-Pattern" class="headerlink" title="工厂方法模式(Factory Method Pattern)"></a>工厂方法模式(Factory Method Pattern)</h4><p>工厂方法模式中，工厂通过接口给出必须实现的方法，而不负责产品的创建，产品的创建由实现类完成。用户根据自己的需求选择对应的工厂，并调用工厂方法获得产品。在这个过程中，用户不需要指定产品接口下的具体某一种产品类型，可以利用对态性以总产品接口声明产品的引用。</p>
+<p>工厂方法模式的好处有：</p>
+<ul>
+<li>工厂可以返回目标产品的实现类或子类，比如：<strong>文件日志工厂</strong>属于<strong>日志工厂接口</strong>的实现类，文件日志工厂可以创建并返回<strong>日志接口的实现类</strong>——<strong>文件日志</strong>，而用户只需要用日志接口接收这个返回值。</li>
+<li>可以添加新的工厂实现类来拓展功能。</li>
+</ul>
+<h4 id="抽象工厂模式-Abstract-Factory-Pattern"><a href="#抽象工厂模式-Abstract-Factory-Pattern" class="headerlink" title="抽象工厂模式(Abstract Factory Pattern)"></a>抽象工厂模式(Abstract Factory Pattern)</h4><p>抽象工厂模式中，工厂接口可以根据需求选择代工厂(子接口)来完成生产工作，而用户只需要使用这个总工厂，不用自己找代工厂。即：工厂通过静态方法帮用户<strong>选择</strong>对应的代工厂，并给用户<strong>返回</strong>代工厂的<strong>实现类</strong>。这样，用户不用关心选哪个代工厂，而是利用多态性，用最上层接口(总工厂)声明引用。</p>
+<p>如果工厂还支持不同的产品加工方法，那么所有代工厂可以使用同一套方法名，从而对用户透明，用户仍然不必知道是哪个代工厂。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>如果说工厂方法是对<strong>产品类型</strong>的透明，那么抽象工厂就是对<strong>子工厂类型</strong>的透明。</p>
+<p>工厂或代工厂还可以对创建过的产品进行缓存，当新的需求与缓存的产品对应时直接返回缓存的产品，从而优化内存占用和运行时间。例如Integer的valueOf()方法缓存了+/-128的整形数字包装对象。</p>
+<h3 id="适配器"><a href="#适配器" class="headerlink" title="适配器"></a>适配器</h3><p>适配器主要是用来完成不同类型对象的转换，就像将显示器的HDMI头转为DP头一样，是为了让原类型(HDMI插头)能在目标位置(显卡的DP槽)使用。</p>
+<p>比如将Calleble适配成Runnable用于创建Thread:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RunnableAdapter</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Callable&lt;?&gt; callable;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RunnableAdapter</span><span class="params">(Callable&lt;?&gt; callable)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.callable = callable;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            callable.call();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">        &#125;</span><br><span class="line">   </span><br></pre></td></tr></table></figure>
+<p>或比如将某个容器类型的数据转换成另一个容器类型  <code>Arrays.asList()</code>等等。</p>
+<h3 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h3><p>通过对原对象包装，产生一个持有原对象的代理对象，我们可以在执行原对象的目标方法时添加额外的逻辑，比如条件判断、在方法执行前添加逻辑、在方法执行后添加逻辑等。这样一来，代码的设计模式就变成：</p>
+<ul>
+<li><p>A接口：只定义接口；</p>
+</li>
+<li><p>ABusiness类：A接口的某个业务逻辑；</p>
+</li>
+<li><p>APermissionProxy类：只实现A接口的权限检查代理。</p>
+</li>
+</ul>
+<p>从而保证了代理的职责单一、泛用，降低耦合。</p>
+<p>虚代理：只有当真正需要调用时才创建对象，在这之前只是让调用者持有一个代理对象。</p>
+<p>远程代理：负责把方法访问转换成远程调用，然后返回结果。</p>
+]]></content>
+      <categories>
+        <category>Design pattern</category>
+      </categories>
+      <tags>
+        <tag>Factory Pattern</tag>
+        <tag>Adapter Pattern</tag>
+        <tag>Agent Pattern</tag>
+        <tag>Design Pattern</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hexo 快速部署</title>
+    <url>/2021/01/23/hexo/</url>
+    <content><![CDATA[<p>因为搭建博客的命令步骤都很容易理解，所以本文只是简单的记录过程中用到的命令和配置，可供参考和回查。</p>
+<h4 id="安装nodejs"><a href="#安装nodejs" class="headerlink" title="安装nodejs"></a>安装nodejs</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo wget https://npm.taobao.org/mirrors/node/latest-v14.x/node-v14.15.4.tar.gz</span><br><span class="line">sudo tar zxvf node-v14.15.4.tar.gz</span><br><span class="line">yum install gcc gcc-c++</span><br><span class="line">mv node-v14.15.4-linux-x64 nodejs</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/node /usr/bin/node </span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npm /usr/bin/npm</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npx /usr/bin/npx</span><br><span class="line"><span class="comment"># 换源</span></span><br><span class="line">npm install -g cnpm --registry=https://registry.npm.taobao.org</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/cnpm /usr/bin/cnpm</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+<h4 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo cnpm install -g hexo-cli</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/hexo /usr/bin/hexo</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 依赖</span></span><br><span class="line">yum -y install curl-devel expat-devel gettext-devel openssl-devel zlib-devel gcc</span><br><span class="line">sudo tar -zxf git-2.21.0.tar.gz</span><br><span class="line"><span class="built_in">cd</span> git-2.21.0</span><br><span class="line">sudo make</span><br><span class="line">sudo make install prefix=/usr/<span class="built_in">local</span>/git</span><br><span class="line"><span class="comment"># 添加环境变量</span></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/usr/<span class="built_in">local</span>/git/bin</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br><span class="line"><span class="comment"># 或建立软连接</span></span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/git/bin/git /usr/<span class="built_in">local</span>/bin/</span><br><span class="line"><span class="comment"># 配置身份</span></span><br><span class="line">git config --global user.name <span class="string">&quot;zayeum&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;smilence7@outlook.com&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo hexo init</span><br><span class="line">sudo hexo s  <span class="comment"># start local server</span></span><br><span class="line">sudo npm install hexo-deployer-git --save</span><br><span class="line">sudo vim _config.yml</span><br><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: <span class="string">&#x27;git&#x27;</span></span><br><span class="line">  repo: <span class="string">&#x27;https://github.com/Smilence7/Smilence7.github.io&#x27;</span></span><br><span class="line">  branch: <span class="string">&#x27;master&#x27;</span></span><br><span class="line">sudo hexo clean</span><br><span class="line">sudo hexo g  <span class="comment"># generate</span></span><br><span class="line">sudo hexo d  <span class="comment"># deploy</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="多端部署"><a href="#多端部署" class="headerlink" title="多端部署"></a>多端部署</h4><p>主要参考 <a href="https://leooo48.github.io/2017/07/12/hexo-github/">这篇博客</a></p>
+<p>从base端上传源文件到github的hexo branch下</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog</span><br><span class="line"><span class="comment"># 先删除theme中的.git文件夹</span></span><br><span class="line">sudo git init</span><br><span class="line">sudo git add -A</span><br><span class="line">sudo git commit -m <span class="string">&quot;all blog source files&quot;</span></span><br><span class="line">sudo git branch hexo</span><br><span class="line">sudo git checkout hexo</span><br><span class="line">sudo git remote add origin https://github.com/Smilence7/Smilence7.github.io.git</span><br><span class="line">sudo git push origin hexo -f</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>在新环境中安装Git, Nodejs</p>
+</li>
+<li><p>从github repo中克隆源文件</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> -b hexo https://github.com/Smilence7/Smilence7.github.io.git</span><br></pre></td></tr></table></figure></li>
+<li><p>安装hexo</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># windows</span></span><br><span class="line">npm install hexo-cli -g</span><br><span class="line">npm install</span><br><span class="line"><span class="comment"># Ubuntu</span></span><br><span class="line">npm install hexo --save</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<h4 id="配置域名"><a href="#配置域名" class="headerlink" title="配置域名"></a>配置域名</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog/<span class="built_in">source</span></span><br><span class="line"><span class="comment"># 创建CNAME文件绑定域名</span></span><br><span class="line">vim CNAME</span><br><span class="line">zayeum.com</span><br><span class="line"><span class="comment"># 在域名管理页面中配置DNS解析</span></span><br><span class="line"><span class="comment"># 解析类型为CNAME，ip为Smilence7.github.io</span></span><br></pre></td></tr></table></figure>
+
+
+]]></content>
+      <categories>
+        <category>Blog</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+        <tag>Blog</tag>
       </tags>
   </entry>
   <entry>
@@ -851,45 +894,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Wordpress Docker部署</title>
-    <url>/2021/01/23/wordpress/</url>
-    <content><![CDATA[<h4 id="安装-docker"><a href="#安装-docker" class="headerlink" title="安装 docker"></a>安装 docker</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">yum install docker-ce</span><br><span class="line">sudo systemctl start docker</span><br><span class="line">sudo systemctl <span class="built_in">enable</span> docker</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="安装-docker-compose"><a href="#安装-docker-compose" class="headerlink" title="安装 docker-compose"></a>安装 docker-compose</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">chown -R nz /usr/<span class="built_in">local</span>/bin</span><br><span class="line">sudo curl -L https://get.daocloud.io/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` &gt; /usr/<span class="built_in">local</span>/bin/docker-compose</span><br><span class="line">chmod +x /usr/<span class="built_in">local</span>/bin/docker-compose</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/docker-compose /usr/bin/docker-compose <span class="comment">#把它放入PATH中，这样才能sudo</span></span><br></pre></td></tr></table></figure>
-
-
-<h4 id="卸载-docker"><a href="#卸载-docker" class="headerlink" title="卸载 docker"></a>卸载 docker</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">yum list installed|grep docker</span><br><span class="line">yum -y remove</span><br><span class="line">rm -rf /var/lib/docker</span><br><span class="line"></span><br><span class="line">sudo yum remove docker \</span><br><span class="line">                  docker-client \</span><br><span class="line">                  docker-client-latest \</span><br><span class="line">                  docker-common \</span><br><span class="line">                  docker-latest \</span><br><span class="line">                  docker-latest-logrotate \</span><br><span class="line">                  docker-logrotate \</span><br><span class="line">                  docker-engine</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="卸载-docker-compose"><a href="#卸载-docker-compose" class="headerlink" title="卸载 docker-compose"></a>卸载 docker-compose</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo rm /usr/<span class="built_in">local</span>/bin/docker-compose</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="docker-国内镜像"><a href="#docker-国内镜像" class="headerlink" title="docker 国内镜像"></a>docker 国内镜像</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">vim /etc/docker/daemon.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;registry-mirrors&quot;</span>: [<span class="string">&quot;https://docker.mirrors.ustc.edu.cn/&quot;</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="修改docker内的mysql表ip地址"><a href="#修改docker内的mysql表ip地址" class="headerlink" title="修改docker内的mysql表ip地址"></a>修改docker内的mysql表ip地址</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo docker exec -it my_wordpress_db_1 bash</span><br><span class="line">mysql -u wordpress -p</span><br><span class="line">Enter password: wordpress</span><br><span class="line">show databases;</span><br><span class="line">USE wordpress</span><br><span class="line">select * from wp_options limit 2;</span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> UPDATE wp_options SET option_value=<span class="string">&quot;zayeum.com&quot;</span> WHERE option_name=<span class="string">&quot;siteurl&quot;</span>;</span></span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> UPDATE wp_options SET option_value=<span class="string">&quot;zayeum.com&quot;</span> WHERE option_name=<span class="string">&quot;home&quot;</span>;</span></span><br><span class="line">update wp_options set option_value=&#x27;http://www.zayeum.com:80&#x27; where option_name in (&#x27;siteurl&#x27;,&#x27;home&#x27;);</span><br><span class="line">update wp_options set option_value=&#x27;localhost:9977&#x27; where option_name in (&#x27;siteurl&#x27;,&#x27;home&#x27;);</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="Docker-服务管理"><a href="#Docker-服务管理" class="headerlink" title="Docker 服务管理"></a>Docker 服务管理</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo systemctl start docker</span><br><span class="line">sudo systemctl restart  dockers</span><br><span class="line">sudo systemctl stop docker</span><br><span class="line">sudo service docker restart</span><br><span class="line">sudo service docker stop</span><br><span class="line">sudo systemctl daemon-reload  <span class="comment"># 重启守护进程</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<h4 id="防火墙"><a href="#防火墙" class="headerlink" title="防火墙"></a>防火墙</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo systemctl start firewalld</span><br><span class="line"></span><br><span class="line">sudo firewall-cmd --zone=public --add-port=80/tcp --permanent</span><br><span class="line">sudo firewall-cmd  --reload</span><br><span class="line">sudo firewall-cmd --zone=public --list-ports</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="Docker-容器管理"><a href="#Docker-容器管理" class="headerlink" title="Docker 容器管理"></a>Docker 容器管理</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo docker stop $(docker ps -aq)</span><br><span class="line">sudo docker container prune</span><br><span class="line">sudo docker image prune</span><br><span class="line">sudo docker-compose down</span><br></pre></td></tr></table></figure>
-
-
-]]></content>
-      <categories>
-        <category>Blog</category>
-      </categories>
-      <tags>
-        <tag>Blog</tag>
-        <tag>Wordpress</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>volatile 关键字</title>
     <url>/2021/02/07/volatile/</url>
     <content><![CDATA[<h3 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h3><p>volatile解决的问题：针对变量的轻量级同步解决方案。</p>
@@ -971,6 +975,45 @@
       <tags>
         <tag>Java</tag>
         <tag>Multithread &amp; Concurrency</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Wordpress Docker部署</title>
+    <url>/2021/01/23/wordpress/</url>
+    <content><![CDATA[<h4 id="安装-docker"><a href="#安装-docker" class="headerlink" title="安装 docker"></a>安装 docker</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">yum install docker-ce</span><br><span class="line">sudo systemctl start docker</span><br><span class="line">sudo systemctl <span class="built_in">enable</span> docker</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="安装-docker-compose"><a href="#安装-docker-compose" class="headerlink" title="安装 docker-compose"></a>安装 docker-compose</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">chown -R nz /usr/<span class="built_in">local</span>/bin</span><br><span class="line">sudo curl -L https://get.daocloud.io/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` &gt; /usr/<span class="built_in">local</span>/bin/docker-compose</span><br><span class="line">chmod +x /usr/<span class="built_in">local</span>/bin/docker-compose</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/docker-compose /usr/bin/docker-compose <span class="comment">#把它放入PATH中，这样才能sudo</span></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="卸载-docker"><a href="#卸载-docker" class="headerlink" title="卸载 docker"></a>卸载 docker</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">yum list installed|grep docker</span><br><span class="line">yum -y remove</span><br><span class="line">rm -rf /var/lib/docker</span><br><span class="line"></span><br><span class="line">sudo yum remove docker \</span><br><span class="line">                  docker-client \</span><br><span class="line">                  docker-client-latest \</span><br><span class="line">                  docker-common \</span><br><span class="line">                  docker-latest \</span><br><span class="line">                  docker-latest-logrotate \</span><br><span class="line">                  docker-logrotate \</span><br><span class="line">                  docker-engine</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="卸载-docker-compose"><a href="#卸载-docker-compose" class="headerlink" title="卸载 docker-compose"></a>卸载 docker-compose</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo rm /usr/<span class="built_in">local</span>/bin/docker-compose</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="docker-国内镜像"><a href="#docker-国内镜像" class="headerlink" title="docker 国内镜像"></a>docker 国内镜像</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">vim /etc/docker/daemon.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;registry-mirrors&quot;</span>: [<span class="string">&quot;https://docker.mirrors.ustc.edu.cn/&quot;</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="修改docker内的mysql表ip地址"><a href="#修改docker内的mysql表ip地址" class="headerlink" title="修改docker内的mysql表ip地址"></a>修改docker内的mysql表ip地址</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo docker exec -it my_wordpress_db_1 bash</span><br><span class="line">mysql -u wordpress -p</span><br><span class="line">Enter password: wordpress</span><br><span class="line">show databases;</span><br><span class="line">USE wordpress</span><br><span class="line">select * from wp_options limit 2;</span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> UPDATE wp_options SET option_value=<span class="string">&quot;zayeum.com&quot;</span> WHERE option_name=<span class="string">&quot;siteurl&quot;</span>;</span></span><br><span class="line"><span class="meta">mysql&gt;</span><span class="bash"> UPDATE wp_options SET option_value=<span class="string">&quot;zayeum.com&quot;</span> WHERE option_name=<span class="string">&quot;home&quot;</span>;</span></span><br><span class="line">update wp_options set option_value=&#x27;http://www.zayeum.com:80&#x27; where option_name in (&#x27;siteurl&#x27;,&#x27;home&#x27;);</span><br><span class="line">update wp_options set option_value=&#x27;localhost:9977&#x27; where option_name in (&#x27;siteurl&#x27;,&#x27;home&#x27;);</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="Docker-服务管理"><a href="#Docker-服务管理" class="headerlink" title="Docker 服务管理"></a>Docker 服务管理</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo systemctl start docker</span><br><span class="line">sudo systemctl restart  dockers</span><br><span class="line">sudo systemctl stop docker</span><br><span class="line">sudo service docker restart</span><br><span class="line">sudo service docker stop</span><br><span class="line">sudo systemctl daemon-reload  <span class="comment"># 重启守护进程</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="防火墙"><a href="#防火墙" class="headerlink" title="防火墙"></a>防火墙</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo systemctl start firewalld</span><br><span class="line"></span><br><span class="line">sudo firewall-cmd --zone=public --add-port=80/tcp --permanent</span><br><span class="line">sudo firewall-cmd  --reload</span><br><span class="line">sudo firewall-cmd --zone=public --list-ports</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="Docker-容器管理"><a href="#Docker-容器管理" class="headerlink" title="Docker 容器管理"></a>Docker 容器管理</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo docker stop $(docker ps -aq)</span><br><span class="line">sudo docker container prune</span><br><span class="line">sudo docker image prune</span><br><span class="line">sudo docker-compose down</span><br></pre></td></tr></table></figure>
+
+
+]]></content>
+      <categories>
+        <category>Blog</category>
+      </categories>
+      <tags>
+        <tag>Blog</tag>
+        <tag>Wordpress</tag>
       </tags>
   </entry>
   <entry>
