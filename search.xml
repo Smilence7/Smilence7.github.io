@@ -126,7 +126,7 @@
 <p>远程代理：负责把方法访问转换成远程调用，然后返回结果。</p>
 ]]></content>
       <categories>
-        <category>Design patterns</category>
+        <category>Design Patterns</category>
       </categories>
       <tags>
         <tag>Factory Pattern</tag>
