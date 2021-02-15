@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://zayeum.com/2021/02/14/design-pattern/</loc>
+    <loc>https://zayeum.com/2021/01/31/computer-network/</loc>
     
     <lastmod>2021-02-15</lastmod>
     
@@ -11,7 +11,14 @@
   <url>
     <loc>https://zayeum.com/2021/02/15/io-models/</loc>
     
-    <lastmod>2021-02-14</lastmod>
+    <lastmod>2021-02-15</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/2021/02/14/design-pattern/</loc>
+    
+    <lastmod>2021-02-15</lastmod>
     
   </url>
   
@@ -19,13 +26,6 @@
     <loc>https://zayeum.com/2021/01/28/singleton-pattern/</loc>
     
     <lastmod>2021-02-14</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/2021/01/31/computer-network/</loc>
-    
-    <lastmod>2021-02-12</lastmod>
     
   </url>
   
@@ -186,13 +186,6 @@
   </url>
   
   <url>
-    <loc>https://zayeum.com/tags/Java/</loc>
-    <lastmod>2021-02-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zayeum.com/tags/I-O-models/</loc>
     <lastmod>2021-02-15</lastmod>
     <changefreq>daily</changefreq>
@@ -207,6 +200,20 @@
   </url>
   
   <url>
+    <loc>https://zayeum.com/tags/Java/</loc>
+    <lastmod>2021-02-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/Singleton-Pattern/</loc>
+    <lastmod>2021-02-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zayeum.com/tags/Spring-Boot/</loc>
     <lastmod>2021-02-15</lastmod>
     <changefreq>daily</changefreq>
@@ -215,13 +222,6 @@
   
   <url>
     <loc>https://zayeum.com/tags/Framework/</loc>
-    <lastmod>2021-02-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/tags/Singleton-Pattern/</loc>
     <lastmod>2021-02-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -293,14 +293,14 @@
   </url>
   
   <url>
-    <loc>https://zayeum.com/categories/Java/</loc>
+    <loc>https://zayeum.com/categories/Operation-System/</loc>
     <lastmod>2021-02-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zayeum.com/categories/Operation-System/</loc>
+    <loc>https://zayeum.com/categories/Java/</loc>
     <lastmod>2021-02-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
