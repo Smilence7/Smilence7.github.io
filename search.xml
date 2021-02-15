@@ -638,34 +638,6 @@
       </tags>
   </entry>
   <entry>
-    <title>I/O 模型</title>
-    <url>/2021/02/15/io-models/</url>
-    <content><![CDATA[<h2 id="IO模型"><a href="#IO模型" class="headerlink" title="IO模型"></a>IO模型</h2><h3 id="各种IO模型"><a href="#各种IO模型" class="headerlink" title="各种IO模型"></a>各种IO模型</h3><h4 id="阻塞-IO"><a href="#阻塞-IO" class="headerlink" title="阻塞 IO"></a>阻塞 IO</h4><p>缺省情形下，所有文件操作都是阻塞的。在进程空间中进行系统调用 (比如<code>recvfrom</code>)，系统切换到内核态准备接受数据，并将数据从内核拷贝到用户空间(进程内存)，返回成功提示，期间进程一直等待操作完成的返回结果。</p>
-<h4 id="非阻塞-IO"><a href="#非阻塞-IO" class="headerlink" title="非阻塞 IO"></a>非阻塞 IO</h4><p>进程执行系统调用后，如果内核IO操作没完成就返回一个错误；进程通过轮询的方式不断执行系统调用确认操作是否完成，直到返回成功提示。虽然这种方式是非阻塞的，但在获得成功返回之后执行的IO操作是阻塞的，所以整体上是同步的。</p>
-<a id="more"></a>
-
-<h4 id="IO复用"><a href="#IO复用" class="headerlink" title="IO复用"></a>IO复用</h4><p>IO复用模型用一个进程管理多个fd(file description)，将fd构成的数据结构传给<code>select</code> / <code>poll</code> 系统调用，并阻塞在调用处。系统调用顺序扫描fd是否就绪(可读)，当有就绪的数据时返回可读(有一个线程不断轮询多个socket的状态)；进程在阻塞状态直至收到返回值，再调用<code>recvfrom</code>系统调用把数据从内核拷贝到进程中。<code>select</code>只支持默认1024个fd，而<code>poll</code>没有数量限制；<code>select</code>使用的数据结构名为<code>fdset</code>，而<code>poll</code>使用<code>pollfd</code>类型数组。<code>select</code>和<code>poll</code>会有多次调用，因为fd不是同时就绪的，而每次调用都要复制所有fd到内核，因此速度慢。</p>
-<p><code>epoll</code>系统调用有一组方法，调用<code>epoll_create</code>创建一个eventpoll对象，有了对象后通过<code>epoll_ctl</code>向内核注册新fd或是改变fd的状态(而不是把fd集合拷贝到内核)，内核使用红黑树维护已注册的fd，并使用双向链表实现就绪队列，每当用户态调用<code>epoll_wait</code>获得就序队列。在水平触发模式下，进程可以不立即处理，因为下次调用<code>epoll_wait</code>时会再次获得；在边沿触发模式下，就序事件仅通知一次，进程需要立即处理。</p>
-<h4 id="信号驱动IO"><a href="#信号驱动IO" class="headerlink" title="信号驱动IO"></a>信号驱动IO</h4><p>信号处理IO是一种非阻塞模型，进程用系统调用<code>signaction</code>注册信号处理方法，然后立即返回(非阻塞)，当内核数据就序会递交一个信号给进程的信号处理方法，这时进程再阻塞调用<code>recvfrom</code>拷贝数据到进程中。</p>
-<h4 id="异步IO"><a href="#异步IO" class="headerlink" title="异步IO"></a>异步IO</h4><p>同样是进程系统调用<code>aio_read</code>之后立即返回，但内核不仅完成数据就序工作，还会自动把数据拷贝到进程中，再递交系统调用中指定的信号。它与信号驱动的异步IO的区别在于：信号驱动IO在数据就序时通知，由进程调用数据拷贝操作；异步IO由内核进行数据拷贝，在拷贝完成时通知。</p>
-<h3 id="划分方式"><a href="#划分方式" class="headerlink" title="划分方式"></a>划分方式</h3><p>同步、非同步和阻塞、非阻塞很容易混淆，它们的区别很明显，如果把IO分为两个阶段：发起IO请求(内核准备数据报)和执行IO操作(内核内存拷贝至进程内存)。那么阻塞/非阻塞就在于发起IO请求是否被阻塞，前面介绍的阻塞IO和IO复用都是在第一步阻塞，所以是阻塞IO；而同步/非同步在于执行IO操作是否被阻塞，前四种模型在执行IO操作时都在第二步阻塞，所以是同步IO。</p>
-<h2 id="BIO-NIO-AIO"><a href="#BIO-NIO-AIO" class="headerlink" title="BIO, NIO, AIO"></a>BIO, NIO, AIO</h2><p>BIO是同步阻塞IO(block)，适用于连接数目<strong>少</strong>且固定的架构；</p>
-<p>NIO是同步非阻塞IO(Non-block)，适用于连接数目<strong>多</strong>但连接时间<strong>较短</strong>的架构，JDK1.4开始支持；</p>
-<p>AIO是异步非阻塞IO(Asynchronous)，适用于连接数目<strong>多</strong>且连接持续时间<strong>较长</strong>的架构，JDK7开始支持。</p>
-<p>JavaBIO：服务器采用一个连接对应一个线程的模式，客户端有连接请求时服务器启动一个线程进行处理；</p>
-<p>JavaNIO：服务期采用一个IO请求对应一个线程的模式，客户端发送的连接请求注册到多路复用器上，当轮询到有IO请求时才启动一个线程进行处理。(epoll实现)</p>
-<p>JavaAIO(NIO 2.0)：服务器采用一个有效IO请求对应一个线程，客户端的IO请求由内核先完成再通知服务器启动线程进行处理。</p>
-<p>与前面介绍的IO模型基础思想进行对照就很好理解。</p>
-]]></content>
-      <categories>
-        <category>Operation System</category>
-      </categories>
-      <tags>
-        <tag>I/O models</tag>
-        <tag>Operation System</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Java 基础</title>
     <url>/2021/01/28/java-basics/</url>
     <content><![CDATA[<h2 id="Java-基础"><a href="#Java-基础" class="headerlink" title="Java 基础"></a>Java 基础</h2><h3 id="运算符优先级"><a href="#运算符优先级" class="headerlink" title="运算符优先级"></a>运算符优先级</h3><table>
@@ -853,6 +825,61 @@
       </tags>
   </entry>
   <entry>
+    <title>I/O 模型</title>
+    <url>/2021/02/15/io-models/</url>
+    <content><![CDATA[<h2 id="IO模型"><a href="#IO模型" class="headerlink" title="IO模型"></a>IO模型</h2><h3 id="各种IO模型"><a href="#各种IO模型" class="headerlink" title="各种IO模型"></a>各种IO模型</h3><h4 id="阻塞-IO"><a href="#阻塞-IO" class="headerlink" title="阻塞 IO"></a>阻塞 IO</h4><p>缺省情形下，所有文件操作都是阻塞的。在进程空间中进行系统调用 (比如<code>recvfrom</code>)，系统切换到内核态准备接受数据，并将数据从内核拷贝到用户空间(进程内存)，返回成功提示，期间进程一直等待操作完成的返回结果。</p>
+<h4 id="非阻塞-IO"><a href="#非阻塞-IO" class="headerlink" title="非阻塞 IO"></a>非阻塞 IO</h4><p>进程执行系统调用后，如果内核IO操作没完成就返回一个错误；进程通过轮询的方式不断执行系统调用确认操作是否完成，直到返回成功提示。虽然这种方式是非阻塞的，但在获得成功返回之后执行的IO操作是阻塞的，所以整体上是同步的。</p>
+<a id="more"></a>
+
+<h4 id="IO复用"><a href="#IO复用" class="headerlink" title="IO复用"></a>IO复用</h4><p>IO复用模型用一个进程管理多个fd(file description)，将fd构成的数据结构传给<code>select</code> / <code>poll</code> 系统调用，并阻塞在调用处。系统调用顺序扫描fd是否就绪(可读)，当有就绪的数据时返回可读(有一个线程不断轮询多个socket的状态)；进程在阻塞状态直至收到返回值，再调用<code>recvfrom</code>系统调用把数据从内核拷贝到进程中。<code>select</code>只支持默认1024个fd，而<code>poll</code>没有数量限制；<code>select</code>使用的数据结构名为<code>fdset</code>，而<code>poll</code>使用<code>pollfd</code>类型数组。<code>select</code>和<code>poll</code>会有多次调用，因为fd不是同时就绪的，而每次调用都要复制所有fd到内核，因此速度慢。</p>
+<p><code>epoll</code>系统调用有一组方法，调用<code>epoll_create</code>创建一个eventpoll对象，有了对象后通过<code>epoll_ctl</code>向内核注册新fd或是改变fd的状态(而不是把fd集合拷贝到内核)，内核使用红黑树维护已注册的fd，并使用双向链表实现就绪队列，每当用户态调用<code>epoll_wait</code>获得就序队列。在水平触发模式下，进程可以不立即处理，因为下次调用<code>epoll_wait</code>时会再次获得；在边沿触发模式下，就序事件仅通知一次，进程需要立即处理。</p>
+<h4 id="信号驱动IO"><a href="#信号驱动IO" class="headerlink" title="信号驱动IO"></a>信号驱动IO</h4><p>信号处理IO是一种非阻塞模型，进程用系统调用<code>signaction</code>注册信号处理方法，然后立即返回(非阻塞)，当内核数据就序会递交一个信号给进程的信号处理方法，这时进程再阻塞调用<code>recvfrom</code>拷贝数据到进程中。</p>
+<h4 id="异步IO"><a href="#异步IO" class="headerlink" title="异步IO"></a>异步IO</h4><p>同样是进程系统调用<code>aio_read</code>之后立即返回，但内核不仅完成数据就序工作，还会自动把数据拷贝到进程中，再递交系统调用中指定的信号。它与信号驱动的异步IO的区别在于：信号驱动IO在数据就序时通知，由进程调用数据拷贝操作；异步IO由内核进行数据拷贝，在拷贝完成时通知。</p>
+<h3 id="划分方式"><a href="#划分方式" class="headerlink" title="划分方式"></a>划分方式</h3><p>同步、非同步和阻塞、非阻塞很容易混淆，它们的区别很明显，如果把IO分为两个阶段：发起IO请求(内核准备数据报)和执行IO操作(内核内存拷贝至进程内存)。那么阻塞/非阻塞就在于发起IO请求是否被阻塞，前面介绍的阻塞IO和IO复用都是在第一步阻塞，所以是阻塞IO；而同步/非同步在于执行IO操作是否被阻塞，前四种模型在执行IO操作时都在第二步阻塞，所以是同步IO。</p>
+<h2 id="BIO-NIO-AIO"><a href="#BIO-NIO-AIO" class="headerlink" title="BIO, NIO, AIO"></a>BIO, NIO, AIO</h2><p>BIO是同步阻塞IO(block)，适用于连接数目<strong>少</strong>且固定的架构；</p>
+<p>NIO是同步非阻塞IO(Non-block)，适用于连接数目<strong>多</strong>但连接时间<strong>较短</strong>的架构，JDK1.4开始支持；</p>
+<p>AIO是异步非阻塞IO(Asynchronous)，适用于连接数目<strong>多</strong>且连接持续时间<strong>较长</strong>的架构，JDK7开始支持。</p>
+<p>JavaBIO：服务器采用一个连接对应一个线程的模式，客户端有连接请求时服务器启动一个线程进行处理；</p>
+<p>JavaNIO：服务期采用一个IO请求对应一个线程的模式，客户端发送的连接请求注册到多路复用器上，当轮询到有IO请求时才启动一个线程进行处理。(epoll实现)</p>
+<p>JavaAIO(NIO 2.0)：服务器采用一个有效IO请求对应一个线程，客户端的IO请求由内核先完成再通知服务器启动线程进行处理。</p>
+<p>与前面介绍的IO模型基础思想进行对照就很好理解。</p>
+]]></content>
+      <categories>
+        <category>Operation System</category>
+      </categories>
+      <tags>
+        <tag>I/O models</tag>
+        <tag>Operation System</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringBoot 2</title>
+    <url>/2021/02/01/spring-boot/</url>
+    <content><![CDATA[<h3 id="Web-开发"><a href="#Web-开发" class="headerlink" title="Web 开发"></a>Web 开发</h3><h4 id="1-静态资源访问"><a href="#1-静态资源访问" class="headerlink" title="1. 静态资源访问"></a>1. 静态资源访问</h4><h5 id="1-1-路径"><a href="#1-1-路径" class="headerlink" title="1.1 路径"></a>1.1 路径</h5><p>静态资源路径包括 <code>/static</code>、 <code>/public</code>、 <code>/resources</code> 、<code>/META-INF/resources</code> ，访问 <em>根路径 + 静态资源名</em> 即可访问对应的静态资源，如： /picture123.jpg</p>
+<p>其原理是使用静态映射/**，当访问请求找不到对应的Controller，再交给静态资源处理器，如果静态资源处理器也找不到就返回404。</p>
+<p>在application.yaml文件中使用<code>  static-path-pattern</code>修改配置</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">	<span class="attr">mvc:</span></span><br><span class="line">	<span class="attr">static-path-pattern:</span> <span class="string">/resources/**</span></span><br></pre></td></tr></table></figure>
+<p>相应地，<code>static-location: [classpath: /xxx/]</code> 用来重新设置多个静态资源路径</p>
+<a id="more"></a>
+
+
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>Framework</category>
+      </categories>
+      <tags>
+        <tag>Spring Boot</tag>
+        <tag>Framework</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Singleton Pattern</title>
     <url>/2021/01/28/singleton-pattern/</url>
     <content><![CDATA[<p>This post references <a href="https://www.journaldev.com/1377/java-singleton-design-pattern-best-practices-examples">JournalDev</a>, and was written in English for personnal practicing.</p>
@@ -894,33 +921,6 @@
       <tags>
         <tag>Design Patterns</tag>
         <tag>Singleton Pattern</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SpringBoot 2</title>
-    <url>/2021/02/01/spring-boot/</url>
-    <content><![CDATA[<h3 id="Web-开发"><a href="#Web-开发" class="headerlink" title="Web 开发"></a>Web 开发</h3><h4 id="1-静态资源访问"><a href="#1-静态资源访问" class="headerlink" title="1. 静态资源访问"></a>1. 静态资源访问</h4><h5 id="1-1-路径"><a href="#1-1-路径" class="headerlink" title="1.1 路径"></a>1.1 路径</h5><p>静态资源路径包括 <code>/static</code>、 <code>/public</code>、 <code>/resources</code> 、<code>/META-INF/resources</code> ，访问 <em>根路径 + 静态资源名</em> 即可访问对应的静态资源，如： /picture123.jpg</p>
-<p>其原理是使用静态映射/**，当访问请求找不到对应的Controller，再交给静态资源处理器，如果静态资源处理器也找不到就返回404。</p>
-<p>在application.yaml文件中使用<code>  static-path-pattern</code>修改配置</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">	<span class="attr">mvc:</span></span><br><span class="line">	<span class="attr">static-path-pattern:</span> <span class="string">/resources/**</span></span><br></pre></td></tr></table></figure>
-<p>相应地，<code>static-location: [classpath: /xxx/]</code> 用来重新设置多个静态资源路径</p>
-<a id="more"></a>
-
-
-
-
-
-
-
-
-
-]]></content>
-      <categories>
-        <category>Framework</category>
-      </categories>
-      <tags>
-        <tag>Spring Boot</tag>
-        <tag>Framework</tag>
       </tags>
   </entry>
   <entry>
