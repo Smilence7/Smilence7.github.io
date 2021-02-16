@@ -862,7 +862,7 @@
   <entry>
     <title>Java VM 系列</title>
     <url>/2021/02/16/jvm/</url>
-    <content><![CDATA[<h2 id="Runtime-Data-Areas-运行时数据区"><a href="#Runtime-Data-Areas-运行时数据区" class="headerlink" title="Runtime Data Areas 运行时数据区"></a>Runtime Data Areas 运行时数据区</h2><p><em><a href="https://www.cnblogs.com/wuzhenzhao/p/12346515.html">吴振照的博客</a></em></p>
+    <content><![CDATA[<h2 id="运行时数据区"><a href="#运行时数据区" class="headerlink" title="运行时数据区"></a>运行时数据区</h2><p><em><a href="https://www.cnblogs.com/wuzhenzhao/p/12346515.html">吴振照的博客</a></em></p>
 <p>由Java VM管理的内存区域叫运行时数据区(Runtime Data Area)，这个数据区被划分为几个逻辑区域，包括方法区、堆、虚拟机栈、程序计数器、本地方法栈。</p>
 <p>其中方法区和堆是线程共享区域，虚拟机栈、程序计数器、本地方法栈是为线程存储运行时数据的独占区域，每个线程都有一份。</p>
 <img src="/2021/02/16/jvm/runtime_data_area.png" class="" title="运行时数据区">
