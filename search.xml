@@ -91,6 +91,48 @@
       </tags>
   </entry>
   <entry>
+    <title>Hexo 快速部署</title>
+    <url>/2021/01/23/hexo/</url>
+    <content><![CDATA[<p>因为搭建博客的命令步骤都很容易理解，所以本文只是简单的记录过程中用到的命令和配置，可供参考和回查。</p>
+<h4 id="安装nodejs"><a href="#安装nodejs" class="headerlink" title="安装nodejs"></a>安装nodejs</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo wget https://npm.taobao.org/mirrors/node/latest-v14.x/node-v14.15.4.tar.gz</span><br><span class="line">sudo tar zxvf node-v14.15.4.tar.gz</span><br><span class="line">yum install gcc gcc-c++</span><br><span class="line">mv node-v14.15.4-linux-x64 nodejs</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/node /usr/bin/node </span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npm /usr/bin/npm</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npx /usr/bin/npx</span><br><span class="line"><span class="comment"># 换源</span></span><br><span class="line">npm install -g cnpm --registry=https://registry.npm.taobao.org</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/cnpm /usr/bin/cnpm</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+<h4 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo cnpm install -g hexo-cli</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/hexo /usr/bin/hexo</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 依赖</span></span><br><span class="line">yum -y install curl-devel expat-devel gettext-devel openssl-devel zlib-devel gcc</span><br><span class="line">sudo tar -zxf git-2.21.0.tar.gz</span><br><span class="line"><span class="built_in">cd</span> git-2.21.0</span><br><span class="line">sudo make</span><br><span class="line">sudo make install prefix=/usr/<span class="built_in">local</span>/git</span><br><span class="line"><span class="comment"># 添加环境变量</span></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/usr/<span class="built_in">local</span>/git/bin</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br><span class="line"><span class="comment"># 或建立软连接</span></span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/git/bin/git /usr/<span class="built_in">local</span>/bin/</span><br><span class="line"><span class="comment"># 配置身份</span></span><br><span class="line">git config --global user.name <span class="string">&quot;zayeum&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;smilence7@outlook.com&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo hexo init</span><br><span class="line">sudo hexo s  <span class="comment"># start local server</span></span><br><span class="line">sudo npm install hexo-deployer-git --save</span><br><span class="line">sudo vim _config.yml</span><br><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: <span class="string">&#x27;git&#x27;</span></span><br><span class="line">  repo: <span class="string">&#x27;https://github.com/Smilence7/Smilence7.github.io&#x27;</span></span><br><span class="line">  branch: <span class="string">&#x27;master&#x27;</span></span><br><span class="line">sudo hexo clean</span><br><span class="line">sudo hexo g  <span class="comment"># generate</span></span><br><span class="line">sudo hexo d  <span class="comment"># deploy</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="多端部署"><a href="#多端部署" class="headerlink" title="多端部署"></a>多端部署</h4><p>主要参考 <a href="https://leooo48.github.io/2017/07/12/hexo-github/">这篇博客</a></p>
+<p>从base端上传源文件到github的hexo branch下</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog</span><br><span class="line"><span class="comment"># 先删除theme中的.git文件夹</span></span><br><span class="line">sudo git init</span><br><span class="line">sudo git add -A</span><br><span class="line">sudo git commit -m <span class="string">&quot;all blog source files&quot;</span></span><br><span class="line">sudo git branch hexo</span><br><span class="line">sudo git checkout hexo</span><br><span class="line">sudo git remote add origin https://github.com/Smilence7/Smilence7.github.io.git</span><br><span class="line">sudo git push origin hexo -f</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>在新环境中安装Git, Nodejs</p>
+</li>
+<li><p>从github repo中克隆源文件</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> -b hexo https://github.com/Smilence7/Smilence7.github.io.git</span><br></pre></td></tr></table></figure></li>
+<li><p>安装hexo</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># windows</span></span><br><span class="line">npm install hexo-cli -g</span><br><span class="line">npm install</span><br><span class="line"><span class="comment"># Ubuntu</span></span><br><span class="line">npm install hexo --save</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<h4 id="配置域名"><a href="#配置域名" class="headerlink" title="配置域名"></a>配置域名</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog/<span class="built_in">source</span></span><br><span class="line"><span class="comment"># 创建CNAME文件绑定域名</span></span><br><span class="line">vim CNAME</span><br><span class="line">zayeum.com</span><br><span class="line"><span class="comment"># 在域名管理页面中配置DNS解析</span></span><br><span class="line"><span class="comment"># 解析类型为CNAME，ip为Smilence7.github.io</span></span><br></pre></td></tr></table></figure>
+
+
+]]></content>
+      <categories>
+        <category>Blog</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+        <tag>Blog</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>设计模式</title>
     <url>/2021/02/14/design-pattern/</url>
     <content><![CDATA[<h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><p>模式是你必须在应用程序中自己实现的形式化的最佳实践。</p>
@@ -136,45 +178,31 @@
       </tags>
   </entry>
   <entry>
-    <title>Hexo 快速部署</title>
-    <url>/2021/01/23/hexo/</url>
-    <content><![CDATA[<p>因为搭建博客的命令步骤都很容易理解，所以本文只是简单的记录过程中用到的命令和配置，可供参考和回查。</p>
-<h4 id="安装nodejs"><a href="#安装nodejs" class="headerlink" title="安装nodejs"></a>安装nodejs</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo wget https://npm.taobao.org/mirrors/node/latest-v14.x/node-v14.15.4.tar.gz</span><br><span class="line">sudo tar zxvf node-v14.15.4.tar.gz</span><br><span class="line">yum install gcc gcc-c++</span><br><span class="line">mv node-v14.15.4-linux-x64 nodejs</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/node /usr/bin/node </span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npm /usr/bin/npm</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npx /usr/bin/npx</span><br><span class="line"><span class="comment"># 换源</span></span><br><span class="line">npm install -g cnpm --registry=https://registry.npm.taobao.org</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/cnpm /usr/bin/cnpm</span><br></pre></td></tr></table></figure>
+    <title>I/O 模型</title>
+    <url>/2021/02/15/io-models/</url>
+    <content><![CDATA[<h2 id="IO模型"><a href="#IO模型" class="headerlink" title="IO模型"></a>IO模型</h2><h3 id="各种IO模型"><a href="#各种IO模型" class="headerlink" title="各种IO模型"></a>各种IO模型</h3><h4 id="阻塞-IO"><a href="#阻塞-IO" class="headerlink" title="阻塞 IO"></a>阻塞 IO</h4><p>缺省情形下，所有文件操作都是阻塞的。在进程空间中进行系统调用 (比如<code>recvfrom</code>)，系统切换到内核态准备接受数据，并将数据从内核拷贝到用户空间(进程内存)，返回成功提示，期间进程一直等待操作完成的返回结果。</p>
+<h4 id="非阻塞-IO"><a href="#非阻塞-IO" class="headerlink" title="非阻塞 IO"></a>非阻塞 IO</h4><p>进程执行系统调用后，如果内核IO操作没完成就返回一个错误；进程通过轮询的方式不断执行系统调用确认操作是否完成，直到返回成功提示。虽然这种方式是非阻塞的，但在获得成功返回之后执行的IO操作是阻塞的，所以整体上是同步的。</p>
 <a id="more"></a>
 
-<h4 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo cnpm install -g hexo-cli</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/hexo /usr/bin/hexo</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 依赖</span></span><br><span class="line">yum -y install curl-devel expat-devel gettext-devel openssl-devel zlib-devel gcc</span><br><span class="line">sudo tar -zxf git-2.21.0.tar.gz</span><br><span class="line"><span class="built_in">cd</span> git-2.21.0</span><br><span class="line">sudo make</span><br><span class="line">sudo make install prefix=/usr/<span class="built_in">local</span>/git</span><br><span class="line"><span class="comment"># 添加环境变量</span></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/usr/<span class="built_in">local</span>/git/bin</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br><span class="line"><span class="comment"># 或建立软连接</span></span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/git/bin/git /usr/<span class="built_in">local</span>/bin/</span><br><span class="line"><span class="comment"># 配置身份</span></span><br><span class="line">git config --global user.name <span class="string">&quot;zayeum&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;smilence7@outlook.com&quot;</span></span><br></pre></td></tr></table></figure>
-
-
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo hexo init</span><br><span class="line">sudo hexo s  <span class="comment"># start local server</span></span><br><span class="line">sudo npm install hexo-deployer-git --save</span><br><span class="line">sudo vim _config.yml</span><br><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: <span class="string">&#x27;git&#x27;</span></span><br><span class="line">  repo: <span class="string">&#x27;https://github.com/Smilence7/Smilence7.github.io&#x27;</span></span><br><span class="line">  branch: <span class="string">&#x27;master&#x27;</span></span><br><span class="line">sudo hexo clean</span><br><span class="line">sudo hexo g  <span class="comment"># generate</span></span><br><span class="line">sudo hexo d  <span class="comment"># deploy</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<h4 id="多端部署"><a href="#多端部署" class="headerlink" title="多端部署"></a>多端部署</h4><p>主要参考 <a href="https://leooo48.github.io/2017/07/12/hexo-github/">这篇博客</a></p>
-<p>从base端上传源文件到github的hexo branch下</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog</span><br><span class="line"><span class="comment"># 先删除theme中的.git文件夹</span></span><br><span class="line">sudo git init</span><br><span class="line">sudo git add -A</span><br><span class="line">sudo git commit -m <span class="string">&quot;all blog source files&quot;</span></span><br><span class="line">sudo git branch hexo</span><br><span class="line">sudo git checkout hexo</span><br><span class="line">sudo git remote add origin https://github.com/Smilence7/Smilence7.github.io.git</span><br><span class="line">sudo git push origin hexo -f</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>在新环境中安装Git, Nodejs</p>
-</li>
-<li><p>从github repo中克隆源文件</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> -b hexo https://github.com/Smilence7/Smilence7.github.io.git</span><br></pre></td></tr></table></figure></li>
-<li><p>安装hexo</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># windows</span></span><br><span class="line">npm install hexo-cli -g</span><br><span class="line">npm install</span><br><span class="line"><span class="comment"># Ubuntu</span></span><br><span class="line">npm install hexo --save</span><br></pre></td></tr></table></figure>
-
-
-</li>
-</ul>
-<h4 id="配置域名"><a href="#配置域名" class="headerlink" title="配置域名"></a>配置域名</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog/<span class="built_in">source</span></span><br><span class="line"><span class="comment"># 创建CNAME文件绑定域名</span></span><br><span class="line">vim CNAME</span><br><span class="line">zayeum.com</span><br><span class="line"><span class="comment"># 在域名管理页面中配置DNS解析</span></span><br><span class="line"><span class="comment"># 解析类型为CNAME，ip为Smilence7.github.io</span></span><br></pre></td></tr></table></figure>
-
-
+<h4 id="IO复用"><a href="#IO复用" class="headerlink" title="IO复用"></a>IO复用</h4><p>IO复用模型用一个进程管理多个fd(file description)，将fd构成的数据结构传给<code>select</code> / <code>poll</code> 系统调用，并阻塞在调用处。系统调用顺序扫描fd是否就绪(可读)，当有就绪的数据时返回可读(有一个线程不断轮询多个socket的状态)；进程在阻塞状态直至收到返回值，再调用<code>recvfrom</code>系统调用把数据从内核拷贝到进程中。<code>select</code>只支持默认1024个fd，而<code>poll</code>没有数量限制；<code>select</code>使用的数据结构名为<code>fdset</code>，而<code>poll</code>使用<code>pollfd</code>类型数组。<code>select</code>和<code>poll</code>会有多次调用，因为fd不是同时就绪的，而每次调用都要复制所有fd到内核，因此速度慢。</p>
+<p><code>epoll</code>系统调用有一组方法，调用<code>epoll_create</code>创建一个eventpoll对象，有了对象后通过<code>epoll_ctl</code>向内核注册新fd或是改变fd的状态(而不是把fd集合拷贝到内核)，内核使用红黑树维护已注册的fd，并使用双向链表实现就绪队列，每当用户态调用<code>epoll_wait</code>获得就序队列。在水平触发模式下，进程可以不立即处理，因为下次调用<code>epoll_wait</code>时会再次获得；在边沿触发模式下，就序事件仅通知一次，进程需要立即处理。</p>
+<h4 id="信号驱动IO"><a href="#信号驱动IO" class="headerlink" title="信号驱动IO"></a>信号驱动IO</h4><p>信号处理IO是一种非阻塞模型，进程用系统调用<code>signaction</code>注册信号处理方法，然后立即返回(非阻塞)，当内核数据就序会递交一个信号给进程的信号处理方法，这时进程再阻塞调用<code>recvfrom</code>拷贝数据到进程中。</p>
+<h4 id="异步IO"><a href="#异步IO" class="headerlink" title="异步IO"></a>异步IO</h4><p>同样是进程系统调用<code>aio_read</code>之后立即返回，但内核不仅完成数据就序工作，还会自动把数据拷贝到进程中，再递交系统调用中指定的信号。它与信号驱动的异步IO的区别在于：信号驱动IO在数据就序时通知，由进程调用数据拷贝操作；异步IO由内核进行数据拷贝，在拷贝完成时通知。</p>
+<h3 id="划分方式"><a href="#划分方式" class="headerlink" title="划分方式"></a>划分方式</h3><p>同步、非同步和阻塞、非阻塞很容易混淆，它们的区别很明显，如果把IO分为两个阶段：发起IO请求(内核准备数据报)和执行IO操作(内核内存拷贝至进程内存)。那么阻塞/非阻塞就在于发起IO请求是否被阻塞，前面介绍的阻塞IO和IO复用都是在第一步阻塞，所以是阻塞IO；而同步/非同步在于执行IO操作是否被阻塞，前四种模型在执行IO操作时都在第二步阻塞，所以是同步IO。</p>
+<h2 id="BIO-NIO-AIO"><a href="#BIO-NIO-AIO" class="headerlink" title="BIO, NIO, AIO"></a>BIO, NIO, AIO</h2><p>BIO是同步阻塞IO(block)，适用于连接数目<strong>少</strong>且固定的架构；</p>
+<p>NIO是同步非阻塞IO(Non-block)，适用于连接数目<strong>多</strong>但连接时间<strong>较短</strong>的架构，JDK1.4开始支持；</p>
+<p>AIO是异步非阻塞IO(Asynchronous)，适用于连接数目<strong>多</strong>且连接持续时间<strong>较长</strong>的架构，JDK7开始支持。</p>
+<p>JavaBIO：服务器采用一个连接对应一个线程的模式，客户端有连接请求时服务器启动一个线程进行处理；</p>
+<p>JavaNIO：服务期采用一个IO请求对应一个线程的模式，客户端发送的连接请求注册到多路复用器上，当轮询到有IO请求时才启动一个线程进行处理。(epoll实现)</p>
+<p>JavaAIO(NIO 2.0)：服务器采用一个有效IO请求对应一个线程，客户端的IO请求由内核先完成再通知服务器启动线程进行处理。</p>
+<p>与前面介绍的IO模型基础思想进行对照就很好理解。</p>
 ]]></content>
       <categories>
-        <category>Blog</category>
+        <category>Operation System</category>
       </categories>
       <tags>
-        <tag>Hexo</tag>
-        <tag>Blog</tag>
+        <tag>I/O models</tag>
+        <tag>Operation System</tag>
       </tags>
   </entry>
   <entry>
@@ -641,31 +669,112 @@
       </tags>
   </entry>
   <entry>
-    <title>I/O 模型</title>
-    <url>/2021/02/15/io-models/</url>
-    <content><![CDATA[<h2 id="IO模型"><a href="#IO模型" class="headerlink" title="IO模型"></a>IO模型</h2><h3 id="各种IO模型"><a href="#各种IO模型" class="headerlink" title="各种IO模型"></a>各种IO模型</h3><h4 id="阻塞-IO"><a href="#阻塞-IO" class="headerlink" title="阻塞 IO"></a>阻塞 IO</h4><p>缺省情形下，所有文件操作都是阻塞的。在进程空间中进行系统调用 (比如<code>recvfrom</code>)，系统切换到内核态准备接受数据，并将数据从内核拷贝到用户空间(进程内存)，返回成功提示，期间进程一直等待操作完成的返回结果。</p>
-<h4 id="非阻塞-IO"><a href="#非阻塞-IO" class="headerlink" title="非阻塞 IO"></a>非阻塞 IO</h4><p>进程执行系统调用后，如果内核IO操作没完成就返回一个错误；进程通过轮询的方式不断执行系统调用确认操作是否完成，直到返回成功提示。虽然这种方式是非阻塞的，但在获得成功返回之后执行的IO操作是阻塞的，所以整体上是同步的。</p>
+    <title>Java VM 系列</title>
+    <url>/2021/02/16/jvm/</url>
+    <content><![CDATA[<h2 id="Runtime-Data-Areas-运行时数据区"><a href="#Runtime-Data-Areas-运行时数据区" class="headerlink" title="Runtime Data Areas 运行时数据区"></a>Runtime Data Areas 运行时数据区</h2><p><em><a href="https://www.cnblogs.com/wuzhenzhao/p/12346515.html">吴振照的博客</a></em></p>
+<p>由Java VM管理的内存区域叫运行时数据区(Runtime Data Area)，这个数据区被划分为几个逻辑区域，包括方法区、堆、虚拟机栈、程序计数器、本地方法栈。</p>
+<p>其中方法区和堆是线程共享区域，虚拟机栈、程序计数器、本地方法栈是为线程存储运行时数据的独占区域，每个线程都有一份。</p>
+<img src="/2021/02/16/jvm/runtime_data_area.png" class="" title="运行时数据区">
+
+<h3 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h3><p>方法区在JVM启动时创建，是堆的一部分，但为了与存放对象的堆区分，被取名为Non-Heap。方法区中存放<strong>运行时常量池</strong>、静态变量、类信息、即时编译器编译后的代码。方法区的内存不需要连续，在JDK 6、7中，方法区是永久代Perm Space，有JVM要求的固定大小上限；在JDK 8中，方法区改为元区域Metaspace，由JVM使用直接内存，仅被实际内存大小约束。JVM提供参数修改方法区的初始、最大、最小大小。如果方法区内存溢出，会产生错误信息OutOfMemoryError: Metaspace。</p>
+<blockquote>
+<p><strong>运行时常量池</strong></p>
+</blockquote>
+<p>运行时常量池(Runtime Constant Pool)中包含编译时已知的<strong>数值常量</strong>(已赋值的final)和运行时解析的<strong>方法</strong>、<strong>字段引用</strong>。</p>
 <a id="more"></a>
 
-<h4 id="IO复用"><a href="#IO复用" class="headerlink" title="IO复用"></a>IO复用</h4><p>IO复用模型用一个进程管理多个fd(file description)，将fd构成的数据结构传给<code>select</code> / <code>poll</code> 系统调用，并阻塞在调用处。系统调用顺序扫描fd是否就绪(可读)，当有就绪的数据时返回可读(有一个线程不断轮询多个socket的状态)；进程在阻塞状态直至收到返回值，再调用<code>recvfrom</code>系统调用把数据从内核拷贝到进程中。<code>select</code>只支持默认1024个fd，而<code>poll</code>没有数量限制；<code>select</code>使用的数据结构名为<code>fdset</code>，而<code>poll</code>使用<code>pollfd</code>类型数组。<code>select</code>和<code>poll</code>会有多次调用，因为fd不是同时就绪的，而每次调用都要复制所有fd到内核，因此速度慢。</p>
-<p><code>epoll</code>系统调用有一组方法，调用<code>epoll_create</code>创建一个eventpoll对象，有了对象后通过<code>epoll_ctl</code>向内核注册新fd或是改变fd的状态(而不是把fd集合拷贝到内核)，内核使用红黑树维护已注册的fd，并使用双向链表实现就绪队列，每当用户态调用<code>epoll_wait</code>获得就序队列。在水平触发模式下，进程可以不立即处理，因为下次调用<code>epoll_wait</code>时会再次获得；在边沿触发模式下，就序事件仅通知一次，进程需要立即处理。</p>
-<h4 id="信号驱动IO"><a href="#信号驱动IO" class="headerlink" title="信号驱动IO"></a>信号驱动IO</h4><p>信号处理IO是一种非阻塞模型，进程用系统调用<code>signaction</code>注册信号处理方法，然后立即返回(非阻塞)，当内核数据就序会递交一个信号给进程的信号处理方法，这时进程再阻塞调用<code>recvfrom</code>拷贝数据到进程中。</p>
-<h4 id="异步IO"><a href="#异步IO" class="headerlink" title="异步IO"></a>异步IO</h4><p>同样是进程系统调用<code>aio_read</code>之后立即返回，但内核不仅完成数据就序工作，还会自动把数据拷贝到进程中，再递交系统调用中指定的信号。它与信号驱动的异步IO的区别在于：信号驱动IO在数据就序时通知，由进程调用数据拷贝操作；异步IO由内核进行数据拷贝，在拷贝完成时通知。</p>
-<h3 id="划分方式"><a href="#划分方式" class="headerlink" title="划分方式"></a>划分方式</h3><p>同步、非同步和阻塞、非阻塞很容易混淆，它们的区别很明显，如果把IO分为两个阶段：发起IO请求(内核准备数据报)和执行IO操作(内核内存拷贝至进程内存)。那么阻塞/非阻塞就在于发起IO请求是否被阻塞，前面介绍的阻塞IO和IO复用都是在第一步阻塞，所以是阻塞IO；而同步/非同步在于执行IO操作是否被阻塞，前四种模型在执行IO操作时都在第二步阻塞，所以是同步IO。</p>
-<h2 id="BIO-NIO-AIO"><a href="#BIO-NIO-AIO" class="headerlink" title="BIO, NIO, AIO"></a>BIO, NIO, AIO</h2><p>BIO是同步阻塞IO(block)，适用于连接数目<strong>少</strong>且固定的架构；</p>
-<p>NIO是同步非阻塞IO(Non-block)，适用于连接数目<strong>多</strong>但连接时间<strong>较短</strong>的架构，JDK1.4开始支持；</p>
-<p>AIO是异步非阻塞IO(Asynchronous)，适用于连接数目<strong>多</strong>且连接持续时间<strong>较长</strong>的架构，JDK7开始支持。</p>
-<p>JavaBIO：服务器采用一个连接对应一个线程的模式，客户端有连接请求时服务器启动一个线程进行处理；</p>
-<p>JavaNIO：服务期采用一个IO请求对应一个线程的模式，客户端发送的连接请求注册到多路复用器上，当轮询到有IO请求时才启动一个线程进行处理。(epoll实现)</p>
-<p>JavaAIO(NIO 2.0)：服务器采用一个有效IO请求对应一个线程，客户端的IO请求由内核先完成再通知服务器启动线程进行处理。</p>
-<p>与前面介绍的IO模型基础思想进行对照就很好理解。</p>
+<h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><p>堆是JVM内存中最大的一块，也不需要是连续的，堆内存用于存放Java对象实例和数组。因为对象的使用寿命一般较短，因此堆是垃圾回收发生的主要区域。如果堆内存溢出，会产生错误信息OutOfMemoryError: Heap Space。</p>
+<h4 id="堆内存结构"><a href="#堆内存结构" class="headerlink" title="堆内存结构"></a>堆内存结构</h4><p>堆内存结构是以优化垃圾回收为目的设计的，具体结构见「垃圾回收机制」章节。</p>
+<h4 id="对象内存结构"><a href="#对象内存结构" class="headerlink" title="对象内存结构"></a>对象内存结构</h4><p>根据前文对JVM内存结构的介绍我们可以想到，一个静态引用是从<strong>方法区</strong>指向堆对象的引用，而一个普通引用是从<strong>栈帧</strong>指向堆对象的引用。那么对象的内部结构是怎样的呢？对象是怎么和它属于的类连接的呢？</p>
+<p>在其它语言实现中，很多会用到句柄，一个句柄分别指向对应的对象和类，引用变量只需要指向句柄即可间接连接到对象和类；而在HotSpot中是采用直接操控指针的方式实现的，每个对象内存中直接存放了指向所属类的指针。</p>
+<p>在一个对象中，有对象头、实例数据和填充数据三个逻辑部分。</p>
+<h5 id="对象头"><a href="#对象头" class="headerlink" title="对象头"></a>对象头</h5><p>保存与对象整体相关的信息：</p>
+<ul>
+<li>Mark Word: 用于保存hashcode、年龄(用于GC)、锁状态(用于分段锁)等信息，8 byte;</li>
+<li>Class Pointer: 指向方法区中的对应类数据，8 byte;</li>
+<li>Length: 数组长度，是数组对象特有的部分，4 byte。</li>
+</ul>
+<h5 id="实例数据"><a href="#实例数据" class="headerlink" title="实例数据"></a>实例数据</h5><p>保存对象的成员变量：</p>
+<ul>
+<li>boolean / byte: 1byte;</li>
+<li>short / char: 2 byte;</li>
+<li>int / float: 4 byte;</li>
+<li>long / double: 8 byte;</li>
+<li>reference: 8byte.</li>
+</ul>
+<h5 id="对齐填充"><a href="#对齐填充" class="headerlink" title="对齐填充"></a>对齐填充</h5><p>将对象的大小填充到8byte的整数倍。</p>
+<h3 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h3><p>程序计数器(Program Count Register)用于记录程序运行的进度，具体地说，用于保存当前正在执行的VM字节码指令的地址。每个线程都有一个程序计数器，通过它，线程能够在拿到cpu时间片时直接定位到该执行的指令。如果执行的是Native方法，则当前值为Undefined。</p>
+<h3 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h3><p>虚拟机栈是线程在方法调用时使用的底层存储空间，线程将调用方法所要用的数据存放在一起压入栈中，称作一个栈帧。方法的调用开始和完成就对应了一个栈帧的压入和弹出。每个栈帧中包含四个部分：</p>
+<ul>
+<li><p>局部变量表：存放方法参数和局部变量，注意，使用这些变量需要先将它们压入操作数栈中。</p>
+</li>
+<li><p>操作数栈：存储当前使用的操作数。</p>
+</li>
+<li><p>动态链接：指向<strong>运行时常量池</strong>中该栈帧对应方法的引用，支持方法中的动态链接</p>
+</li>
+<li><p>方法出口：方法返回的地址。</p>
+</li>
+</ul>
+<h3 id="本地方式栈"><a href="#本地方式栈" class="headerlink" title="本地方式栈"></a>本地方式栈</h3><p>与虚拟机栈类似，只是本地方法栈专用于本地方法的执行。</p>
+<h2 id="类加载机制"><a href="#类加载机制" class="headerlink" title="类加载机制"></a>类加载机制</h2><p><em><a href="https://www.cnblogs.com/wuzhenzhao/p/12346516.html">吴振照的博客</a></em></p>
+<p><em>待补</em></p>
+<h2 id="垃圾回收机制"><a href="#垃圾回收机制" class="headerlink" title="垃圾回收机制"></a>垃圾回收机制</h2><p>当一些对象不在被任何对象引用引用，JVM的垃圾回收机制(Garbage Collector)会帮我们释放对象占用的内存。那么GC应该怎么判断对象是否需要回收呢？有两种思想，一种是引用计数，一种是根搜索。</p>
+<h3 id="引用计数算法-Reference-Counting-GC"><a href="#引用计数算法-Reference-Counting-GC" class="headerlink" title="引用计数算法(Reference Counting GC)"></a>引用计数算法(Reference Counting GC)</h3><p>每一个对象存储一个计数变量，每当有一个地方引用它就加1，每当有一个引用失效就减1。由于一个对象在创建后必须被引用，否则就再也不能被引用，所以当计数值归0时，就说明不再会有任何引用能够引用到它。</p>
+<p>这种算法的特点是简单，可以与正常程序并发进行，但检查不出对象间的循环引用，早期的JVM曾用过这种方法。</p>
+<h3 id="根搜索-Tracing-GC"><a href="#根搜索-Tracing-GC" class="headerlink" title="根搜索(Tracing GC)"></a>根搜索(Tracing GC)</h3><p>如果把对象的引用变量关系看作一张有向图，只要定义一些一直存在的结点为根结点(GC Roots)，从根节点开始搜索，能搜索到的结点就是仍在使用中的对象。Tracing GC的实现可以使用广度优先算法，算法的思想是将结点分为白、灰、黑三种颜色：白色代表还没搜索到的结点；灰色代表正在搜索的结点，也就是说这个对象仍有引用没有遍历完，将其放入搜索队列；黑色代表已经搜索过的结点，放入集合。具体实现方法是，申请一段连续地址作为队列，从根集合出发进行广度优先搜索，在搜索的过程中，只扫描没有标记过的对象，先标记这些对象，再将其放入队尾。</p>
+<p>在tracing GC中包含GC Roots、Stop The World的概念，基于根搜索的标记思想又衍生出不同的回收方案。</p>
+<h4 id="GC-Roots"><a href="#GC-Roots" class="headerlink" title="GC Roots"></a>GC Roots</h4><p>GC Roots包括：</p>
+<ul>
+<li>虚拟机栈中引用的对象，即栈帧中的局部变量表中的引用对象；</li>
+<li>方法区中的常量引用的对象；</li>
+<li>方法区中的类静态属性引用的对象；</li>
+<li>本地方法栈中JNI的引用对象；</li>
+<li>活跃线程。</li>
+</ul>
+<h4 id="Stop-The-World"><a href="#Stop-The-World" class="headerlink" title="Stop The World"></a>Stop The World</h4><p>由于程序在运行过程中，对象的引用关系是动态变化的，所以要进行Tracing和marking，必须暂停所有应用线程。JVM会让所有线程运行到安全点(safepoint)，并触发一次Stop The World(STW)。暂停的时间取决于存活对象的多少。</p>
+<h4 id="内存回收方法"><a href="#内存回收方法" class="headerlink" title="内存回收方法"></a>内存回收方法</h4><p>在根搜索标记阶段完成后，就需要真正地回收内存了，在这一步可以采用不同的方法。</p>
+<h5 id="标记清除"><a href="#标记清除" class="headerlink" title="标记清除"></a>标记清除</h5><p>标记阶段结束后，直接回收所有没被标记的对象，这种方法的好处就是在引用计数法的效果上弥补了循环引用问题的不足，而比起其他tracing算法，它不需要移动对象；缺点是需要用一个表来维护所有没被标记的对象，而且回收后会产生内存碎片。</p>
+<h5 id="标记整理-Compacting-GC"><a href="#标记整理-Compacting-GC" class="headerlink" title="标记整理(Compacting GC)"></a>标记整理(Compacting GC)</h5><p>标记阶段结束后，将所有的标记对象向内存地址的一边移动，相当于“整理”内存。这样就不会有内存碎片，新对象的创建地址只需要用一个指针指示。缺点是整理耗费的时间长。</p>
+<h5 id="标记复制-Copying-GC"><a href="#标记复制-Copying-GC" class="headerlink" title="标记复制(Copying GC)"></a>标记复制(Copying GC)</h5><p>Copying的思想是把内存分成大小相等的两块，每次只使用其中一块。每当需要垃圾回收时，通过tracing标记所有存活的对象，把它们拷贝到另外一块内存中。这种方法的好处是标记和复制可以同时进行，而且复制操作中目标地址是连续的，原地址也不需要备份，实现更高效，也不会产生内存碎片；缺点就是需要两倍大小的内存空间。</p>
+<p>Copying GC是HotSpot GC中负责新生代垃圾回收的算法主要采用的方法，因为新生代中大多数对象的生命周期都很短，每次标记只有少量对象能存活，因此需要复制的对象就少，算法效率更高。</p>
+<h5 id="Adaptive-GC"><a href="#Adaptive-GC" class="headerlink" title="Adaptive GC"></a>Adaptive GC</h5><p>这种思想是根据当前情况选择合适的GC算法去处理。分代其实也有一点Adaptive GC思想，只是分代并不是动态选择，而是划分好了不同的情况，并规定每种情况用哪种GC算法。</p>
+<h3 id="Cheney算法——Minor-GC的起源"><a href="#Cheney算法——Minor-GC的起源" class="headerlink" title="Cheney算法——Minor GC的起源"></a>Cheney算法——Minor GC的起源</h3><p><em><a href="https://hllvm-group.iteye.com/group/topic/39376#post-257329">R大的文章</a></em></p>
+<p>Minor GC与其对应在serial GC中的实现类DefNewGeneration使用的就是Cheney算法的变种，Cheney是一种经典的copying算法，它的实现思想就是上文介绍的标记复制方法，具体来说，有以下几个重点：</p>
+<ol>
+<li>使用一块连续的地址空间，划分成from-space和to-space。</li>
+<li>从GC Roots中逐个扫描指向堆的引用，每扫描到一个对象，就把它从from-space拷贝到to-space，并在原对象里记录forwarding pointer，用于标识这个对象被移动到的新位置。并且，每通过<strong>引用</strong>扫描到一个引用对象、拷贝这个对象后，就将这个引用<strong>修正</strong>为指向拷贝后的新对象。</li>
+<li>扫描到一个对象时，通过是否有forwarding pointer来判断对象是否被扫描过。所以forwarding pointer既有转发、更新引用的作用，也有标记(mark)作用。</li>
+<li>to-space区域用一个指针(scanned)指示已经完成扫描的对象位置，另一个指针(top)指示新来的对象应该放到哪里，逻辑上地址是由低到高。由于一个对象可能包含多个引用，每扫描到一个引用，都需要将引用对象拷贝到to-space的对应位置，但对象本身并没有扫描完成，所以to-space成为了一个隐式的队列结构，bottom<del>scanned区域是完成扫描的对象，scanned</del>top区域是已经扫描到但没扫描完的对象，top~end是未分配的空间。</li>
+</ol>
+<h3 id="堆内存划分"><a href="#堆内存划分" class="headerlink" title="堆内存划分"></a>堆内存划分</h3><p>JVM研究人员发现，对象的生命周期各不相同，其中大部分对象的生命周期都很短，根据年龄划分对象和对象存放区域，能够有效地利用copying算法的优势，从而提高整个GC体系的效率。因此堆内存在HotSpot虚拟机中，以优化垃圾回收算法为目的，划分为新生代(Young Generation)、年老代(Old Generation)和永久代(Permanent Generation)。其中新生代又被划分为Eden区和Survivor区，Survivor区又被分为survivor0和survivor1两半，对应copying算法中的from-space和to-space。新生代中 Eden : S0 : S1 = 8 : 1 : 1。</p>
+<img src="/2021/02/16/jvm/heap_area.png" class="" title="堆内存结构">
+
+<p>一般情况下，新创建的对象会被分配到eden区，而大对象会被直接分配到old区。</p>
+<p>Minor GC，也就是基于copying GC的算法，负责整个young区的垃圾回收。当eden区被放满，就会对eden区进行一次minor GC，把eden和from-space中存活的对象复制到to-space，并且年龄+1，年龄到达阈值的对象会被移到old区。to-space总是在结束前和from-space互换，保证只有from-space有对象。当to-space在一次GC过程中被填满了，minor GC就会把所有存活对象放入old区。</p>
+<p>Old区空间比较大，且在这里的对象都已经很老了比较长(从统计学上看，对象的生命周期要么很短，要么偏长)，所以old区进行GC的频率远小于young区，负责old区的GC称为Major GC (伴随着Minor GC，因此也叫Full GC) 。</p>
+<h3 id="串行、并行、CMS、G1-GC"><a href="#串行、并行、CMS、G1-GC" class="headerlink" title="串行、并行、CMS、G1 GC"></a>串行、并行、CMS、G1 GC</h3><p><em><a href="https://www.jianshu.com/p/5261a62e4d29">简欲明心的文章</a></em></p>
+<p><em>待补</em></p>
+<h3 id="值得注意的问题"><a href="#值得注意的问题" class="headerlink" title="值得注意的问题"></a>值得注意的问题</h3><h4 id="为什么要分代"><a href="#为什么要分代" class="headerlink" title="为什么要分代"></a>为什么要分代</h4><p>对于Serial GC来说，GC过程中需要stop the world，所以缩短一次GC的耗时是一件重要的事，而分代作为一种partition的思路，基于对象“朝生暮死”的特性，让新对象在新生代创建，并且频繁收集新生代中的垃圾，而新生代的大小通常也只占堆中的一小部分，所以能够降低STW时间。</p>
+<p>而对于并发GC来说，GC是一场和应用拼速度的游戏：应用在创建对象和引用，而GC在后面收集失效的对象和引用。在这种情形下，分代缩短GC的处理时间，就能提高GC的速度，避免或者降低GC应付不了应用不断产生的垃圾、造成STW并等待GC收集的情况。</p>
+<h4 id="为什么Young-Generation中要分为Eden和Survivor区"><a href="#为什么Young-Generation中要分为Eden和Survivor区" class="headerlink" title="为什么Young Generation中要分为Eden和Survivor区"></a>为什么Young Generation中要分为Eden和Survivor区</h4><p>如果没有年龄机制，每次Young区满了就要把存活对象放入old区，这样old区更快被填满，发生Full GC的频率增大，效率慢。设置Survivor区和年龄晋升机制就是为了让young区更频繁的触发具有高效率的Minor GC，减少Full GC频率。</p>
+<h4 id="为什么Survivor区分为两块"><a href="#为什么Survivor区分为两块" class="headerlink" title="为什么Survivor区分为两块"></a>为什么Survivor区分为两块</h4><p>显然，是为了使用Copying GC的思想，得到它的优点：高效地同时去碎片化。</p>
+<h4 id="设置forwarding-pointer和更新引用"><a href="#设置forwarding-pointer和更新引用" class="headerlink" title="设置forwarding pointer和更新引用"></a>设置forwarding pointer和更新引用</h4><p><em><a href="https://www.zhihu.com/question/42181722/answer/145085437">Ted Mosby的回答</a></em></p>
+<p>Copying GC策略中复制对象后，原对象的对象头改为指向新对象地址的指针forwarding pointer。</p>
+<h5 id="Young-GC"><a href="#Young-GC" class="headerlink" title="Young GC"></a>Young GC</h5><p>Young GC类算法中，GC roots包含原定义的GC roots加上old-&gt;young的引用，从这些roots出发，trace每一条路径，如果遇到young-&gt;old的引用，则停止这条路径的搜索；</p>
+<p>当第一次遇到一个对象，会将其copy或者promote，并在这个原对象的markword中存放forwarding pointer；如果这个对象还被其他<strong>引用</strong>指向，下一次tracing到这个对象时，会根据其存放的forwarding pointer更新这些<strong>引用</strong>。</p>
+<p>这类算法包括Serial Young GC（DefNew）、Parallel Young GC、ParNew，以及G1 GC的Young GC &amp; Mixed GC。</p>
+<h5 id="Full-GC"><a href="#Full-GC" class="headerlink" title="Full GC"></a>Full GC</h5><p>Full GC类算法中，先扫描一遍整个堆，找到所有的live objects，计算它们将要去往的新地址，先通过这些地址更改所有live objects的引用，使它们指向正确的新地址，再把live objects复制到对应的新地址上。</p>
+<p>这类算法包括Serial Old GC、PS MarkSweep GC、Parallel Old GC、Full GC for CMS和Full GC for G1 GC。</p>
+<h5 id="CMS-GC"><a href="#CMS-GC" class="headerlink" title="CMS GC"></a>CMS GC</h5><p>CMS算法的老年代GC采用标记-清除法，当ParNew GC的mark-copy结束后，再trace一遍指向老年代的引用，对扫描到的对象进行remark。</p>
+<h4 id="待读"><a href="#待读" class="headerlink" title="待读"></a>待读</h4><p><a href="https://www.zhihu.com/question/53613423/answer/135743258">RednaxelaFX的回答</a></p>
 ]]></content>
       <categories>
-        <category>Operation System</category>
+        <category>Java</category>
       </categories>
       <tags>
-        <tag>I/O models</tag>
-        <tag>Operation System</tag>
+        <tag>GC</tag>
+        <tag>JVM</tag>
+        <tag>Java</tag>
       </tags>
   </entry>
   <entry>
@@ -857,114 +966,6 @@
       </categories>
       <tags>
         <tag>Java</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Java VM 系列</title>
-    <url>/2021/02/16/jvm/</url>
-    <content><![CDATA[<h2 id="Runtime-Data-Areas-运行时数据区"><a href="#Runtime-Data-Areas-运行时数据区" class="headerlink" title="Runtime Data Areas 运行时数据区"></a>Runtime Data Areas 运行时数据区</h2><p><em><a href="https://www.cnblogs.com/wuzhenzhao/p/12346515.html">吴振照的博客</a></em></p>
-<p>由Java VM管理的内存区域叫运行时数据区(Runtime Data Area)，这个数据区被划分为几个逻辑区域，包括方法区、堆、虚拟机栈、程序计数器、本地方法栈。</p>
-<p>其中方法区和堆是线程共享区域，虚拟机栈、程序计数器、本地方法栈是为线程存储运行时数据的独占区域，每个线程都有一份。</p>
-<img src="/2021/02/16/jvm/runtime_data_area.png" class="" title="运行时数据区">
-
-<h3 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h3><p>方法区在JVM启动时创建，是堆的一部分，但为了与存放对象的堆区分，被取名为Non-Heap。方法区中存放<strong>运行时常量池</strong>、静态变量、类信息、即时编译器编译后的代码。方法区的内存不需要连续，在JDK 6、7中，方法区是永久代Perm Space，有JVM要求的固定大小上限；在JDK 8中，方法区改为元区域Metaspace，由JVM使用直接内存，仅被实际内存大小约束。JVM提供参数修改方法区的初始、最大、最小大小。如果方法区内存溢出，会产生错误信息OutOfMemoryError: Metaspace。</p>
-<blockquote>
-<p><strong>运行时常量池</strong></p>
-</blockquote>
-<p>运行时常量池(Runtime Constant Pool)中包含编译时已知的<strong>数值常量</strong>(已赋值的final)和运行时解析的<strong>方法</strong>、<strong>字段引用</strong>。</p>
-<a id="more"></a>
-
-<h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><p>堆是JVM内存中最大的一块，用于存放Java对象实例和数组。因为对象的使用寿命一般较段，因此堆是垃圾回收发生的主要区域。如果堆内存溢出，会产生错误信息OutOfMemoryError: Heap Space。</p>
-<p>堆内存结构将在JVM垃圾回收章节中详细介绍，堆中对象的内存结构将在下面章节单独介绍。</p>
-<h3 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h3><p>程序计数器(Program Count Register)用于记录程序运行的进度，具体地说，用于保存当前正在执行的VM字节码指令的地址。每个线程都有一个程序计数器，通过它，线程能够在拿到cpu时间片时直接定位到该执行的指令。如果执行的是Native方法，则当前值为Undefined。</p>
-<h3 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h3><p>虚拟机栈是线程在方法调用时使用的底层存储空间，线程将调用方法所要用的数据存放在一起压入栈中，称作一个栈帧。方法的调用开始和完成就对应了一个栈帧的压入和弹出。每个栈帧中包含四个部分：</p>
-<ul>
-<li><p>局部变量表：存放方法参数和局部变量，注意，使用这些变量需要先将它们压入操作数栈中。</p>
-</li>
-<li><p>操作数栈：存储当前使用的操作数。</p>
-</li>
-<li><p>动态链接：指向<strong>运行时常量池</strong>中该栈帧对应方法的引用，支持方法中的动态链接</p>
-</li>
-<li><p>方法出口：方法返回的地址。</p>
-</li>
-</ul>
-<h3 id="本地方式栈"><a href="#本地方式栈" class="headerlink" title="本地方式栈"></a>本地方式栈</h3><p>与虚拟机栈类似，只是本地方法栈专用于本地方法的执行。</p>
-<h2 id="对象内存结构"><a href="#对象内存结构" class="headerlink" title="对象内存结构"></a>对象内存结构</h2><p>根据前文对JVM内存结构的介绍我们可以想到，一个静态引用是从<strong>方法区</strong>指向堆对象的引用，而一个普通引用是从<strong>栈帧</strong>指向堆对象的引用。那么对象的内部结构是怎样的呢？对象是怎么和它属于的类连接的呢？</p>
-<p>在其它语言实现中，很多会用到句柄，一个句柄分别指向对应的对象和类，引用变量只需要指向句柄即可间接连接到对象和类；而在HotSpot中是采用直接操控指针的方式实现的，每个对象内存中直接存放了指向所属类的指针。</p>
-<p>在一个对象中，有对象头、实例数据和填充数据三个逻辑部分。</p>
-<h4 id="对象头"><a href="#对象头" class="headerlink" title="对象头"></a>对象头</h4><p>保存与对象整体相关的信息：</p>
-<ul>
-<li>Mark Word: 用于保存hashcode、年龄(用于GC)、锁状态(用于分段锁)等信息，8 byte;</li>
-<li>Class Pointer: 指向方法区中的对应类数据，8 byte;</li>
-<li>Length: 数组长度，是数组对象特有的部分，4 byte。</li>
-</ul>
-<h4 id="实例数据"><a href="#实例数据" class="headerlink" title="实例数据"></a>实例数据</h4><p>保存对象的成员变量：</p>
-<ul>
-<li>boolean / byte: 1byte;</li>
-<li>short / char: 2 byte;</li>
-<li>int / float: 4 byte;</li>
-<li>long / double: 8 byte;</li>
-<li>reference: 8byte.</li>
-</ul>
-<h4 id="对齐填充"><a href="#对齐填充" class="headerlink" title="对齐填充"></a>对齐填充</h4><p>将对象的大小填充到8byte的整数倍。</p>
-<h2 id="类加载机制"><a href="#类加载机制" class="headerlink" title="类加载机制"></a>类加载机制</h2><p><em><a href="https://www.cnblogs.com/wuzhenzhao/p/12346516.html">吴振照的博客</a></em></p>
-<p><em>待补</em></p>
-<h2 id="垃圾回收机制"><a href="#垃圾回收机制" class="headerlink" title="垃圾回收机制"></a>垃圾回收机制</h2><p>当一些对象不在被任何对象引用引用，JVM的垃圾回收机制(Garbage Collector)会帮我们释放对象占用的内存。那么GC应该怎么判断对象是否需要回收呢？有两种思想，一种是引用计数，一种是根搜索。</p>
-<h3 id="引用计数算法-Reference-Counting-GC"><a href="#引用计数算法-Reference-Counting-GC" class="headerlink" title="引用计数算法(Reference Counting GC)"></a>引用计数算法(Reference Counting GC)</h3><p>每一个对象存储一个计数变量，每当有一个地方引用它就加1，每当有一个引用失效就减1。由于一个对象在创建后必须被引用，否则就再也不能被引用，所以当计数值归0时，就说明不再会有任何引用能够引用到它。</p>
-<p>这种算法的特点是简单，可以与正常程序并发进行，但检查不出对象间的循环引用，早期的JVM曾用过这种方法。</p>
-<h3 id="根搜索-Tracing-GC"><a href="#根搜索-Tracing-GC" class="headerlink" title="根搜索(Tracing GC)"></a>根搜索(Tracing GC)</h3><p>如果把对象的引用变量关系看作一张有向图，只要定义一些一直存在的结点为根结点(GC Roots)，从根节点开始搜索，能搜索到的结点就是仍在使用中的对象。Tracing GC的实现可以使用广度优先算法，算法的思想是将结点分为白、灰、黑三种颜色：白色代表还没搜索到的结点；灰色代表正在搜索的结点，也就是说这个对象仍有引用没有遍历完，将其放入搜索队列；黑色代表已经搜索过的结点，放入集合。具体实现方法是，申请一段连续地址作为队列，从根集合出发进行广度优先搜索，在搜索的过程中，只扫描没有标记过的对象，先标记这些对象，再将其放入队尾。</p>
-<p>在tracing GC中包含GC Roots、Stop The World的概念，基于根搜索的标记思想又衍生出不同的回收方案。</p>
-<h4 id="GC-Roots"><a href="#GC-Roots" class="headerlink" title="GC Roots"></a>GC Roots</h4><p>GC Roots包括：</p>
-<ul>
-<li>虚拟机栈中引用的对象，即栈帧中的局部变量表中的引用对象；</li>
-<li>方法区中的常量引用的对象；</li>
-<li>方法区中的类静态属性引用的对象；</li>
-<li>本地方法栈中JNI的引用对象；</li>
-<li>活跃线程。</li>
-</ul>
-<h4 id="Stop-The-World"><a href="#Stop-The-World" class="headerlink" title="Stop The World"></a>Stop The World</h4><p>由于程序在运行过程中，对象的引用关系是动态变化的，所以要进行Tracing和marking，必须暂停所有应用线程。JVM会让所有线程运行到安全点(safepoint)，并触发一次Stop The World(STW)。暂停的时间取决于存活对象的多少。</p>
-<h4 id="内存回收方法"><a href="#内存回收方法" class="headerlink" title="内存回收方法"></a>内存回收方法</h4><p>在根搜索标记阶段完成后，就需要真正地回收内存了，在这一步可以采用不同的方法。</p>
-<h5 id="标记清除"><a href="#标记清除" class="headerlink" title="标记清除"></a>标记清除</h5><p>标记阶段结束后，直接回收所有没被标记的对象，这种方法的好处就是在引用计数法的效果上弥补了循环引用问题的不足，而比起其他tracing算法，它不需要移动对象；缺点是需要用一个表来维护所有没被标记的对象，而且回收后会产生内存碎片。</p>
-<h5 id="标记整理-Compacting-GC"><a href="#标记整理-Compacting-GC" class="headerlink" title="标记整理(Compacting GC)"></a>标记整理(Compacting GC)</h5><p>标记阶段结束后，将所有的标记对象向内存地址的一边移动，相当于“整理”内存。这样就不会有内存碎片，新对象的创建地址只需要用一个指针指示。缺点是整理耗费的时间长。</p>
-<h5 id="标记复制-Copying-GC"><a href="#标记复制-Copying-GC" class="headerlink" title="标记复制(Copying GC)"></a>标记复制(Copying GC)</h5><p>Copying的思想是把内存分成大小相等的两块，每次只使用其中一块。每当需要垃圾回收时，通过tracing标记所有存活的对象，把它们拷贝到另外一块内存中。这种方法的好处是标记和复制可以同时进行，而且复制操作中目标地址是连续的，原地址也不需要备份，实现更高效，也不会产生内存碎片；缺点就是需要两倍大小的内存空间。</p>
-<p>Copying GC是HotSpot GC中负责新生代垃圾回收的算法主要采用的方法，因为新生代中大多数对象的生命周期都很短，每次标记只有少量对象能存活，因此需要复制的对象就少，算法效率更高。</p>
-<h5 id="Adaptive-GC"><a href="#Adaptive-GC" class="headerlink" title="Adaptive GC"></a>Adaptive GC</h5><p>这种思想是根据当前情况选择合适的GC算法去处理。分代其实也有一点Adaptive GC思想，只是分代并不是动态选择，而是划分好了不同的情况，并规定每种情况用哪种GC算法。</p>
-<h3 id="Cheney算法——Minor-GC的起源"><a href="#Cheney算法——Minor-GC的起源" class="headerlink" title="Cheney算法——Minor GC的起源"></a>Cheney算法——Minor GC的起源</h3><p><em><a href="https://hllvm-group.iteye.com/group/topic/39376#post-257329">R大的文章</a></em></p>
-<p>Minor GC与其对应在serial GC中的实现类DefNewGeneration使用的就是Cheney算法的变种，Cheney是一种经典的copying算法，它的实现思想就是上文介绍的标记复制方法，具体来说，有以下几个重点：</p>
-<ol>
-<li>使用一块连续的地址空间，划分成from-space和to-space。</li>
-<li>从GC Roots中逐个扫描指向堆的引用，每扫描到一个对象，就把它从from-space拷贝到to-space，并在原对象里记录forwarding pointer，用于标识这个对象被移动到的新位置。并且，每通过<strong>引用</strong>扫描到一个引用对象、拷贝这个对象后，就将这个引用<strong>修正</strong>为指向拷贝后的新对象。</li>
-<li>扫描到一个对象时，通过是否有forwarding pointer来判断对象是否被扫描过。所以forwarding pointer既有转发、更新引用的作用，也有标记(mark)作用。</li>
-<li>to-space区域用一个指针(scanned)指示已经完成扫描的对象位置，另一个指针(top)指示新来的对象应该放到哪里，逻辑上地址是由低到高。由于一个对象可能包含多个引用，每扫描到一个引用，都需要将引用对象拷贝到to-space的对应位置，但对象本身并没有扫描完成，所以to-space成为了一个隐式的队列结构，bottom<del>scanned区域是完成扫描的对象，scanned</del>top区域是已经扫描到但没扫描完的对象，top~end是未分配的空间。</li>
-</ol>
-<h3 id="堆内存划分"><a href="#堆内存划分" class="headerlink" title="堆内存划分"></a>堆内存划分</h3><p>JVM研究人员发现，对象的生命周期各不相同，其中大部分对象的生命周期都很短，根据年龄划分对象和对象存放区域，能够有效地利用copying算法的优势，从而提高整个GC体系的效率。因此堆内存在HotSpot虚拟机中，以优化垃圾回收算法为目的，划分为新生代(Young Generation)、年老代(Old Generation)和永久代(Permanent Generation)。其中新生代又被划分为Eden区和Survivor区，Survivor区又被分为survivor0和survivor1两半，对应copying算法中的from-space和to-space。新生代中 Eden : S0 : S1 = 8 : 1 : 1。</p>
-<img src="/2021/02/16/jvm/heap_area.png" class="" title="堆内存结构">
-
-<p>一般情况下，新创建的对象会被分配到eden区，而大对象会被直接分配到old区。</p>
-<p>Minor GC，也就是基于copying GC的算法，负责整个young区的垃圾回收。当eden区被放满，就会对eden区进行一次minor GC，把eden和from-space中存活的对象复制到to-space，并且年龄+1，年龄到达阈值的对象会被移到old区。to-space总是在结束前和from-space互换，保证只有from-space有对象。当to-space在一次GC过程中被填满了，minor GC就会把所有存活对象放入old区。</p>
-<p>Old区空间比较大，且在这里的对象都已经很老了比较长(从统计学上看，对象的生命周期要么很短，要么偏长)，所以old区进行GC的频率远小于young区，负责old区的GC称为Major GC (伴随着Minor GC，因此也叫Full GC) 。</p>
-<h3 id="串行、并行、CMS、G1-GC"><a href="#串行、并行、CMS、G1-GC" class="headerlink" title="串行、并行、CMS、G1 GC"></a>串行、并行、CMS、G1 GC</h3><p><em><a href="https://www.jianshu.com/p/5261a62e4d29">简欲明心的文章</a></em></p>
-<h3 id="值得注意的问题"><a href="#值得注意的问题" class="headerlink" title="值得注意的问题"></a>值得注意的问题</h3><h4 id="为什么要分代"><a href="#为什么要分代" class="headerlink" title="为什么要分代"></a>为什么要分代</h4><p>对于Serial GC来说，GC过程中需要stop the world，所以缩短一次GC的耗时是一件重要的事，而分代作为一种partition的思路，基于对象“朝生暮死”的特性，让新对象在新生代创建，并且频繁收集新生代中的垃圾，而新生代的大小通常也只占堆中的一小部分，所以能够降低STW时间。</p>
-<p>而对于并发GC来说，GC是一场和应用拼速度的游戏：应用在创建对象和引用，而GC在后面收集失效的对象和引用。在这种情形下，分代缩短GC的处理时间，就能提高GC的速度，避免或者降低GC应付不了应用不断产生的垃圾、造成STW并等待GC收集的情况。</p>
-<h4 id="为什么Young-Generation中要分为Eden和Survivor区"><a href="#为什么Young-Generation中要分为Eden和Survivor区" class="headerlink" title="为什么Young Generation中要分为Eden和Survivor区"></a>为什么Young Generation中要分为Eden和Survivor区</h4><p>如果没有年龄机制，每次Young区满了就要把存活对象放入old区，这样old区更快被填满，发生Full GC的频率增大，效率慢。设置Survivor区和年龄晋升机制就是为了让young区更频繁的触发具有高效率的Minor GC，减少Full GC频率。</p>
-<h4 id="为什么Survivor区分为两块"><a href="#为什么Survivor区分为两块" class="headerlink" title="为什么Survivor区分为两块"></a>为什么Survivor区分为两块</h4><p>显然，是为了使用Copying GC的思想，得到它的优点：高效地同时去碎片化。</p>
-<h4 id="设置forwarding-pointer和更新引用"><a href="#设置forwarding-pointer和更新引用" class="headerlink" title="设置forwarding pointer和更新引用"></a>设置forwarding pointer和更新引用</h4><p><em><a href="https://www.zhihu.com/question/42181722/answer/145085437">Ted Mosby的回答</a></em></p>
-<p>Copying GC策略中复制对象后，原对象的对象头改为指向新对象地址的指针forwarding pointer。</p>
-<h5 id="Young-GC"><a href="#Young-GC" class="headerlink" title="Young GC"></a>Young GC</h5><p>Young GC类算法中，GC roots包含原定义的GC roots加上old-&gt;young的引用，从这些roots出发，trace每一条路径，如果遇到young-&gt;old的引用，则停止这条路径的搜索；</p>
-<p>当第一次遇到一个对象，会将其copy或者promote，并在这个原对象的markword中存放forwarding pointer；如果这个对象还被其他<strong>引用</strong>指向，下一次tracing到这个对象时，会根据其存放的forwarding pointer更新这些<strong>引用</strong>。</p>
-<p>这类算法包括Serial Young GC（DefNew）、Parallel Young GC、ParNew，以及G1 GC的Young GC &amp; Mixed GC。</p>
-<h5 id="Full-GC"><a href="#Full-GC" class="headerlink" title="Full GC"></a>Full GC</h5><p>Full GC类算法中，先扫描一遍整个堆，找到所有的live objects，计算它们将要去往的新地址，先通过这些地址更改所有live objects的引用，使它们指向正确的新地址，再把live objects复制到对应的新地址上。</p>
-<p>这类算法包括Serial Old GC、PS MarkSweep GC、Parallel Old GC、Full GC for CMS和Full GC for G1 GC。</p>
-<h5 id="CMS-GC"><a href="#CMS-GC" class="headerlink" title="CMS GC"></a>CMS GC</h5><p>CMS算法的老年代GC采用标记-清除法，当ParNew GC的mark-copy结束后，再trace一遍指向老年代的引用，对扫描到的对象进行remark。</p>
-<h4 id="待读"><a href="#待读" class="headerlink" title="待读"></a>待读</h4><p><a href="https://www.zhihu.com/question/53613423/answer/135743258">RednaxelaFX的回答</a></p>
-]]></content>
-      <categories>
-        <category>Java</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-        <tag>GC</tag>
-        <tag>JVM</tag>
       </tags>
   </entry>
   <entry>
