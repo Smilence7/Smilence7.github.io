@@ -91,48 +91,45 @@
       </tags>
   </entry>
   <entry>
-    <title>设计模式</title>
-    <url>/2021/02/14/design-pattern/</url>
-    <content><![CDATA[<h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><p>模式是你必须在应用程序中自己实现的形式化的最佳实践。</p>
-<h3 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h3><p>工厂模式的设计意图是将对象的创建过程封装，通过同一个工厂类或接口来管理对象的创建过程。</p>
-<h4 id="简单工厂模式-Simple-Factory-Pattern"><a href="#简单工厂模式-Simple-Factory-Pattern" class="headerlink" title="简单工厂模式(Simple Factory Pattern)"></a>简单工厂模式(Simple Factory Pattern)</h4><p>简单工厂模式也叫静态工厂方法模式，通过定义一个工厂类，来对不同的参数输入返回不同类的实例。在这种模式中，工厂主要就是<strong>负责创建不同实例</strong>的逻辑，而创建出的实例是产品接口的实现类，符合产品接口的要求。</p>
-<h4 id="工厂方法模式-Factory-Method-Pattern"><a href="#工厂方法模式-Factory-Method-Pattern" class="headerlink" title="工厂方法模式(Factory Method Pattern)"></a>工厂方法模式(Factory Method Pattern)</h4><p>工厂方法模式中，工厂通过接口给出必须实现的方法，而不负责产品的创建，产品的创建由实现类完成。用户根据自己的需求选择对应的工厂，并调用工厂方法获得产品。在这个过程中，用户不需要指定产品接口下的具体某一种产品类型，可以利用对态性以总产品接口声明产品的引用。</p>
-<p>工厂方法模式的好处有：</p>
-<ul>
-<li>工厂可以返回目标产品的实现类或子类，比如：<strong>文件日志工厂</strong>属于<strong>日志工厂接口</strong>的实现类，文件日志工厂可以创建并返回<strong>日志接口的实现类</strong>——<strong>文件日志</strong>，而用户只需要用日志接口接收这个返回值。</li>
-<li>可以添加新的工厂实现类来拓展功能。</li>
-</ul>
+    <title>Hexo 快速部署</title>
+    <url>/2021/01/23/hexo/</url>
+    <content><![CDATA[<p>因为搭建博客的命令步骤都很容易理解，所以本文只是简单的记录过程中用到的命令和配置，可供参考和回查。</p>
+<h4 id="安装nodejs"><a href="#安装nodejs" class="headerlink" title="安装nodejs"></a>安装nodejs</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo wget https://npm.taobao.org/mirrors/node/latest-v14.x/node-v14.15.4.tar.gz</span><br><span class="line">sudo tar zxvf node-v14.15.4.tar.gz</span><br><span class="line">yum install gcc gcc-c++</span><br><span class="line">mv node-v14.15.4-linux-x64 nodejs</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/node /usr/bin/node </span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npm /usr/bin/npm</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npx /usr/bin/npx</span><br><span class="line"><span class="comment"># 换源</span></span><br><span class="line">npm install -g cnpm --registry=https://registry.npm.taobao.org</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/cnpm /usr/bin/cnpm</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
 
-<h4 id="抽象工厂模式-Abstract-Factory-Pattern"><a href="#抽象工厂模式-Abstract-Factory-Pattern" class="headerlink" title="抽象工厂模式(Abstract Factory Pattern)"></a>抽象工厂模式(Abstract Factory Pattern)</h4><p>抽象工厂模式中，工厂接口可以根据需求选择代工厂(子接口)来完成生产工作，而用户只需要使用这个总工厂，不用自己找代工厂。即：工厂通过静态方法帮用户<strong>选择</strong>对应的代工厂，并给用户<strong>返回</strong>代工厂的<strong>实现类</strong>。这样，用户不用关心选哪个代工厂，而是利用多态性，用最上层接口(总工厂)声明引用。</p>
-<p>如果工厂还支持不同的产品加工方法，那么所有代工厂可以使用同一套方法名，从而对用户透明，用户仍然不必知道是哪个代工厂。</p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>如果说工厂方法是对<strong>产品类型</strong>的透明，那么抽象工厂就是对<strong>子工厂类型</strong>的透明。</p>
-<p>工厂或代工厂还可以对创建过的产品进行缓存，当新的需求与缓存的产品对应时直接返回缓存的产品，从而优化内存占用和运行时间。例如Integer的valueOf()方法缓存了+/-128的整形数字包装对象。</p>
-<h3 id="适配器"><a href="#适配器" class="headerlink" title="适配器"></a>适配器</h3><p>适配器主要是用来完成不同类型对象的转换，就像将显示器的HDMI头转为DP头一样，是为了让原类型(HDMI插头)能在目标位置(显卡的DP槽)使用。</p>
-<p>比如将Calleble适配成Runnable用于创建Thread:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RunnableAdapter</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Callable&lt;?&gt; callable;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RunnableAdapter</span><span class="params">(Callable&lt;?&gt; callable)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.callable = callable;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            callable.call();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">        &#125;</span><br><span class="line">   </span><br></pre></td></tr></table></figure>
-<p>或比如将某个容器类型的数据转换成另一个容器类型  <code>Arrays.asList()</code>等等。</p>
-<h3 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h3><p>通过对原对象包装，产生一个持有原对象的代理对象，我们可以在执行原对象的目标方法时添加额外的逻辑，比如条件判断、在方法执行前添加逻辑、在方法执行后添加逻辑等。这样一来，代码的设计模式就变成：</p>
+<h4 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo cnpm install -g hexo-cli</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/hexo /usr/bin/hexo</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 依赖</span></span><br><span class="line">yum -y install curl-devel expat-devel gettext-devel openssl-devel zlib-devel gcc</span><br><span class="line">sudo tar -zxf git-2.21.0.tar.gz</span><br><span class="line"><span class="built_in">cd</span> git-2.21.0</span><br><span class="line">sudo make</span><br><span class="line">sudo make install prefix=/usr/<span class="built_in">local</span>/git</span><br><span class="line"><span class="comment"># 添加环境变量</span></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/usr/<span class="built_in">local</span>/git/bin</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br><span class="line"><span class="comment"># 或建立软连接</span></span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/git/bin/git /usr/<span class="built_in">local</span>/bin/</span><br><span class="line"><span class="comment"># 配置身份</span></span><br><span class="line">git config --global user.name <span class="string">&quot;zayeum&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;smilence7@outlook.com&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo hexo init</span><br><span class="line">sudo hexo s  <span class="comment"># start local server</span></span><br><span class="line">sudo npm install hexo-deployer-git --save</span><br><span class="line">sudo vim _config.yml</span><br><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: <span class="string">&#x27;git&#x27;</span></span><br><span class="line">  repo: <span class="string">&#x27;https://github.com/Smilence7/Smilence7.github.io&#x27;</span></span><br><span class="line">  branch: <span class="string">&#x27;master&#x27;</span></span><br><span class="line">sudo hexo clean</span><br><span class="line">sudo hexo g  <span class="comment"># generate</span></span><br><span class="line">sudo hexo d  <span class="comment"># deploy</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="多端部署"><a href="#多端部署" class="headerlink" title="多端部署"></a>多端部署</h4><p>主要参考 <a href="https://leooo48.github.io/2017/07/12/hexo-github/">这篇博客</a></p>
+<p>从base端上传源文件到github的hexo branch下</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog</span><br><span class="line"><span class="comment"># 先删除theme中的.git文件夹</span></span><br><span class="line">sudo git init</span><br><span class="line">sudo git add -A</span><br><span class="line">sudo git commit -m <span class="string">&quot;all blog source files&quot;</span></span><br><span class="line">sudo git branch hexo</span><br><span class="line">sudo git checkout hexo</span><br><span class="line">sudo git remote add origin https://github.com/Smilence7/Smilence7.github.io.git</span><br><span class="line">sudo git push origin hexo -f</span><br></pre></td></tr></table></figure>
 <ul>
-<li><p>A接口：只定义接口；</p>
+<li><p>在新环境中安装Git, Nodejs</p>
 </li>
-<li><p>ABusiness类：A接口的某个业务逻辑；</p>
-</li>
-<li><p>APermissionProxy类：只实现A接口的权限检查代理。</p>
+<li><p>从github repo中克隆源文件</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> -b hexo https://github.com/Smilence7/Smilence7.github.io.git</span><br></pre></td></tr></table></figure></li>
+<li><p>安装hexo</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># windows</span></span><br><span class="line">npm install hexo-cli -g</span><br><span class="line">npm install</span><br><span class="line"><span class="comment"># Ubuntu</span></span><br><span class="line">npm install hexo --save</span><br></pre></td></tr></table></figure>
+
+
 </li>
 </ul>
-<p>从而保证了代理的职责单一、泛用，降低耦合。</p>
-<p>虚代理：只有当真正需要调用时才创建对象，在这之前只是让调用者持有一个代理对象。</p>
-<p>远程代理：负责把方法访问转换成远程调用，然后返回结果。</p>
+<h4 id="配置域名"><a href="#配置域名" class="headerlink" title="配置域名"></a>配置域名</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog/<span class="built_in">source</span></span><br><span class="line"><span class="comment"># 创建CNAME文件绑定域名</span></span><br><span class="line">vim CNAME</span><br><span class="line">zayeum.com</span><br><span class="line"><span class="comment"># 在域名管理页面中配置DNS解析</span></span><br><span class="line"><span class="comment"># 解析类型为CNAME，ip为Smilence7.github.io</span></span><br></pre></td></tr></table></figure>
+
+
 ]]></content>
       <categories>
-        <category>Design Patterns</category>
+        <category>Blog</category>
       </categories>
       <tags>
-        <tag>Factory Pattern</tag>
-        <tag>Adapter Pattern</tag>
-        <tag>Agent Pattern</tag>
-        <tag>Design Patterns</tag>
+        <tag>Hexo</tag>
+        <tag>Blog</tag>
       </tags>
   </entry>
   <entry>
@@ -599,48 +596,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Hexo 快速部署</title>
-    <url>/2021/01/23/hexo/</url>
-    <content><![CDATA[<p>因为搭建博客的命令步骤都很容易理解，所以本文只是简单的记录过程中用到的命令和配置，可供参考和回查。</p>
-<h4 id="安装nodejs"><a href="#安装nodejs" class="headerlink" title="安装nodejs"></a>安装nodejs</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo wget https://npm.taobao.org/mirrors/node/latest-v14.x/node-v14.15.4.tar.gz</span><br><span class="line">sudo tar zxvf node-v14.15.4.tar.gz</span><br><span class="line">yum install gcc gcc-c++</span><br><span class="line">mv node-v14.15.4-linux-x64 nodejs</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/node /usr/bin/node </span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npm /usr/bin/npm</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npx /usr/bin/npx</span><br><span class="line"><span class="comment"># 换源</span></span><br><span class="line">npm install -g cnpm --registry=https://registry.npm.taobao.org</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/cnpm /usr/bin/cnpm</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-
-<h4 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo cnpm install -g hexo-cli</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/hexo /usr/bin/hexo</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 依赖</span></span><br><span class="line">yum -y install curl-devel expat-devel gettext-devel openssl-devel zlib-devel gcc</span><br><span class="line">sudo tar -zxf git-2.21.0.tar.gz</span><br><span class="line"><span class="built_in">cd</span> git-2.21.0</span><br><span class="line">sudo make</span><br><span class="line">sudo make install prefix=/usr/<span class="built_in">local</span>/git</span><br><span class="line"><span class="comment"># 添加环境变量</span></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/usr/<span class="built_in">local</span>/git/bin</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br><span class="line"><span class="comment"># 或建立软连接</span></span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/git/bin/git /usr/<span class="built_in">local</span>/bin/</span><br><span class="line"><span class="comment"># 配置身份</span></span><br><span class="line">git config --global user.name <span class="string">&quot;zayeum&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;smilence7@outlook.com&quot;</span></span><br></pre></td></tr></table></figure>
-
-
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo hexo init</span><br><span class="line">sudo hexo s  <span class="comment"># start local server</span></span><br><span class="line">sudo npm install hexo-deployer-git --save</span><br><span class="line">sudo vim _config.yml</span><br><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: <span class="string">&#x27;git&#x27;</span></span><br><span class="line">  repo: <span class="string">&#x27;https://github.com/Smilence7/Smilence7.github.io&#x27;</span></span><br><span class="line">  branch: <span class="string">&#x27;master&#x27;</span></span><br><span class="line">sudo hexo clean</span><br><span class="line">sudo hexo g  <span class="comment"># generate</span></span><br><span class="line">sudo hexo d  <span class="comment"># deploy</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<h4 id="多端部署"><a href="#多端部署" class="headerlink" title="多端部署"></a>多端部署</h4><p>主要参考 <a href="https://leooo48.github.io/2017/07/12/hexo-github/">这篇博客</a></p>
-<p>从base端上传源文件到github的hexo branch下</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog</span><br><span class="line"><span class="comment"># 先删除theme中的.git文件夹</span></span><br><span class="line">sudo git init</span><br><span class="line">sudo git add -A</span><br><span class="line">sudo git commit -m <span class="string">&quot;all blog source files&quot;</span></span><br><span class="line">sudo git branch hexo</span><br><span class="line">sudo git checkout hexo</span><br><span class="line">sudo git remote add origin https://github.com/Smilence7/Smilence7.github.io.git</span><br><span class="line">sudo git push origin hexo -f</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>在新环境中安装Git, Nodejs</p>
-</li>
-<li><p>从github repo中克隆源文件</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> -b hexo https://github.com/Smilence7/Smilence7.github.io.git</span><br></pre></td></tr></table></figure></li>
-<li><p>安装hexo</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># windows</span></span><br><span class="line">npm install hexo-cli -g</span><br><span class="line">npm install</span><br><span class="line"><span class="comment"># Ubuntu</span></span><br><span class="line">npm install hexo --save</span><br></pre></td></tr></table></figure>
-
-
-</li>
-</ul>
-<h4 id="配置域名"><a href="#配置域名" class="headerlink" title="配置域名"></a>配置域名</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog/<span class="built_in">source</span></span><br><span class="line"><span class="comment"># 创建CNAME文件绑定域名</span></span><br><span class="line">vim CNAME</span><br><span class="line">zayeum.com</span><br><span class="line"><span class="comment"># 在域名管理页面中配置DNS解析</span></span><br><span class="line"><span class="comment"># 解析类型为CNAME，ip为Smilence7.github.io</span></span><br></pre></td></tr></table></figure>
-
-
-]]></content>
-      <categories>
-        <category>Blog</category>
-      </categories>
-      <tags>
-        <tag>Hexo</tag>
-        <tag>Blog</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>I/O 模型</title>
     <url>/2021/02/15/io-models/</url>
     <content><![CDATA[<h2 id="IO模型"><a href="#IO模型" class="headerlink" title="IO模型"></a>IO模型</h2><h3 id="各种IO模型"><a href="#各种IO模型" class="headerlink" title="各种IO模型"></a>各种IO模型</h3><h4 id="阻塞-IO"><a href="#阻塞-IO" class="headerlink" title="阻塞 IO"></a>阻塞 IO</h4><p>缺省情形下，所有文件操作都是阻塞的。在进程空间中进行系统调用 (比如<code>recvfrom</code>)，系统切换到内核态准备接受数据，并将数据从内核拷贝到用户空间(进程内存)，返回成功提示，期间进程一直等待操作完成的返回结果。</p>
@@ -666,6 +621,133 @@
       <tags>
         <tag>I/O models</tag>
         <tag>Operation System</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java VM 系列</title>
+    <url>/2021/02/16/jvm/</url>
+    <content><![CDATA[<h2 id="运行时数据区"><a href="#运行时数据区" class="headerlink" title="运行时数据区"></a>运行时数据区</h2><p><em><a href="https://www.cnblogs.com/wuzhenzhao/p/12346515.html">吴振照的博客</a></em></p>
+<p>由Java VM管理的内存区域叫运行时数据区(Runtime Data Area)，这个数据区被划分为几个逻辑区域，包括方法区、堆、虚拟机栈、程序计数器、本地方法栈。</p>
+<p>其中方法区和堆是线程共享区域，虚拟机栈、程序计数器、本地方法栈是为线程存储运行时数据的独占区域，每个线程都有一份。</p>
+<img src="/2021/02/16/jvm/runtime_data_area.png" class="" title="运行时数据区">
+
+<h3 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h3><p>方法区在JVM启动时创建，是堆的一部分，但为了与存放对象的堆区分，被取名为Non-Heap。方法区中存放<strong>运行时常量池</strong>、静态变量、类信息、即时编译器编译后的代码。方法区的内存不需要连续，在JDK 6、7中，方法区是永久代Perm Space，有JVM要求的固定大小上限；在JDK 8中，方法区改为元区域Metaspace，由JVM使用直接内存，仅被实际内存大小约束。JVM提供参数修改方法区的初始、最大、最小大小。如果方法区内存溢出，会产生错误信息OutOfMemoryError: Metaspace。</p>
+<blockquote>
+<p><strong>运行时常量池</strong></p>
+</blockquote>
+<p>运行时常量池(Runtime Constant Pool)中包含编译时已知的<strong>数值常量</strong>(已赋值的final)和运行时解析的<strong>方法</strong>、<strong>字段引用</strong>。</p>
+<a id="more"></a>
+
+<h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><p>堆是JVM内存中最大的一块，也不需要是连续的，堆内存用于存放Java对象实例和数组。因为对象的使用寿命一般较短，因此堆是垃圾回收发生的主要区域。如果堆内存溢出，会产生错误信息OutOfMemoryError: Heap Space。</p>
+<h4 id="堆内存结构"><a href="#堆内存结构" class="headerlink" title="堆内存结构"></a>堆内存结构</h4><p>堆内存结构是以优化垃圾回收为目的设计的，具体结构见「垃圾回收机制」章节。</p>
+<h4 id="对象内存结构"><a href="#对象内存结构" class="headerlink" title="对象内存结构"></a>对象内存结构</h4><p>根据前文对JVM内存结构的介绍我们可以想到，一个静态引用是从<strong>方法区</strong>指向堆对象的引用，而一个普通引用是从<strong>栈帧</strong>指向堆对象的引用。那么对象的内部结构是怎样的呢？对象是怎么和它属于的类连接的呢？</p>
+<p>在其它语言实现中，很多会用到句柄，一个句柄分别指向对应的对象和类，引用变量只需要指向句柄即可间接连接到对象和类；而在HotSpot中是采用直接操控指针的方式实现的，每个对象内存中直接存放了指向所属类的指针。</p>
+<p>在一个对象中，有对象头、实例数据和填充数据三个逻辑部分。</p>
+<h5 id="对象头"><a href="#对象头" class="headerlink" title="对象头"></a>对象头</h5><p>保存与对象整体相关的信息：</p>
+<ul>
+<li>Mark Word: 用于保存hashcode、年龄(用于GC)、锁状态(用于分段锁)等信息，8 byte;</li>
+<li>Class Pointer: 指向方法区中的对应类数据，8 byte;</li>
+<li>Length: 数组长度，是数组对象特有的部分，4 byte。</li>
+</ul>
+<h5 id="实例数据"><a href="#实例数据" class="headerlink" title="实例数据"></a>实例数据</h5><p>保存对象的成员变量：</p>
+<ul>
+<li>boolean / byte: 1byte;</li>
+<li>short / char: 2 byte;</li>
+<li>int / float: 4 byte;</li>
+<li>long / double: 8 byte;</li>
+<li>reference: 8byte.</li>
+</ul>
+<h5 id="对齐填充"><a href="#对齐填充" class="headerlink" title="对齐填充"></a>对齐填充</h5><p>将对象的大小填充到8byte的整数倍。</p>
+<h3 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h3><p>程序计数器(Program Count Register)用于记录程序运行的进度，具体地说，用于保存当前正在执行的VM字节码指令的地址。每个线程都有一个程序计数器，通过它，线程能够在拿到cpu时间片时直接定位到该执行的指令。如果执行的是Native方法，则当前值为Undefined。</p>
+<h3 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h3><p>虚拟机栈是线程在方法调用时使用的底层存储空间，线程将调用方法所要用的数据存放在一起压入栈中，称作一个栈帧。方法的调用开始和完成就对应了一个栈帧的压入和弹出。每个栈帧中包含四个部分：</p>
+<ul>
+<li><p>局部变量表：存放方法参数和局部变量，注意，使用这些变量需要先将它们压入操作数栈中。</p>
+</li>
+<li><p>操作数栈：存储当前使用的操作数。</p>
+</li>
+<li><p>动态链接：指向<strong>运行时常量池</strong>中该栈帧对应方法的引用，支持方法中的动态链接</p>
+</li>
+<li><p>方法出口：方法返回的地址。</p>
+</li>
+</ul>
+<h3 id="本地方式栈"><a href="#本地方式栈" class="headerlink" title="本地方式栈"></a>本地方式栈</h3><p>与虚拟机栈类似，只是本地方法栈专用于本地方法的执行。</p>
+<h2 id="类加载机制"><a href="#类加载机制" class="headerlink" title="类加载机制"></a>类加载机制</h2><p><em><a href="https://www.cnblogs.com/wuzhenzhao/p/12346516.html">吴振照的博客</a></em></p>
+<p><em>待补</em></p>
+<h2 id="垃圾回收机制"><a href="#垃圾回收机制" class="headerlink" title="垃圾回收机制"></a>垃圾回收机制</h2><p>当一些对象不在被任何对象引用引用，JVM的垃圾回收机制(Garbage Collector)会帮我们释放对象占用的内存。那么GC应该怎么判断对象是否需要回收呢？有两种思想，一种是引用计数，一种是根搜索。</p>
+<h3 id="引用计数算法-Reference-Counting-GC"><a href="#引用计数算法-Reference-Counting-GC" class="headerlink" title="引用计数算法(Reference Counting GC)"></a>引用计数算法(Reference Counting GC)</h3><p>每一个对象存储一个计数变量，每当有一个地方引用它就加1，每当有一个引用失效就减1。由于一个对象在创建后必须被引用，否则就再也不能被引用，所以当计数值归0时，就说明不再会有任何引用能够引用到它。</p>
+<p>这种算法的特点是简单，可以与正常程序并发进行，但检查不出对象间的循环引用，早期的JVM曾用过这种方法。</p>
+<h3 id="根搜索算法-Tracing-GC"><a href="#根搜索算法-Tracing-GC" class="headerlink" title="根搜索算法(Tracing GC)"></a>根搜索算法(Tracing GC)</h3><p>如果把对象的引用变量关系看作一张有向图，只要定义一些一直存在的结点为根结点(GC Roots)，从根节点开始搜索，能搜索到的结点就是仍在使用中的对象。Tracing GC的实现可以使用广度优先算法，算法的思想是将结点分为白、灰、黑三种颜色：白色代表还没搜索到的结点；灰色代表正在搜索的结点，也就是说这个对象仍有引用没有遍历完，将其放入搜索队列；黑色代表已经搜索过的结点，放入集合。具体实现方法是，申请一段连续地址作为队列，从根集合出发进行广度优先搜索，在搜索的过程中，只扫描没有标记过的对象，先标记这些对象，再将其放入队尾。</p>
+<p>在tracing GC中包含GC Roots、Stop The World的概念，基于根搜索的标记思想又衍生出不同的回收方案。</p>
+<h4 id="GC-Roots"><a href="#GC-Roots" class="headerlink" title="GC Roots"></a>GC Roots</h4><p>GC Roots包括：</p>
+<ul>
+<li>虚拟机栈中引用的对象，即栈帧中的局部变量表中的引用对象；</li>
+<li>方法区中的常量引用的对象；</li>
+<li>方法区中的类静态属性引用的对象；</li>
+<li>本地方法栈中JNI的引用对象；</li>
+<li>活跃线程。</li>
+</ul>
+<h4 id="Stop-The-World"><a href="#Stop-The-World" class="headerlink" title="Stop The World"></a>Stop The World</h4><p>由于程序在运行过程中，对象的引用关系是动态变化的，所以要进行Tracing和marking，必须暂停所有应用线程。JVM会让所有线程运行到安全点(safepoint)，并触发一次Stop The World(STW)。暂停的时间取决于存活对象的多少。</p>
+<h4 id="内存回收方法"><a href="#内存回收方法" class="headerlink" title="内存回收方法"></a>内存回收方法</h4><p>在根搜索标记阶段完成后，就需要真正地回收内存了，在这一步可以采用不同的方法。</p>
+<h5 id="标记清除"><a href="#标记清除" class="headerlink" title="标记清除"></a>标记清除</h5><p>标记阶段结束后，直接回收所有没被标记的对象，这种方法的好处就是在引用计数法的效果上弥补了循环引用问题的不足，而比起其他tracing算法，它不需要移动对象；缺点是需要用一个表来维护所有没被标记的对象，而且回收后会产生内存碎片。</p>
+<h5 id="标记整理-Compacting-GC"><a href="#标记整理-Compacting-GC" class="headerlink" title="标记整理(Compacting GC)"></a>标记整理(Compacting GC)</h5><p>标记阶段结束后，将所有的标记对象向内存地址的一边移动，相当于“整理”内存。这样就不会有内存碎片，新对象的创建地址只需要用一个指针指示。缺点是整理耗费的时间长。</p>
+<h5 id="标记复制-Copying-GC"><a href="#标记复制-Copying-GC" class="headerlink" title="标记复制(Copying GC)"></a>标记复制(Copying GC)</h5><p>Copying的思想是把内存分成大小相等的两块，每次只使用其中一块。每当需要垃圾回收时，通过tracing标记所有存活的对象，把它们拷贝到另外一块内存中。这种方法的好处是标记和复制可以同时进行，而且复制操作中目标地址是连续的，原地址也不需要备份，实现更高效，也不会产生内存碎片；缺点就是需要两倍大小的内存空间。</p>
+<p>Copying GC是HotSpot GC中负责新生代垃圾回收的算法主要采用的方法，因为新生代中大多数对象的生命周期都很短，每次标记只有少量对象能存活，因此需要复制的对象就少，算法效率更高。</p>
+<h5 id="Adaptive-GC"><a href="#Adaptive-GC" class="headerlink" title="Adaptive GC"></a>Adaptive GC</h5><p>这种思想是根据当前情况选择合适的GC算法去处理。分代其实也有一点Adaptive GC思想，只是分代并不是动态选择，而是划分好了不同的情况，并规定每种情况用哪种GC算法。</p>
+<h3 id="Cheney算法——Minor-GC的起源"><a href="#Cheney算法——Minor-GC的起源" class="headerlink" title="Cheney算法——Minor GC的起源"></a>Cheney算法——Minor GC的起源</h3><p><em><a href="https://hllvm-group.iteye.com/group/topic/39376#post-257329">R大的文章</a></em></p>
+<p>Minor GC与其对应在serial GC中的实现类DefNewGeneration使用的就是Cheney算法的变种，Cheney是一种经典的copying算法，它的实现思想就是上文介绍的标记复制方法，具体来说，有以下几个重点：</p>
+<ol>
+<li>使用一块连续的地址空间，划分成from-space和to-space。</li>
+<li>从GC Roots中逐个扫描指向堆的引用，每扫描到一个对象，就把它从from-space拷贝到to-space，并在原对象里记录forwarding pointer，用于标识这个对象被移动到的新位置。并且，每通过<strong>引用</strong>扫描到一个引用对象、拷贝这个对象后，就将这个引用<strong>修正</strong>为指向拷贝后的新对象。</li>
+<li>扫描到一个对象时，通过是否有forwarding pointer来判断对象是否被扫描过。所以forwarding pointer既有转发、更新引用的作用，也有标记(mark)作用。</li>
+<li>to-space区域用一个指针(scanned)指示已经完成扫描的对象位置，另一个指针(top)指示新来的对象应该放到哪里，逻辑上地址是由低到高。由于一个对象可能包含多个引用，每扫描到一个引用，都需要将引用对象拷贝到to-space的对应位置，但对象本身并没有扫描完成，所以to-space成为了一个隐式的队列结构，bottom~scanned区域是完成扫描的对象，scanned~top区域是已经扫描到但没扫描完的对象，top~end是未分配的空间。</li>
+</ol>
+<h3 id="堆内存划分"><a href="#堆内存划分" class="headerlink" title="堆内存划分"></a>堆内存划分</h3><p>JVM研究人员发现，对象的生命周期各不相同，其中大部分对象的生命周期都很短，根据年龄划分对象和对象存放区域，能够有效地利用copying算法的优势，从而提高整个GC体系的效率。因此堆内存在HotSpot虚拟机中，以优化垃圾回收算法为目的，划分为新生代(Young Generation)、年老代(Old Generation)和永久代(Permanent Generation)。其中新生代又被划分为Eden区和Survivor区，Survivor区又被分为survivor0和survivor1两半，对应copying算法中的from-space和to-space。新生代中 Eden : S0 : S1 = 8 : 1 : 1。</p>
+<img src="/2021/02/16/jvm/heap_area.png" class="" title="堆内存结构">
+
+<p>一般情况下，新创建的对象会被分配到eden区，而大对象会被直接分配到old区。</p>
+<p>常说的Minor GC，是负责整个young区的垃圾回收器的俗称。当eden区被放满，就会对eden区进行一次minor GC，把eden和from-space中存活的对象复制到to-space，并且年龄+1，年龄到达阈值的对象会被移到old区。to-space总是在结束前和from-space互换，保证只有from-space有对象。当to-space在一次GC过程中被填满了，minor GC就会把所有存活对象放入old区。</p>
+<p>Old区空间比较大，且在这里的对象都已经很老了比较长(从统计学上看，对象的生命周期要么很短，要么偏长)，所以old区进行GC的频率远小于young区，负责old区的GC俗称为Major GC。又因为只有CMS具有单独处理old区的GC，其他垃圾处理器在处理old时都会先触发一次Minor GC，或者像G1直接收集整个堆，所以很多时候也把Major GC称为Full GC，Full GC指收集整个堆的GC模式。</p>
+<h3 id="垃圾回收器"><a href="#垃圾回收器" class="headerlink" title="垃圾回收器"></a>垃圾回收器</h3><p><em><a href="https://www.jianshu.com/p/5261a62e4d29">简欲明心的文章</a><em>、</em><a href="https://www.zhihu.com/question/41922036/answer/144566789">Ted Mosby的回答</a></em></p>
+<p>垃圾回收器通过设计、组合和优化不同分代使用的算法产生，是指整个垃圾回收模型。这里归纳几种GC的特点。</p>
+<p>Serial GC =  Serial Young GC + Serial Old GC (Full GC)</p>
+<p>Parallel GC = Parallel Young GC + (非并行) PS MarkSweep GC (Full GC) / (并行) Parallel Old GC (Full GC)</p>
+<p>CMS = ParNew GC(Young GC)  + CMS GC(Old GC) + Full GC for CMS(备用)</p>
+<p>G1 GC = Young GC + mixed GC(Young + part of Old) + Full GC for G1 GC(备用)</p>
+<h4 id="各种GC模型的特点"><a href="#各种GC模型的特点" class="headerlink" title="各种GC模型的特点"></a>各种GC模型的特点</h4><ul>
+<li>所有的Minor GC都采用copying思想；</li>
+<li>所有的Full GC都采用compacting思想；</li>
+<li>CMS GC(Old GC)采用mark-sweep思想(concurrent mark sweep)；</li>
+<li>CMS追求最短STW时间；</li>
+<li>G1 GC能够根据用户希望的STW时间制定回收计划，设计目标是取代CMS。</li>
+</ul>
+<h4 id="各种GC子模型的触发条件"><a href="#各种GC子模型的触发条件" class="headerlink" title="各种GC子模型的触发条件"></a>各种GC子模型的触发条件</h4><ul>
+<li>所有Young GC触发条件都是Eden区满了；</li>
+<li>Serial Old GC 和Parallel Old GC(并行和非并行)的触发条件是在Young GC执行前预测old会满；</li>
+<li>CMS GC的initial marking触发条件是old使用比例超过阈值；</li>
+<li>G1 GC的initial marking触发条件是整堆使用比例超过阈值；</li>
+<li>Full GC for CMS和Full GC for G1 GC的触发条件是前面的Old GC没效果。</li>
+</ul>
+<h3 id="值得注意的问题"><a href="#值得注意的问题" class="headerlink" title="值得注意的问题"></a>值得注意的问题</h3><h4 id="为什么要分代"><a href="#为什么要分代" class="headerlink" title="为什么要分代"></a>为什么要分代</h4><p>对于Serial GC来说，GC过程中需要stop the world，所以缩短一次GC的耗时是一件重要的事，而分代作为一种partition的思路，基于对象“朝生暮死”的特性，让新对象在新生代创建，并且频繁收集新生代中的垃圾，而新生代的大小通常也只占堆中的一小部分，所以能够降低STW时间。</p>
+<p>而对于<strong>并发</strong>GC来说，GC是一场和应用拼速度的游戏：应用在创建对象和引用，而GC在后面收集失效的对象和引用。在这种情形下，分代缩短GC的处理时间，就能提高GC的速度，避免或者降低GC应付不了应用不断产生的垃圾、造成STW并等待GC收集的情况。</p>
+<h4 id="为什么Young-Generation中要分为Eden和Survivor区"><a href="#为什么Young-Generation中要分为Eden和Survivor区" class="headerlink" title="为什么Young Generation中要分为Eden和Survivor区"></a>为什么Young Generation中要分为Eden和Survivor区</h4><p>如果没有年龄机制，每次Young区满了就要把存活对象放入old区，这样old区更快被填满，发生Full GC的频率增大，效率慢。设置Survivor区和年龄晋升机制就是为了让young区更频繁的触发具有高效率的Minor GC，减少Full GC频率。</p>
+<h4 id="为什么Survivor区分为两块"><a href="#为什么Survivor区分为两块" class="headerlink" title="为什么Survivor区分为两块"></a>为什么Survivor区分为两块</h4><p>显然，是为了使用Copying GC的思想，得到它的优点：高效地同时去碎片化。</p>
+<h4 id="设置forwarding-pointer和更新引用"><a href="#设置forwarding-pointer和更新引用" class="headerlink" title="设置forwarding pointer和更新引用"></a>设置forwarding pointer和更新引用</h4><p><em><a href="https://www.zhihu.com/question/42181722/answer/145085437">Ted Mosby的回答</a></em></p>
+<p>Copying GC策略中复制对象后，原对象的对象头改为指向新对象地址的指针forwarding pointer。</p>
+<h5 id="Young-GC"><a href="#Young-GC" class="headerlink" title="Young GC"></a>Young GC</h5><p>Young GC类算法中，GC roots包含原定义的GC roots加上old-&gt;young的引用，从这些roots出发，trace每一条路径，如果遇到young-&gt;old的引用，则停止这条路径的搜索；</p>
+<p>当第一次遇到一个对象，会将其copy或者promote，并在这个原对象的markword中存放forwarding pointer；如果这个对象还被其他<strong>引用</strong>指向，下一次tracing到这个对象时，会根据其存放的forwarding pointer更新这些<strong>引用</strong>。</p>
+<p>这类算法包括Serial Young GC（DefNew）、Parallel Young GC、ParNew，以及G1 GC的Young GC &amp; Mixed GC。</p>
+<h5 id="Full-GC"><a href="#Full-GC" class="headerlink" title="Full GC"></a>Full GC</h5><p>Full GC类算法中，先扫描一遍整个堆，找到所有的live objects，计算它们将要去往的新地址，先通过这些地址更改所有live objects的引用，使它们指向正确的新地址，再把live objects复制到对应的新地址上。</p>
+<p>这类算法包括Serial Old GC、PS MarkSweep GC、Parallel Old GC、Full GC for CMS和Full GC for G1 GC。</p>
+<h5 id="CMS-GC"><a href="#CMS-GC" class="headerlink" title="CMS GC"></a>CMS GC</h5><p>CMS算法的老年代GC采用标记-清除法，当ParNew GC的mark-copy结束后，再trace一遍指向老年代的引用，对扫描到的对象进行remark。</p>
+<h4 id="待读"><a href="#待读" class="headerlink" title="待读"></a>待读</h4><p><a href="https://www.zhihu.com/question/53613423/answer/135743258">RednaxelaFX的回答</a></p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>GC</tag>
+        <tag>JVM</tag>
+        <tag>Java</tag>
       </tags>
   </entry>
   <entry>
@@ -860,130 +942,117 @@
       </tags>
   </entry>
   <entry>
-    <title>Java VM 系列</title>
-    <url>/2021/02/16/jvm/</url>
-    <content><![CDATA[<h2 id="运行时数据区"><a href="#运行时数据区" class="headerlink" title="运行时数据区"></a>运行时数据区</h2><p><em><a href="https://www.cnblogs.com/wuzhenzhao/p/12346515.html">吴振照的博客</a></em></p>
-<p>由Java VM管理的内存区域叫运行时数据区(Runtime Data Area)，这个数据区被划分为几个逻辑区域，包括方法区、堆、虚拟机栈、程序计数器、本地方法栈。</p>
-<p>其中方法区和堆是线程共享区域，虚拟机栈、程序计数器、本地方法栈是为线程存储运行时数据的独占区域，每个线程都有一份。</p>
-<img src="/2021/02/16/jvm/runtime_data_area.png" class="" title="运行时数据区">
-
-<h3 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h3><p>方法区在JVM启动时创建，是堆的一部分，但为了与存放对象的堆区分，被取名为Non-Heap。方法区中存放<strong>运行时常量池</strong>、静态变量、类信息、即时编译器编译后的代码。方法区的内存不需要连续，在JDK 6、7中，方法区是永久代Perm Space，有JVM要求的固定大小上限；在JDK 8中，方法区改为元区域Metaspace，由JVM使用直接内存，仅被实际内存大小约束。JVM提供参数修改方法区的初始、最大、最小大小。如果方法区内存溢出，会产生错误信息OutOfMemoryError: Metaspace。</p>
-<blockquote>
-<p><strong>运行时常量池</strong></p>
-</blockquote>
-<p>运行时常量池(Runtime Constant Pool)中包含编译时已知的<strong>数值常量</strong>(已赋值的final)和运行时解析的<strong>方法</strong>、<strong>字段引用</strong>。</p>
+    <title>设计模式</title>
+    <url>/2021/02/14/design-pattern/</url>
+    <content><![CDATA[<h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><p>模式是你必须在应用程序中自己实现的形式化的最佳实践。</p>
+<h3 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h3><p>工厂模式的设计意图是将对象的创建过程封装，通过同一个工厂类或接口来管理对象的创建过程。</p>
+<h4 id="简单工厂模式-Simple-Factory-Pattern"><a href="#简单工厂模式-Simple-Factory-Pattern" class="headerlink" title="简单工厂模式(Simple Factory Pattern)"></a>简单工厂模式(Simple Factory Pattern)</h4><p>简单工厂模式也叫静态工厂方法模式，通过定义一个工厂类，来对不同的参数输入返回不同类的实例。在这种模式中，工厂主要就是<strong>负责创建不同实例</strong>的逻辑，而创建出的实例是产品接口的实现类，符合产品接口的要求。</p>
+<h4 id="工厂方法模式-Factory-Method-Pattern"><a href="#工厂方法模式-Factory-Method-Pattern" class="headerlink" title="工厂方法模式(Factory Method Pattern)"></a>工厂方法模式(Factory Method Pattern)</h4><p>工厂方法模式中，工厂通过接口给出必须实现的方法，而不负责产品的创建，产品的创建由实现类完成。用户根据自己的需求选择对应的工厂，并调用工厂方法获得产品。在这个过程中，用户不需要指定产品接口下的具体某一种产品类型，可以利用对态性以总产品接口声明产品的引用。</p>
+<p>工厂方法模式的好处有：</p>
+<ul>
+<li>工厂可以返回目标产品的实现类或子类，比如：<strong>文件日志工厂</strong>属于<strong>日志工厂接口</strong>的实现类，文件日志工厂可以创建并返回<strong>日志接口的实现类</strong>——<strong>文件日志</strong>，而用户只需要用日志接口接收这个返回值。</li>
+<li>可以添加新的工厂实现类来拓展功能。</li>
+</ul>
 <a id="more"></a>
 
-<h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><p>堆是JVM内存中最大的一块，也不需要是连续的，堆内存用于存放Java对象实例和数组。因为对象的使用寿命一般较短，因此堆是垃圾回收发生的主要区域。如果堆内存溢出，会产生错误信息OutOfMemoryError: Heap Space。</p>
-<h4 id="堆内存结构"><a href="#堆内存结构" class="headerlink" title="堆内存结构"></a>堆内存结构</h4><p>堆内存结构是以优化垃圾回收为目的设计的，具体结构见「垃圾回收机制」章节。</p>
-<h4 id="对象内存结构"><a href="#对象内存结构" class="headerlink" title="对象内存结构"></a>对象内存结构</h4><p>根据前文对JVM内存结构的介绍我们可以想到，一个静态引用是从<strong>方法区</strong>指向堆对象的引用，而一个普通引用是从<strong>栈帧</strong>指向堆对象的引用。那么对象的内部结构是怎样的呢？对象是怎么和它属于的类连接的呢？</p>
-<p>在其它语言实现中，很多会用到句柄，一个句柄分别指向对应的对象和类，引用变量只需要指向句柄即可间接连接到对象和类；而在HotSpot中是采用直接操控指针的方式实现的，每个对象内存中直接存放了指向所属类的指针。</p>
-<p>在一个对象中，有对象头、实例数据和填充数据三个逻辑部分。</p>
-<h5 id="对象头"><a href="#对象头" class="headerlink" title="对象头"></a>对象头</h5><p>保存与对象整体相关的信息：</p>
+<h4 id="抽象工厂模式-Abstract-Factory-Pattern"><a href="#抽象工厂模式-Abstract-Factory-Pattern" class="headerlink" title="抽象工厂模式(Abstract Factory Pattern)"></a>抽象工厂模式(Abstract Factory Pattern)</h4><p>抽象工厂模式中，工厂接口可以根据需求选择代工厂(子接口)来完成生产工作，而用户只需要使用这个总工厂，不用自己找代工厂。即：工厂通过静态方法帮用户<strong>选择</strong>对应的代工厂，并给用户<strong>返回</strong>代工厂的<strong>实现类</strong>。这样，用户不用关心选哪个代工厂，而是利用多态性，用最上层接口(总工厂)声明引用。</p>
+<p>如果工厂还支持不同的产品加工方法，那么所有代工厂可以使用同一套方法名，从而对用户透明，用户仍然不必知道是哪个代工厂。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>如果说工厂方法是对<strong>产品类型</strong>的透明，那么抽象工厂就是对<strong>子工厂类型</strong>的透明。</p>
+<p>工厂或代工厂还可以对创建过的产品进行缓存，当新的需求与缓存的产品对应时直接返回缓存的产品，从而优化内存占用和运行时间。例如Integer的valueOf()方法缓存了+/-128的整形数字包装对象。</p>
+<h3 id="适配器"><a href="#适配器" class="headerlink" title="适配器"></a>适配器</h3><p>适配器主要是用来完成不同类型对象的转换，就像将显示器的HDMI头转为DP头一样，是为了让原类型(HDMI插头)能在目标位置(显卡的DP槽)使用。</p>
+<p>比如将Calleble适配成Runnable用于创建Thread:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RunnableAdapter</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Callable&lt;?&gt; callable;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RunnableAdapter</span><span class="params">(Callable&lt;?&gt; callable)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.callable = callable;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            callable.call();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">        &#125;</span><br><span class="line">   </span><br></pre></td></tr></table></figure>
+<p>或比如将某个容器类型的数据转换成另一个容器类型  <code>Arrays.asList()</code>等等。</p>
+<h3 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h3><p>通过对原对象包装，产生一个持有原对象的代理对象，我们可以在执行原对象的目标方法时添加额外的逻辑，比如条件判断、在方法执行前添加逻辑、在方法执行后添加逻辑等。这样一来，代码的设计模式就变成：</p>
 <ul>
-<li>Mark Word: 用于保存hashcode、年龄(用于GC)、锁状态(用于分段锁)等信息，8 byte;</li>
-<li>Class Pointer: 指向方法区中的对应类数据，8 byte;</li>
-<li>Length: 数组长度，是数组对象特有的部分，4 byte。</li>
-</ul>
-<h5 id="实例数据"><a href="#实例数据" class="headerlink" title="实例数据"></a>实例数据</h5><p>保存对象的成员变量：</p>
-<ul>
-<li>boolean / byte: 1byte;</li>
-<li>short / char: 2 byte;</li>
-<li>int / float: 4 byte;</li>
-<li>long / double: 8 byte;</li>
-<li>reference: 8byte.</li>
-</ul>
-<h5 id="对齐填充"><a href="#对齐填充" class="headerlink" title="对齐填充"></a>对齐填充</h5><p>将对象的大小填充到8byte的整数倍。</p>
-<h3 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h3><p>程序计数器(Program Count Register)用于记录程序运行的进度，具体地说，用于保存当前正在执行的VM字节码指令的地址。每个线程都有一个程序计数器，通过它，线程能够在拿到cpu时间片时直接定位到该执行的指令。如果执行的是Native方法，则当前值为Undefined。</p>
-<h3 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h3><p>虚拟机栈是线程在方法调用时使用的底层存储空间，线程将调用方法所要用的数据存放在一起压入栈中，称作一个栈帧。方法的调用开始和完成就对应了一个栈帧的压入和弹出。每个栈帧中包含四个部分：</p>
-<ul>
-<li><p>局部变量表：存放方法参数和局部变量，注意，使用这些变量需要先将它们压入操作数栈中。</p>
+<li><p>A接口：只定义接口；</p>
 </li>
-<li><p>操作数栈：存储当前使用的操作数。</p>
+<li><p>ABusiness类：A接口的某个业务逻辑；</p>
 </li>
-<li><p>动态链接：指向<strong>运行时常量池</strong>中该栈帧对应方法的引用，支持方法中的动态链接</p>
-</li>
-<li><p>方法出口：方法返回的地址。</p>
+<li><p>APermissionProxy类：只实现A接口的权限检查代理。</p>
 </li>
 </ul>
-<h3 id="本地方式栈"><a href="#本地方式栈" class="headerlink" title="本地方式栈"></a>本地方式栈</h3><p>与虚拟机栈类似，只是本地方法栈专用于本地方法的执行。</p>
-<h2 id="类加载机制"><a href="#类加载机制" class="headerlink" title="类加载机制"></a>类加载机制</h2><p><em><a href="https://www.cnblogs.com/wuzhenzhao/p/12346516.html">吴振照的博客</a></em></p>
-<p><em>待补</em></p>
-<h2 id="垃圾回收机制"><a href="#垃圾回收机制" class="headerlink" title="垃圾回收机制"></a>垃圾回收机制</h2><p>当一些对象不在被任何对象引用引用，JVM的垃圾回收机制(Garbage Collector)会帮我们释放对象占用的内存。那么GC应该怎么判断对象是否需要回收呢？有两种思想，一种是引用计数，一种是根搜索。</p>
-<h3 id="引用计数算法-Reference-Counting-GC"><a href="#引用计数算法-Reference-Counting-GC" class="headerlink" title="引用计数算法(Reference Counting GC)"></a>引用计数算法(Reference Counting GC)</h3><p>每一个对象存储一个计数变量，每当有一个地方引用它就加1，每当有一个引用失效就减1。由于一个对象在创建后必须被引用，否则就再也不能被引用，所以当计数值归0时，就说明不再会有任何引用能够引用到它。</p>
-<p>这种算法的特点是简单，可以与正常程序并发进行，但检查不出对象间的循环引用，早期的JVM曾用过这种方法。</p>
-<h3 id="根搜索算法-Tracing-GC"><a href="#根搜索算法-Tracing-GC" class="headerlink" title="根搜索算法(Tracing GC)"></a>根搜索算法(Tracing GC)</h3><p>如果把对象的引用变量关系看作一张有向图，只要定义一些一直存在的结点为根结点(GC Roots)，从根节点开始搜索，能搜索到的结点就是仍在使用中的对象。Tracing GC的实现可以使用广度优先算法，算法的思想是将结点分为白、灰、黑三种颜色：白色代表还没搜索到的结点；灰色代表正在搜索的结点，也就是说这个对象仍有引用没有遍历完，将其放入搜索队列；黑色代表已经搜索过的结点，放入集合。具体实现方法是，申请一段连续地址作为队列，从根集合出发进行广度优先搜索，在搜索的过程中，只扫描没有标记过的对象，先标记这些对象，再将其放入队尾。</p>
-<p>在tracing GC中包含GC Roots、Stop The World的概念，基于根搜索的标记思想又衍生出不同的回收方案。</p>
-<h4 id="GC-Roots"><a href="#GC-Roots" class="headerlink" title="GC Roots"></a>GC Roots</h4><p>GC Roots包括：</p>
-<ul>
-<li>虚拟机栈中引用的对象，即栈帧中的局部变量表中的引用对象；</li>
-<li>方法区中的常量引用的对象；</li>
-<li>方法区中的类静态属性引用的对象；</li>
-<li>本地方法栈中JNI的引用对象；</li>
-<li>活跃线程。</li>
-</ul>
-<h4 id="Stop-The-World"><a href="#Stop-The-World" class="headerlink" title="Stop The World"></a>Stop The World</h4><p>由于程序在运行过程中，对象的引用关系是动态变化的，所以要进行Tracing和marking，必须暂停所有应用线程。JVM会让所有线程运行到安全点(safepoint)，并触发一次Stop The World(STW)。暂停的时间取决于存活对象的多少。</p>
-<h4 id="内存回收方法"><a href="#内存回收方法" class="headerlink" title="内存回收方法"></a>内存回收方法</h4><p>在根搜索标记阶段完成后，就需要真正地回收内存了，在这一步可以采用不同的方法。</p>
-<h5 id="标记清除"><a href="#标记清除" class="headerlink" title="标记清除"></a>标记清除</h5><p>标记阶段结束后，直接回收所有没被标记的对象，这种方法的好处就是在引用计数法的效果上弥补了循环引用问题的不足，而比起其他tracing算法，它不需要移动对象；缺点是需要用一个表来维护所有没被标记的对象，而且回收后会产生内存碎片。</p>
-<h5 id="标记整理-Compacting-GC"><a href="#标记整理-Compacting-GC" class="headerlink" title="标记整理(Compacting GC)"></a>标记整理(Compacting GC)</h5><p>标记阶段结束后，将所有的标记对象向内存地址的一边移动，相当于“整理”内存。这样就不会有内存碎片，新对象的创建地址只需要用一个指针指示。缺点是整理耗费的时间长。</p>
-<h5 id="标记复制-Copying-GC"><a href="#标记复制-Copying-GC" class="headerlink" title="标记复制(Copying GC)"></a>标记复制(Copying GC)</h5><p>Copying的思想是把内存分成大小相等的两块，每次只使用其中一块。每当需要垃圾回收时，通过tracing标记所有存活的对象，把它们拷贝到另外一块内存中。这种方法的好处是标记和复制可以同时进行，而且复制操作中目标地址是连续的，原地址也不需要备份，实现更高效，也不会产生内存碎片；缺点就是需要两倍大小的内存空间。</p>
-<p>Copying GC是HotSpot GC中负责新生代垃圾回收的算法主要采用的方法，因为新生代中大多数对象的生命周期都很短，每次标记只有少量对象能存活，因此需要复制的对象就少，算法效率更高。</p>
-<h5 id="Adaptive-GC"><a href="#Adaptive-GC" class="headerlink" title="Adaptive GC"></a>Adaptive GC</h5><p>这种思想是根据当前情况选择合适的GC算法去处理。分代其实也有一点Adaptive GC思想，只是分代并不是动态选择，而是划分好了不同的情况，并规定每种情况用哪种GC算法。</p>
-<h3 id="Cheney算法——Minor-GC的起源"><a href="#Cheney算法——Minor-GC的起源" class="headerlink" title="Cheney算法——Minor GC的起源"></a>Cheney算法——Minor GC的起源</h3><p><em><a href="https://hllvm-group.iteye.com/group/topic/39376#post-257329">R大的文章</a></em></p>
-<p>Minor GC与其对应在serial GC中的实现类DefNewGeneration使用的就是Cheney算法的变种，Cheney是一种经典的copying算法，它的实现思想就是上文介绍的标记复制方法，具体来说，有以下几个重点：</p>
-<ol>
-<li>使用一块连续的地址空间，划分成from-space和to-space。</li>
-<li>从GC Roots中逐个扫描指向堆的引用，每扫描到一个对象，就把它从from-space拷贝到to-space，并在原对象里记录forwarding pointer，用于标识这个对象被移动到的新位置。并且，每通过<strong>引用</strong>扫描到一个引用对象、拷贝这个对象后，就将这个引用<strong>修正</strong>为指向拷贝后的新对象。</li>
-<li>扫描到一个对象时，通过是否有forwarding pointer来判断对象是否被扫描过。所以forwarding pointer既有转发、更新引用的作用，也有标记(mark)作用。</li>
-<li>to-space区域用一个指针(scanned)指示已经完成扫描的对象位置，另一个指针(top)指示新来的对象应该放到哪里，逻辑上地址是由低到高。由于一个对象可能包含多个引用，每扫描到一个引用，都需要将引用对象拷贝到to-space的对应位置，但对象本身并没有扫描完成，所以to-space成为了一个隐式的队列结构，bottom~scanned区域是完成扫描的对象，scanned~top区域是已经扫描到但没扫描完的对象，top~end是未分配的空间。</li>
-</ol>
-<h3 id="堆内存划分"><a href="#堆内存划分" class="headerlink" title="堆内存划分"></a>堆内存划分</h3><p>JVM研究人员发现，对象的生命周期各不相同，其中大部分对象的生命周期都很短，根据年龄划分对象和对象存放区域，能够有效地利用copying算法的优势，从而提高整个GC体系的效率。因此堆内存在HotSpot虚拟机中，以优化垃圾回收算法为目的，划分为新生代(Young Generation)、年老代(Old Generation)和永久代(Permanent Generation)。其中新生代又被划分为Eden区和Survivor区，Survivor区又被分为survivor0和survivor1两半，对应copying算法中的from-space和to-space。新生代中 Eden : S0 : S1 = 8 : 1 : 1。</p>
-<img src="/2021/02/16/jvm/heap_area.png" class="" title="堆内存结构">
-
-<p>一般情况下，新创建的对象会被分配到eden区，而大对象会被直接分配到old区。</p>
-<p>常说的Minor GC，是负责整个young区的垃圾回收器的俗称。当eden区被放满，就会对eden区进行一次minor GC，把eden和from-space中存活的对象复制到to-space，并且年龄+1，年龄到达阈值的对象会被移到old区。to-space总是在结束前和from-space互换，保证只有from-space有对象。当to-space在一次GC过程中被填满了，minor GC就会把所有存活对象放入old区。</p>
-<p>Old区空间比较大，且在这里的对象都已经很老了比较长(从统计学上看，对象的生命周期要么很短，要么偏长)，所以old区进行GC的频率远小于young区，负责old区的GC俗称为Major GC。又因为只有CMS具有单独处理old区的GC，其他垃圾处理器在处理old时都会先触发一次Minor GC，或者像G1直接收集整个堆，所以很多时候也把Major GC称为Full GC，Full GC指收集整个堆的GC模式。</p>
-<h3 id="垃圾回收器"><a href="#垃圾回收器" class="headerlink" title="垃圾回收器"></a>垃圾回收器</h3><p><em><a href="https://www.jianshu.com/p/5261a62e4d29">简欲明心的文章</a><em>、</em><a href="https://www.zhihu.com/question/41922036/answer/144566789">Ted Mosby的回答</a></em></p>
-<p>垃圾回收器通过设计、组合和优化不同分代使用的算法产生，是指整个垃圾回收模型。这里归纳几种GC的特点。</p>
-<p>Serial GC =  Serial Young GC + Serial Old GC (Full GC)</p>
-<p>Parallel GC = Parallel Young GC + (非并行) PS MarkSweep GC (Full GC) / (并行) Parallel Old GC (Full GC)</p>
-<p>CMS = ParNew GC(Young GC)  + CMS GC(Old GC) + Full GC for CMS(备用)</p>
-<p>G1 GC = Young GC + mixed GC(Young + part of Old) + Full GC for G1 GC(备用)</p>
-<h4 id="各种GC模型的特点"><a href="#各种GC模型的特点" class="headerlink" title="各种GC模型的特点"></a>各种GC模型的特点</h4><ul>
-<li>所有的Minor GC都采用copying思想；</li>
-<li>所有的Full GC都采用compacting思想；</li>
-<li>CMS GC(Old GC)采用mark-sweep思想(concurrent mark sweep)；</li>
-<li>CMS追求最短STW时间；</li>
-<li>G1 GC能够根据用户希望的STW时间制定回收计划，设计目标是取代CMS。</li>
-</ul>
-<h4 id="各种GC子模型的触发条件"><a href="#各种GC子模型的触发条件" class="headerlink" title="各种GC子模型的触发条件"></a>各种GC子模型的触发条件</h4><ul>
-<li>所有Young GC触发条件都是Eden区满了；</li>
-<li>Serial Old GC 和Parallel Old GC(并行和非并行)的触发条件是在Young GC执行前预测old会满；</li>
-<li>CMS GC的initial marking触发条件是old使用比例超过阈值；</li>
-<li>G1 GC的initial marking触发条件是整堆使用比例超过阈值；</li>
-<li>Full GC for CMS和Full GC for G1 GC的触发条件是前面的Old GC没效果。</li>
-</ul>
-<h3 id="值得注意的问题"><a href="#值得注意的问题" class="headerlink" title="值得注意的问题"></a>值得注意的问题</h3><h4 id="为什么要分代"><a href="#为什么要分代" class="headerlink" title="为什么要分代"></a>为什么要分代</h4><p>对于Serial GC来说，GC过程中需要stop the world，所以缩短一次GC的耗时是一件重要的事，而分代作为一种partition的思路，基于对象“朝生暮死”的特性，让新对象在新生代创建，并且频繁收集新生代中的垃圾，而新生代的大小通常也只占堆中的一小部分，所以能够降低STW时间。</p>
-<p>而对于<strong>并发</strong>GC来说，GC是一场和应用拼速度的游戏：应用在创建对象和引用，而GC在后面收集失效的对象和引用。在这种情形下，分代缩短GC的处理时间，就能提高GC的速度，避免或者降低GC应付不了应用不断产生的垃圾、造成STW并等待GC收集的情况。</p>
-<h4 id="为什么Young-Generation中要分为Eden和Survivor区"><a href="#为什么Young-Generation中要分为Eden和Survivor区" class="headerlink" title="为什么Young Generation中要分为Eden和Survivor区"></a>为什么Young Generation中要分为Eden和Survivor区</h4><p>如果没有年龄机制，每次Young区满了就要把存活对象放入old区，这样old区更快被填满，发生Full GC的频率增大，效率慢。设置Survivor区和年龄晋升机制就是为了让young区更频繁的触发具有高效率的Minor GC，减少Full GC频率。</p>
-<h4 id="为什么Survivor区分为两块"><a href="#为什么Survivor区分为两块" class="headerlink" title="为什么Survivor区分为两块"></a>为什么Survivor区分为两块</h4><p>显然，是为了使用Copying GC的思想，得到它的优点：高效地同时去碎片化。</p>
-<h4 id="设置forwarding-pointer和更新引用"><a href="#设置forwarding-pointer和更新引用" class="headerlink" title="设置forwarding pointer和更新引用"></a>设置forwarding pointer和更新引用</h4><p><em><a href="https://www.zhihu.com/question/42181722/answer/145085437">Ted Mosby的回答</a></em></p>
-<p>Copying GC策略中复制对象后，原对象的对象头改为指向新对象地址的指针forwarding pointer。</p>
-<h5 id="Young-GC"><a href="#Young-GC" class="headerlink" title="Young GC"></a>Young GC</h5><p>Young GC类算法中，GC roots包含原定义的GC roots加上old-&gt;young的引用，从这些roots出发，trace每一条路径，如果遇到young-&gt;old的引用，则停止这条路径的搜索；</p>
-<p>当第一次遇到一个对象，会将其copy或者promote，并在这个原对象的markword中存放forwarding pointer；如果这个对象还被其他<strong>引用</strong>指向，下一次tracing到这个对象时，会根据其存放的forwarding pointer更新这些<strong>引用</strong>。</p>
-<p>这类算法包括Serial Young GC（DefNew）、Parallel Young GC、ParNew，以及G1 GC的Young GC &amp; Mixed GC。</p>
-<h5 id="Full-GC"><a href="#Full-GC" class="headerlink" title="Full GC"></a>Full GC</h5><p>Full GC类算法中，先扫描一遍整个堆，找到所有的live objects，计算它们将要去往的新地址，先通过这些地址更改所有live objects的引用，使它们指向正确的新地址，再把live objects复制到对应的新地址上。</p>
-<p>这类算法包括Serial Old GC、PS MarkSweep GC、Parallel Old GC、Full GC for CMS和Full GC for G1 GC。</p>
-<h5 id="CMS-GC"><a href="#CMS-GC" class="headerlink" title="CMS GC"></a>CMS GC</h5><p>CMS算法的老年代GC采用标记-清除法，当ParNew GC的mark-copy结束后，再trace一遍指向老年代的引用，对扫描到的对象进行remark。</p>
-<h4 id="待读"><a href="#待读" class="headerlink" title="待读"></a>待读</h4><p><a href="https://www.zhihu.com/question/53613423/answer/135743258">RednaxelaFX的回答</a></p>
+<p>从而保证了代理的职责单一、泛用，降低耦合。</p>
+<p>虚代理：只有当真正需要调用时才创建对象，在这之前只是让调用者持有一个代理对象。</p>
+<p>远程代理：负责把方法访问转换成远程调用，然后返回结果。</p>
 ]]></content>
       <categories>
-        <category>Java</category>
+        <category>Design Patterns</category>
       </categories>
       <tags>
-        <tag>Java</tag>
-        <tag>GC</tag>
-        <tag>JVM</tag>
+        <tag>Factory Pattern</tag>
+        <tag>Adapter Pattern</tag>
+        <tag>Agent Pattern</tag>
+        <tag>Design Patterns</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>排序系列</title>
+    <url>/2021/02/17/sort/</url>
+    <content><![CDATA[<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆 / 优先队列保证在O(log n)的复杂度下插入和维护一个有序数据，有两种实现，一种是跳表，一种是二叉堆。</p>
+<h3 id="二叉堆"><a href="#二叉堆" class="headerlink" title="二叉堆"></a>二叉堆</h3><p>二叉堆(也是优先队列)的特性可以用来维护TopK的数据，也可以用来排序。</p>
+<p>建堆的过程是从最后一个非叶子结点开始，对每个结点从上往下堆化，每次堆化时间与结点高度有关，求和后利用错位相减和等比公式可以得到时间复杂度O(n)；</p>
+<p>插入操作是把新数据插入到数组末尾，更新size的同时对末尾位置进行一次从下往上的堆化，时间复杂度为O(logn)；</p>
+<p>弹出操作是用O(1)的时间复杂度获取堆顶数据，并用数组末尾的数据覆盖堆顶数据，更新size的同时对堆顶进行一次从上往下的堆化，时间复杂度为O(logn)。</p>
+<p>如果维护的是变长的堆，在size达到数据长度时进行扩容；</p>
+<p>如果维护的是固定长度的堆(主要用于TopK的场景)，需要注意：</p>
+<ul>
+<li><p>在堆size没到达固定值之前，按size维护堆；</p>
+</li>
+<li><p>当size达到设定的固定值后：</p>
+<ul>
+<li>插入操作时，如果插入的数据小于小顶堆(维护TopK大)的堆顶或大于大顶堆(维护TopK小)的堆顶就可以直接忽略，否则只需要用插入元素覆盖堆顶，并对堆顶做从上往下的堆化即可(而不是插入在堆尾)，时间复杂度也是O(logn)；</li>
+<li>定长堆一般不涉及删除操作。</li>
+</ul>
+</li>
+</ul>
+<p>而堆排序的过程是在建堆后不断将堆顶元素与数组末尾元素交换，从堆顶进行从上往下的堆化，并将size减1，时间复杂度为O(n*logn)。</p>
+<a id="more"></a>
+
+
+
+<p>模板：</p>
+<p>网上看到的一个比较清晰全面的小顶堆模板，使用时可以按需实现。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// by @CaptainZ</span></span><br><span class="line"><span class="comment">// 出处不详</span></span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"><span class="keyword">import</span> java.util.Comparator;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 用完全二叉树来构建 堆</span></span><br><span class="line"><span class="comment"> * 前置条件 起点为 1</span></span><br><span class="line"><span class="comment"> * 那么 子节点为  i &lt;&lt;1 和 i&lt;&lt;1 + 1</span></span><br><span class="line"><span class="comment"> * 核心方法为</span></span><br><span class="line"><span class="comment"> * shiftdown 交换下沉</span></span><br><span class="line"><span class="comment"> * shiftup 交换上浮</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * build 构建堆</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MinHeap</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> size = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> queue[];</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Heap</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (initialCapacity &lt; <span class="number">1</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">        <span class="keyword">this</span>.queue = <span class="keyword">new</span> <span class="keyword">int</span>[initialCapacity];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Heap</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">        size = arr.length;</span><br><span class="line">        queue = <span class="keyword">new</span> <span class="keyword">int</span>[arr.length + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> val : arr) &#123;</span><br><span class="line">            queue[i++] = val;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">shiftDown</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> temp = queue[i];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> ((i &lt;&lt; <span class="number">1</span>) &lt;= size) &#123;</span><br><span class="line">            <span class="keyword">int</span> child = i &lt;&lt; <span class="number">1</span>;</span><br><span class="line">            <span class="comment">// child!=size 判断当前元素是否包含右节点</span></span><br><span class="line">            <span class="keyword">if</span> (child != size &amp;&amp; queue[child + <span class="number">1</span>] &lt; queue[child]) &#123;</span><br><span class="line">                child++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (temp &gt; queue[child]) &#123;</span><br><span class="line">                queue[i] = queue[child];</span><br><span class="line">                i = child;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        queue[i] = temp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">shiftUp</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> temp = queue[i];</span><br><span class="line">        <span class="keyword">while</span> ((i &gt;&gt; <span class="number">1</span>) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (temp &lt; queue[i &gt;&gt; <span class="number">1</span>]) &#123;</span><br><span class="line">                queue[i] = queue[i &gt;&gt; <span class="number">1</span>];</span><br><span class="line">                i &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        queue[i] = temp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">peek</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> res = queue[<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> res = queue[<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">        queue[<span class="number">1</span>] = queue[size--];</span><br><span class="line">        shiftDown(<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (size == queue.length - <span class="number">1</span>) &#123;</span><br><span class="line">            queue = Arrays.copyOf(queue, size &lt;&lt; <span class="number">1</span>+<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        queue[++size] = val;</span><br><span class="line">        shiftUp(size);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildHeap</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = size &gt;&gt; <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">            shiftDown(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> arr[] = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">2</span>,<span class="number">7</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">8</span>,<span class="number">1</span>&#125;;</span><br><span class="line">        Heap heap = <span class="keyword">new</span> Heap(arr);</span><br><span class="line">        heap.buildHeap();</span><br><span class="line">        System.out.println(heap.peek());</span><br><span class="line">        heap.push(<span class="number">5</span>);</span><br><span class="line">        <span class="keyword">while</span> (heap.size &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> num = heap.pop();</span><br><span class="line">            System.out.printf(num + <span class="string">&quot;&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>相关练习：</p>
+<p><a href="https://leetcode-cn.com/problems/kth-largest-element-in-an-array/">leetcode-215. 数组中第K大元素</a></p>
+<h3 id="跳表"><a href="#跳表" class="headerlink" title="跳表"></a>跳表</h3><p>跳表是一种索引的数据结构，在每隔k个元素建立索引，并建立多级索引的方式优化查询速度，易知其查询复杂度从O(n)降到O(log^k n)。</p>
+<p>Redis的zset数据结构底层实现就是使用的跳表。</p>
+<p><em>TODO..</em></p>
+<h2 id="快排"><a href="#快排" class="headerlink" title="快排"></a>快排</h2><p>随机单pivot，从左往右遍历。快排是O(n*logn)算法中唯一不稳定的算法，因为如果一个新访问的值小于pivot，会与循环不变量i位置交换，如果i位置的值本来在一个相等的值前面，交换之后可能就在后面了。</p>
+<p>模板：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 作者：liweiwei1419</span></span><br><span class="line"><span class="comment">// 链接：https://leetcode-cn.com/problems/sort-an-array/solution/fu-xi-ji-chu-pai-xu-suan-fa-java-by-liweiwei1419/</span></span><br><span class="line"><span class="comment">// 来源：力扣-leetcode</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 快速排序 1：基本快速排序</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 列表大小等于或小于该大小，将优先于 quickSort 使用插入排序</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> INSERTION_SORT_THRESHOLD = <span class="number">7</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Random RANDOM = <span class="keyword">new</span> Random();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] sortArray(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">        <span class="keyword">int</span> len = nums.length;</span><br><span class="line">        quickSort(nums, <span class="number">0</span>, len - <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> nums;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 小区间使用插入排序</span></span><br><span class="line">        <span class="keyword">if</span> (right - left &lt;= INSERTION_SORT_THRESHOLD) &#123;</span><br><span class="line">            insertionSort(nums, left, right);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> pIndex = partition(nums, left, right);</span><br><span class="line">        quickSort(nums, left, pIndex - <span class="number">1</span>);</span><br><span class="line">        quickSort(nums, pIndex + <span class="number">1</span>, right);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 对数组 nums 的子区间 [left, right] 使用插入排序</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> nums  给定数组</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> left  左边界，能取到</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> right 右边界，能取到</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">insertionSort</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = left + <span class="number">1</span>; i &lt;= right; i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> temp = nums[i];</span><br><span class="line">            <span class="keyword">int</span> j = i;</span><br><span class="line">            <span class="keyword">while</span> (j &gt; left &amp;&amp; nums[j - <span class="number">1</span>] &gt; temp) &#123;</span><br><span class="line">                nums[j] = nums[j - <span class="number">1</span>];</span><br><span class="line">                j--;</span><br><span class="line">            &#125;</span><br><span class="line">            nums[j] = temp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> randomIndex = RANDOM.nextInt(right - left + <span class="number">1</span>) + left;</span><br><span class="line">        swap(nums, left, randomIndex);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 基准值</span></span><br><span class="line">        <span class="keyword">int</span> pivot = nums[left];</span><br><span class="line">        <span class="keyword">int</span> lt = left;</span><br><span class="line">        <span class="comment">// 循环不变量：</span></span><br><span class="line">        <span class="comment">// all in [left + 1, lt] &lt; pivot</span></span><br><span class="line">        <span class="comment">// all in [lt + 1, i) &gt;= pivot</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = left + <span class="number">1</span>; i &lt;= right; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[i] &lt; pivot) &#123;</span><br><span class="line">                lt++;</span><br><span class="line">                swap(nums, i, lt);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        swap(nums, left, lt);</span><br><span class="line">        <span class="keyword">return</span> lt;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> index1, <span class="keyword">int</span> index2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> temp = nums[index1];</span><br><span class="line">        nums[index1] = nums[index2];</span><br><span class="line">        nums[index2] = temp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>相关练习：</p>
+<p><a href="https://leetcode-cn.com/problems/sort-colors/">leetcode-75. 颜色分类</a></p>
+<h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><p>归并排序借助了额外空间，实现了稳定排序，所以在对数据稳定性敏感的场景下，一般是代替快速排序的最好方案。</p>
+<p>模板：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// by @liweiwei1419</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> left, <span class="keyword">int</span> right, <span class="keyword">int</span>[] temp)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (left &lt; right) &#123;</span><br><span class="line">         <span class="comment">// int mid = left + (right - left) / 2;</span></span><br><span class="line">        <span class="comment">// 如果溢出到符号位，无符号右移可以在除以2的时候将符号位补0，得到正确的结果。</span></span><br><span class="line">        <span class="keyword">int</span> mid = (left + right) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        mergeSort(nums, left, mid, temp);</span><br><span class="line">        mergeSort(nums, mid + <span class="number">1</span>, right, temp);</span><br><span class="line">        <span class="comment">// 如果数组的这个子区间本身有序，无需合并</span></span><br><span class="line">        <span class="keyword">if</span> (nums[mid] &lt;= nums[mid + <span class="number">1</span>]) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        mergeOfTwoSortedArray(nums, left, mid, right, temp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">mergeOfTwoSortedArray</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> left, <span class="keyword">int</span> mid, <span class="keyword">int</span> right, <span class="keyword">int</span>[] temp)</span> </span>&#123;</span><br><span class="line">    System.arraycopy(nums, left, temp, left, right + <span class="number">1</span> - left);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> i = left;</span><br><span class="line">    <span class="keyword">int</span> j = mid + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k = left; k &lt;= right; k++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i == mid + <span class="number">1</span>) &#123;</span><br><span class="line">            nums[k] = temp[j];</span><br><span class="line">            j++;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (j == right + <span class="number">1</span>) &#123;</span><br><span class="line">            nums[k] = temp[i];</span><br><span class="line">            i++;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (temp[i] &lt;= temp[j]) &#123;</span><br><span class="line">            <span class="comment">// 注意写成 &lt; 就丢失了稳定性（相同元素原来靠前的排序以后依然靠前）</span></span><br><span class="line">            nums[k] = temp[i];</span><br><span class="line">            i++;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// temp[i] &gt; temp[j]</span></span><br><span class="line">            nums[k] = temp[j];</span><br><span class="line">            j++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] sortArray(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">    <span class="keyword">int</span> len = nums.length;</span><br><span class="line">    <span class="comment">// 借助辅助数组</span></span><br><span class="line">    <span class="keyword">int</span>[] temp = <span class="keyword">new</span> <span class="keyword">int</span>[len];</span><br><span class="line">    mergeSort(nums, <span class="number">0</span>, len - <span class="number">1</span>, temp);</span><br><span class="line">    <span class="keyword">return</span> nums;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>相关练习：</p>
+<p><a href="https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/">leetcode-剑指offer-51. 数组中的逆序对</a> </p>
+<p>在合并有序数组时，能够判断是否是逆序对：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> k = left; k &lt;= right; k++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (a == mid + <span class="number">1</span>) &#123;</span><br><span class="line">        nums[k] = temp[b];</span><br><span class="line">        b++;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (b == right + <span class="number">1</span>) &#123;</span><br><span class="line">        nums[k] = temp[a];</span><br><span class="line">        a++;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (temp[a] &lt;= temp[b]) &#123;</span><br><span class="line">        nums[k] = temp[a];</span><br><span class="line">        a++;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        nums[k] = temp[b];</span><br><span class="line">        b++;</span><br><span class="line">        <span class="comment">// a到mid的数都比b位置的大</span></span><br><span class="line">        cnt += mid - a + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在归并过程中，在递归地对子数组排序的同时计算原有的逆序对，因此子数组与子数组归并时，已经分别获得了它们内部的逆序度，并把两个子数组排好序，所以在融合的时候计算是两个数组间的逆序度：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> left, <span class="keyword">int</span> right, <span class="keyword">int</span>[] temp)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (left &lt; right) &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (left + right) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> leftCnt = mergeSort(nums, left, mid, temp);</span><br><span class="line">        <span class="keyword">int</span> rightCnt = mergeSort(nums, mid + <span class="number">1</span>, right , temp);</span><br><span class="line">        <span class="keyword">if</span> (nums[mid] &lt;= nums[mid + <span class="number">1</span>]) &#123;</span><br><span class="line">            <span class="keyword">return</span> leftCnt + rightCnt;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> crossCnt = mergeSortedArray(nums, left, mid, right, temp);</span><br><span class="line">        <span class="keyword">return</span> leftCnt + rightCnt + crossCnt;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self/">leetcode-315. 计算右侧小于当前元素的个数</a> </p>
+<h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><p>选择排序的思想是每次选择一个未排序区间内的最小值，与有序区间的末尾交换。其中蕴含了贪心和减治两大思想。实现时，使用一个循环不变量i，定义[0,i)的区间是有序的，这样每次从无序区间里得到最小值，就把它与i位置交换，i右移一个位置维持定义不变。</p>
+<p>选择排序的优点是<strong>交换次数</strong>在所有算法中最少，但<strong>比较次数</strong>仍然是n^2级别，渐进复杂度为O(n^2)。</p>
+<p>选择排序是O(n^2)算法中唯一<strong>不稳定</strong>的算法，因为i位置的数会被最小数交换，如果这个i位置的数本来在另一个相等的数前面，交换后可能就在后面了。</p>
+<p>模板：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// by @liweiwei1419</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len - <span class="number">1</span>; i++) &#123;</span><br><span class="line">	<span class="keyword">int</span> minIndex = i;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; len; j++) &#123;</span><br><span class="line">		<span class="keyword">if</span> (nums[j] &lt; nums[minIndex]) &#123;</span><br><span class="line">			minIndex = j;</span><br><span class="line">        &#125;</span><br><span class="line">	&#125;</span><br><span class="line">	swap(nums, i, minIndex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><p>插入排序与选择排序相反：选择排序是遍历无序区间，每次找到的数都可以添加在有序区间的末尾；而插入排序是遍历有序区间，为无序区间中第一个数找到合适的插入位置。实现时，也是维护循环不变量i，维护[0,i)为有序区间。</p>
+<p>时间复杂度也是O(n^2)。</p>
+<p>模板：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; len; i++) &#123;</span><br><span class="line">    <span class="keyword">int</span> temp = nums[i];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt; <span class="number">0</span>, nums[j-<span class="number">1</span>] &gt; temp; j--) &#123;</span><br><span class="line">        <span class="comment">// 所有大于temp的数都后移一个位置</span></span><br><span class="line">        nums[j] = nums[j-<span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    nums[j] = temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>相关练习：</p>
+<p><a href="https://leetcode-cn.com/problems/insertion-sort-list/">leetcode-147. 对链表进行插入排序</a></p>
+<p>对链表排序，需要从左往右找插入位置，可以从dummyHead查找，就不用考虑头结点的问题。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ListNode lastSorted = head;</span><br><span class="line">ListNode cur = head.next;</span><br><span class="line"><span class="keyword">while</span> (cur != <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (lastSorted.val &lt;= cur.val) &#123;</span><br><span class="line">        lastSorted = lastSorted.next;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// 找到插入位置: prev.next</span></span><br><span class="line">        ListNode prev = dummyHead;</span><br><span class="line">        <span class="keyword">while</span> (prev.next.val &lt;= cur.val) &#123;</span><br><span class="line">            prev = prev.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 先把cur后面的接在有序区间末尾，再把cur插入找到的位置</span></span><br><span class="line">        <span class="comment">// 相当于remove(cur); insert(cur);</span></span><br><span class="line">        lastSorted.next = cur.next;</span><br><span class="line">        cur.next = prev.next;</span><br><span class="line">        prev.next = cur;</span><br><span class="line">    &#125;</span><br><span class="line">    cur = lastSorted.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id=""><a href="#" class="headerlink" title=""></a></h4>]]></content>
+      <tags>
+        <tag>Heap</tag>
+        <tag>Quicksort</tag>
       </tags>
   </entry>
   <entry>
@@ -1369,6 +1438,23 @@
 <p>其中修改内容的方式可以是插入静态脚本，插入html content，或使用Iframe植入内容。</p>
 <h4 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h4><p>HTTPS协议是HTTP over SSL的缩写，也就是在SSL协议之上的HTTP协议。HTTP是第一个使用SSL协议保障安全的应用层协议，邮件系统也能支持SSL协议，如：SMTP，POP3、IMAP。在SSLv3之后有了TLS1.1, TLS1.2, TLS1.3。</p>
 <p>对SSL协议和TLS协议的总结见本文对应章节。</p>
+<h4 id="HTTP-2-0"><a href="#HTTP-2-0" class="headerlink" title="HTTP 2.0"></a>HTTP 2.0</h4><p>在HTTP1.1中，存在这些问题：</p>
+<ul>
+<li>线头阻塞：一个TCP连接中只能排队发送请求，并且主流浏览器都禁用了请求并发的管线化技术，并发请求必须建立多个TCP连接。</li>
+<li>头部冗余：HTTP1.1的数据报首部采用<strong>未压缩</strong>的<strong>文本</strong>格式，多个请求会带有重复的cookie、user-agent等信息。</li>
+<li>连接只能由客户端主动开启</li>
+</ul>
+<p>HTTP2.0极大地优化了性能：</p>
+<ul>
+<li>二进制分帧层：把请求/响应报文的格式改为headers和data组成的两个数据帧，并且采用二进制编码和传输。</li>
+<li>多路复用：一个TCP连接中可以由多个流(stream)，消息以帧为单位(一个或多个帧)在流中传输，接收之后再进行重组。流控制负责限制数据的数量，即使不限制，浏览器也无法处理无限多的请求。</li>
+<li>头部压缩：把常见的头部名称以映射表的形式压缩成短的序号，由客户端和服务器共同维护一份静态映射表和一份动态添加的映射表，使用静态huffman编码对首部进行编码。</li>
+<li>服务器端推送：服务器能够根据前面的客户端请求分析依赖的其他资源，并主动推送到客户端的缓存。服务器会先发送PUSH_PROMISE来通知客户端，客户端可以选择RST_STREAM来拒绝推送。</li>
+</ul>
+<h3 id="邮件协议"><a href="#邮件协议" class="headerlink" title="邮件协议"></a>邮件协议</h3><h4 id="SMTP"><a href="#SMTP" class="headerlink" title="SMTP"></a>SMTP</h4><p>SMTP用于客户端向服务器<strong>发送</strong>邮件以及服务器之间<strong>发送</strong>邮件。SMTP客户端向SMTP服务器建立TCP连接来传输数据，如果发件人和收件人的邮箱属于同域，那么SMTP服务器收到邮件只需要转发给本地的POP3服务器即可；如果是不同域，则由SMTP服务器查询DNS，发送给对应域的SMTP服务器。</p>
+<h4 id="POP3"><a href="#POP3" class="headerlink" title="POP3"></a>POP3</h4><p>POP3负责从服务器接收邮件。每次与服务器连接后，会从服务器下载未读邮件到本地客户端，然后远程服务器会删除这些邮件。POP3存在多终端使用时，只有第一个终端能下载到新邮件的问题。</p>
+<h4 id="IMAP"><a href="#IMAP" class="headerlink" title="IMAP"></a>IMAP</h4><p>IMAP也是负责接收邮件的协议，但它支持与服务器的双向连接。使用IMAP可以在本地客户端将邮件分放在文件夹中，并且分放信息会存在远程服务器上；下载邮件后，服务器不会删除邮件，因此可以多端使用。</p>
+<p>* 不同的协议、使用或不适用安全协议(SSL/TLS)都会使用不同的默认端口。</p>
 <h2 id="中间层——安全协议"><a href="#中间层——安全协议" class="headerlink" title="中间层——安全协议"></a>中间层——安全协议</h2><h3 id="SSL协议"><a href="#SSL协议" class="headerlink" title="SSL协议"></a>SSL协议</h3><p><em><a href="https://cshihong.github.io/2019/05/09/SSL%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/">曹世宏的博客</a></em></p>
 <p>SSL协议建立在TCP协议和应用层协议之间，它实现在应用层，用于保障传输层TCP协议的安全。整个SSL协议体系包含两层：下层(下接TCP层)是SSL记录(record)协议层，上层(上接应用层)是SSL握手协议层。</p>
 <p>上层协议包括SSL握手协议(SSL HandShake Protocol)、SSL密码参数修改协议(SSL Change Cipher Spec Protocol)和SSL告警协议(SSL Alert Protocol)。其中握手协议负责实际数据传输开始前的身份验证、协商加密算法、交换加密密钥等。而下层负责给上层协议提供压缩解压、加密解密、计算和校验MAC等功能。</p>
