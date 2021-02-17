@@ -91,6 +91,51 @@
       </tags>
   </entry>
   <entry>
+    <title>设计模式</title>
+    <url>/2021/02/14/design-pattern/</url>
+    <content><![CDATA[<h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><p>模式是你必须在应用程序中自己实现的形式化的最佳实践。</p>
+<h3 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h3><p>工厂模式的设计意图是将对象的创建过程封装，通过同一个工厂类或接口来管理对象的创建过程。</p>
+<h4 id="简单工厂模式-Simple-Factory-Pattern"><a href="#简单工厂模式-Simple-Factory-Pattern" class="headerlink" title="简单工厂模式(Simple Factory Pattern)"></a>简单工厂模式(Simple Factory Pattern)</h4><p>简单工厂模式也叫静态工厂方法模式，通过定义一个工厂类，来对不同的参数输入返回不同类的实例。在这种模式中，工厂主要就是<strong>负责创建不同实例</strong>的逻辑，而创建出的实例是产品接口的实现类，符合产品接口的要求。</p>
+<h4 id="工厂方法模式-Factory-Method-Pattern"><a href="#工厂方法模式-Factory-Method-Pattern" class="headerlink" title="工厂方法模式(Factory Method Pattern)"></a>工厂方法模式(Factory Method Pattern)</h4><p>工厂方法模式中，工厂通过接口给出必须实现的方法，而不负责产品的创建，产品的创建由实现类完成。用户根据自己的需求选择对应的工厂，并调用工厂方法获得产品。在这个过程中，用户不需要指定产品接口下的具体某一种产品类型，可以利用对态性以总产品接口声明产品的引用。</p>
+<p>工厂方法模式的好处有：</p>
+<ul>
+<li>工厂可以返回目标产品的实现类或子类，比如：<strong>文件日志工厂</strong>属于<strong>日志工厂接口</strong>的实现类，文件日志工厂可以创建并返回<strong>日志接口的实现类</strong>——<strong>文件日志</strong>，而用户只需要用日志接口接收这个返回值。</li>
+<li>可以添加新的工厂实现类来拓展功能。</li>
+</ul>
+<a id="more"></a>
+
+<h4 id="抽象工厂模式-Abstract-Factory-Pattern"><a href="#抽象工厂模式-Abstract-Factory-Pattern" class="headerlink" title="抽象工厂模式(Abstract Factory Pattern)"></a>抽象工厂模式(Abstract Factory Pattern)</h4><p>抽象工厂模式中，工厂接口可以根据需求选择代工厂(子接口)来完成生产工作，而用户只需要使用这个总工厂，不用自己找代工厂。即：工厂通过静态方法帮用户<strong>选择</strong>对应的代工厂，并给用户<strong>返回</strong>代工厂的<strong>实现类</strong>。这样，用户不用关心选哪个代工厂，而是利用多态性，用最上层接口(总工厂)声明引用。</p>
+<p>如果工厂还支持不同的产品加工方法，那么所有代工厂可以使用同一套方法名，从而对用户透明，用户仍然不必知道是哪个代工厂。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>如果说工厂方法是对<strong>产品类型</strong>的透明，那么抽象工厂就是对<strong>子工厂类型</strong>的透明。</p>
+<p>工厂或代工厂还可以对创建过的产品进行缓存，当新的需求与缓存的产品对应时直接返回缓存的产品，从而优化内存占用和运行时间。例如Integer的valueOf()方法缓存了+/-128的整形数字包装对象。</p>
+<h3 id="适配器"><a href="#适配器" class="headerlink" title="适配器"></a>适配器</h3><p>适配器主要是用来完成不同类型对象的转换，就像将显示器的HDMI头转为DP头一样，是为了让原类型(HDMI插头)能在目标位置(显卡的DP槽)使用。</p>
+<p>比如将Calleble适配成Runnable用于创建Thread:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RunnableAdapter</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Callable&lt;?&gt; callable;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RunnableAdapter</span><span class="params">(Callable&lt;?&gt; callable)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.callable = callable;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            callable.call();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">        &#125;</span><br><span class="line">   </span><br></pre></td></tr></table></figure>
+<p>或比如将某个容器类型的数据转换成另一个容器类型  <code>Arrays.asList()</code>等等。</p>
+<h3 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h3><p>通过对原对象包装，产生一个持有原对象的代理对象，我们可以在执行原对象的目标方法时添加额外的逻辑，比如条件判断、在方法执行前添加逻辑、在方法执行后添加逻辑等。这样一来，代码的设计模式就变成：</p>
+<ul>
+<li><p>A接口：只定义接口；</p>
+</li>
+<li><p>ABusiness类：A接口的某个业务逻辑；</p>
+</li>
+<li><p>APermissionProxy类：只实现A接口的权限检查代理。</p>
+</li>
+</ul>
+<p>从而保证了代理的职责单一、泛用，降低耦合。</p>
+<p>虚代理：只有当真正需要调用时才创建对象，在这之前只是让调用者持有一个代理对象。</p>
+<p>远程代理：负责把方法访问转换成远程调用，然后返回结果。</p>
+]]></content>
+      <categories>
+        <category>Design Patterns</category>
+      </categories>
+      <tags>
+        <tag>Factory Pattern</tag>
+        <tag>Adapter Pattern</tag>
+        <tag>Agent Pattern</tag>
+        <tag>Design Patterns</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hexo 快速部署</title>
     <url>/2021/01/23/hexo/</url>
     <content><![CDATA[<p>因为搭建博客的命令步骤都很容易理解，所以本文只是简单的记录过程中用到的命令和配置，可供参考和回查。</p>
@@ -624,133 +669,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Java VM 系列</title>
-    <url>/2021/02/16/jvm/</url>
-    <content><![CDATA[<h2 id="运行时数据区"><a href="#运行时数据区" class="headerlink" title="运行时数据区"></a>运行时数据区</h2><p><em><a href="https://www.cnblogs.com/wuzhenzhao/p/12346515.html">吴振照的博客</a></em></p>
-<p>由Java VM管理的内存区域叫运行时数据区(Runtime Data Area)，这个数据区被划分为几个逻辑区域，包括方法区、堆、虚拟机栈、程序计数器、本地方法栈。</p>
-<p>其中方法区和堆是线程共享区域，虚拟机栈、程序计数器、本地方法栈是为线程存储运行时数据的独占区域，每个线程都有一份。</p>
-<img src="/2021/02/16/jvm/runtime_data_area.png" class="" title="运行时数据区">
-
-<h3 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h3><p>方法区在JVM启动时创建，是堆的一部分，但为了与存放对象的堆区分，被取名为Non-Heap。方法区中存放<strong>运行时常量池</strong>、静态变量、类信息、即时编译器编译后的代码。方法区的内存不需要连续，在JDK 6、7中，方法区是永久代Perm Space，有JVM要求的固定大小上限；在JDK 8中，方法区改为元区域Metaspace，由JVM使用直接内存，仅被实际内存大小约束。JVM提供参数修改方法区的初始、最大、最小大小。如果方法区内存溢出，会产生错误信息OutOfMemoryError: Metaspace。</p>
-<blockquote>
-<p><strong>运行时常量池</strong></p>
-</blockquote>
-<p>运行时常量池(Runtime Constant Pool)中包含编译时已知的<strong>数值常量</strong>(已赋值的final)和运行时解析的<strong>方法</strong>、<strong>字段引用</strong>。</p>
-<a id="more"></a>
-
-<h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><p>堆是JVM内存中最大的一块，也不需要是连续的，堆内存用于存放Java对象实例和数组。因为对象的使用寿命一般较短，因此堆是垃圾回收发生的主要区域。如果堆内存溢出，会产生错误信息OutOfMemoryError: Heap Space。</p>
-<h4 id="堆内存结构"><a href="#堆内存结构" class="headerlink" title="堆内存结构"></a>堆内存结构</h4><p>堆内存结构是以优化垃圾回收为目的设计的，具体结构见「垃圾回收机制」章节。</p>
-<h4 id="对象内存结构"><a href="#对象内存结构" class="headerlink" title="对象内存结构"></a>对象内存结构</h4><p>根据前文对JVM内存结构的介绍我们可以想到，一个静态引用是从<strong>方法区</strong>指向堆对象的引用，而一个普通引用是从<strong>栈帧</strong>指向堆对象的引用。那么对象的内部结构是怎样的呢？对象是怎么和它属于的类连接的呢？</p>
-<p>在其它语言实现中，很多会用到句柄，一个句柄分别指向对应的对象和类，引用变量只需要指向句柄即可间接连接到对象和类；而在HotSpot中是采用直接操控指针的方式实现的，每个对象内存中直接存放了指向所属类的指针。</p>
-<p>在一个对象中，有对象头、实例数据和填充数据三个逻辑部分。</p>
-<h5 id="对象头"><a href="#对象头" class="headerlink" title="对象头"></a>对象头</h5><p>保存与对象整体相关的信息：</p>
-<ul>
-<li>Mark Word: 用于保存hashcode、年龄(用于GC)、锁状态(用于分段锁)等信息，8 byte;</li>
-<li>Class Pointer: 指向方法区中的对应类数据，8 byte;</li>
-<li>Length: 数组长度，是数组对象特有的部分，4 byte。</li>
-</ul>
-<h5 id="实例数据"><a href="#实例数据" class="headerlink" title="实例数据"></a>实例数据</h5><p>保存对象的成员变量：</p>
-<ul>
-<li>boolean / byte: 1byte;</li>
-<li>short / char: 2 byte;</li>
-<li>int / float: 4 byte;</li>
-<li>long / double: 8 byte;</li>
-<li>reference: 8byte.</li>
-</ul>
-<h5 id="对齐填充"><a href="#对齐填充" class="headerlink" title="对齐填充"></a>对齐填充</h5><p>将对象的大小填充到8byte的整数倍。</p>
-<h3 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h3><p>程序计数器(Program Count Register)用于记录程序运行的进度，具体地说，用于保存当前正在执行的VM字节码指令的地址。每个线程都有一个程序计数器，通过它，线程能够在拿到cpu时间片时直接定位到该执行的指令。如果执行的是Native方法，则当前值为Undefined。</p>
-<h3 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h3><p>虚拟机栈是线程在方法调用时使用的底层存储空间，线程将调用方法所要用的数据存放在一起压入栈中，称作一个栈帧。方法的调用开始和完成就对应了一个栈帧的压入和弹出。每个栈帧中包含四个部分：</p>
-<ul>
-<li><p>局部变量表：存放方法参数和局部变量，注意，使用这些变量需要先将它们压入操作数栈中。</p>
-</li>
-<li><p>操作数栈：存储当前使用的操作数。</p>
-</li>
-<li><p>动态链接：指向<strong>运行时常量池</strong>中该栈帧对应方法的引用，支持方法中的动态链接</p>
-</li>
-<li><p>方法出口：方法返回的地址。</p>
-</li>
-</ul>
-<h3 id="本地方式栈"><a href="#本地方式栈" class="headerlink" title="本地方式栈"></a>本地方式栈</h3><p>与虚拟机栈类似，只是本地方法栈专用于本地方法的执行。</p>
-<h2 id="类加载机制"><a href="#类加载机制" class="headerlink" title="类加载机制"></a>类加载机制</h2><p><em><a href="https://www.cnblogs.com/wuzhenzhao/p/12346516.html">吴振照的博客</a></em></p>
-<p><em>待补</em></p>
-<h2 id="垃圾回收机制"><a href="#垃圾回收机制" class="headerlink" title="垃圾回收机制"></a>垃圾回收机制</h2><p>当一些对象不在被任何对象引用引用，JVM的垃圾回收机制(Garbage Collector)会帮我们释放对象占用的内存。那么GC应该怎么判断对象是否需要回收呢？有两种思想，一种是引用计数，一种是根搜索。</p>
-<h3 id="引用计数算法-Reference-Counting-GC"><a href="#引用计数算法-Reference-Counting-GC" class="headerlink" title="引用计数算法(Reference Counting GC)"></a>引用计数算法(Reference Counting GC)</h3><p>每一个对象存储一个计数变量，每当有一个地方引用它就加1，每当有一个引用失效就减1。由于一个对象在创建后必须被引用，否则就再也不能被引用，所以当计数值归0时，就说明不再会有任何引用能够引用到它。</p>
-<p>这种算法的特点是简单，可以与正常程序并发进行，但检查不出对象间的循环引用，早期的JVM曾用过这种方法。</p>
-<h3 id="根搜索算法-Tracing-GC"><a href="#根搜索算法-Tracing-GC" class="headerlink" title="根搜索算法(Tracing GC)"></a>根搜索算法(Tracing GC)</h3><p>如果把对象的引用变量关系看作一张有向图，只要定义一些一直存在的结点为根结点(GC Roots)，从根节点开始搜索，能搜索到的结点就是仍在使用中的对象。Tracing GC的实现可以使用广度优先算法，算法的思想是将结点分为白、灰、黑三种颜色：白色代表还没搜索到的结点；灰色代表正在搜索的结点，也就是说这个对象仍有引用没有遍历完，将其放入搜索队列；黑色代表已经搜索过的结点，放入集合。具体实现方法是，申请一段连续地址作为队列，从根集合出发进行广度优先搜索，在搜索的过程中，只扫描没有标记过的对象，先标记这些对象，再将其放入队尾。</p>
-<p>在tracing GC中包含GC Roots、Stop The World的概念，基于根搜索的标记思想又衍生出不同的回收方案。</p>
-<h4 id="GC-Roots"><a href="#GC-Roots" class="headerlink" title="GC Roots"></a>GC Roots</h4><p>GC Roots包括：</p>
-<ul>
-<li>虚拟机栈中引用的对象，即栈帧中的局部变量表中的引用对象；</li>
-<li>方法区中的常量引用的对象；</li>
-<li>方法区中的类静态属性引用的对象；</li>
-<li>本地方法栈中JNI的引用对象；</li>
-<li>活跃线程。</li>
-</ul>
-<h4 id="Stop-The-World"><a href="#Stop-The-World" class="headerlink" title="Stop The World"></a>Stop The World</h4><p>由于程序在运行过程中，对象的引用关系是动态变化的，所以要进行Tracing和marking，必须暂停所有应用线程。JVM会让所有线程运行到安全点(safepoint)，并触发一次Stop The World(STW)。暂停的时间取决于存活对象的多少。</p>
-<h4 id="内存回收方法"><a href="#内存回收方法" class="headerlink" title="内存回收方法"></a>内存回收方法</h4><p>在根搜索标记阶段完成后，就需要真正地回收内存了，在这一步可以采用不同的方法。</p>
-<h5 id="标记清除"><a href="#标记清除" class="headerlink" title="标记清除"></a>标记清除</h5><p>标记阶段结束后，直接回收所有没被标记的对象，这种方法的好处就是在引用计数法的效果上弥补了循环引用问题的不足，而比起其他tracing算法，它不需要移动对象；缺点是需要用一个表来维护所有没被标记的对象，而且回收后会产生内存碎片。</p>
-<h5 id="标记整理-Compacting-GC"><a href="#标记整理-Compacting-GC" class="headerlink" title="标记整理(Compacting GC)"></a>标记整理(Compacting GC)</h5><p>标记阶段结束后，将所有的标记对象向内存地址的一边移动，相当于“整理”内存。这样就不会有内存碎片，新对象的创建地址只需要用一个指针指示。缺点是整理耗费的时间长。</p>
-<h5 id="标记复制-Copying-GC"><a href="#标记复制-Copying-GC" class="headerlink" title="标记复制(Copying GC)"></a>标记复制(Copying GC)</h5><p>Copying的思想是把内存分成大小相等的两块，每次只使用其中一块。每当需要垃圾回收时，通过tracing标记所有存活的对象，把它们拷贝到另外一块内存中。这种方法的好处是标记和复制可以同时进行，而且复制操作中目标地址是连续的，原地址也不需要备份，实现更高效，也不会产生内存碎片；缺点就是需要两倍大小的内存空间。</p>
-<p>Copying GC是HotSpot GC中负责新生代垃圾回收的算法主要采用的方法，因为新生代中大多数对象的生命周期都很短，每次标记只有少量对象能存活，因此需要复制的对象就少，算法效率更高。</p>
-<h5 id="Adaptive-GC"><a href="#Adaptive-GC" class="headerlink" title="Adaptive GC"></a>Adaptive GC</h5><p>这种思想是根据当前情况选择合适的GC算法去处理。分代其实也有一点Adaptive GC思想，只是分代并不是动态选择，而是划分好了不同的情况，并规定每种情况用哪种GC算法。</p>
-<h3 id="Cheney算法——Minor-GC的起源"><a href="#Cheney算法——Minor-GC的起源" class="headerlink" title="Cheney算法——Minor GC的起源"></a>Cheney算法——Minor GC的起源</h3><p><em><a href="https://hllvm-group.iteye.com/group/topic/39376#post-257329">R大的文章</a></em></p>
-<p>Minor GC与其对应在serial GC中的实现类DefNewGeneration使用的就是Cheney算法的变种，Cheney是一种经典的copying算法，它的实现思想就是上文介绍的标记复制方法，具体来说，有以下几个重点：</p>
-<ol>
-<li>使用一块连续的地址空间，划分成from-space和to-space。</li>
-<li>从GC Roots中逐个扫描指向堆的引用，每扫描到一个对象，就把它从from-space拷贝到to-space，并在原对象里记录forwarding pointer，用于标识这个对象被移动到的新位置。并且，每通过<strong>引用</strong>扫描到一个引用对象、拷贝这个对象后，就将这个引用<strong>修正</strong>为指向拷贝后的新对象。</li>
-<li>扫描到一个对象时，通过是否有forwarding pointer来判断对象是否被扫描过。所以forwarding pointer既有转发、更新引用的作用，也有标记(mark)作用。</li>
-<li>to-space区域用一个指针(scanned)指示已经完成扫描的对象位置，另一个指针(top)指示新来的对象应该放到哪里，逻辑上地址是由低到高。由于一个对象可能包含多个引用，每扫描到一个引用，都需要将引用对象拷贝到to-space的对应位置，但对象本身并没有扫描完成，所以to-space成为了一个隐式的队列结构，bottom~scanned区域是完成扫描的对象，scanned~top区域是已经扫描到但没扫描完的对象，top~end是未分配的空间。</li>
-</ol>
-<h3 id="堆内存划分"><a href="#堆内存划分" class="headerlink" title="堆内存划分"></a>堆内存划分</h3><p>JVM研究人员发现，对象的生命周期各不相同，其中大部分对象的生命周期都很短，根据年龄划分对象和对象存放区域，能够有效地利用copying算法的优势，从而提高整个GC体系的效率。因此堆内存在HotSpot虚拟机中，以优化垃圾回收算法为目的，划分为新生代(Young Generation)、年老代(Old Generation)和永久代(Permanent Generation)。其中新生代又被划分为Eden区和Survivor区，Survivor区又被分为survivor0和survivor1两半，对应copying算法中的from-space和to-space。新生代中 Eden : S0 : S1 = 8 : 1 : 1。</p>
-<img src="/2021/02/16/jvm/heap_area.png" class="" title="堆内存结构">
-
-<p>一般情况下，新创建的对象会被分配到eden区，而大对象会被直接分配到old区。</p>
-<p>常说的Minor GC，是负责整个young区的垃圾回收器的俗称。当eden区被放满，就会对eden区进行一次minor GC，把eden和from-space中存活的对象复制到to-space，并且年龄+1，年龄到达阈值的对象会被移到old区。to-space总是在结束前和from-space互换，保证只有from-space有对象。当to-space在一次GC过程中被填满了，minor GC就会把所有存活对象放入old区。</p>
-<p>Old区空间比较大，且在这里的对象都已经很老了比较长(从统计学上看，对象的生命周期要么很短，要么偏长)，所以old区进行GC的频率远小于young区，负责old区的GC俗称为Major GC。又因为只有CMS具有单独处理old区的GC，其他垃圾处理器在处理old时都会先触发一次Minor GC，或者像G1直接收集整个堆，所以很多时候也把Major GC称为Full GC，Full GC指收集整个堆的GC模式。</p>
-<h3 id="垃圾回收器"><a href="#垃圾回收器" class="headerlink" title="垃圾回收器"></a>垃圾回收器</h3><p><em><a href="https://www.jianshu.com/p/5261a62e4d29">简欲明心的文章</a><em>、</em><a href="https://www.zhihu.com/question/41922036/answer/144566789">Ted Mosby的回答</a></em></p>
-<p>垃圾回收器通过设计、组合和优化不同分代使用的算法产生，是指整个垃圾回收模型。这里归纳几种GC的特点。</p>
-<p>Serial GC =  Serial Young GC + Serial Old GC (Full GC)</p>
-<p>Parallel GC = Parallel Young GC + (非并行) PS MarkSweep GC (Full GC) / (并行) Parallel Old GC (Full GC)</p>
-<p>CMS = ParNew GC(Young GC)  + CMS GC(Old GC) + Full GC for CMS(备用)</p>
-<p>G1 GC = Young GC + mixed GC(Young + part of Old) + Full GC for G1 GC(备用)</p>
-<h4 id="各种GC模型的特点"><a href="#各种GC模型的特点" class="headerlink" title="各种GC模型的特点"></a>各种GC模型的特点</h4><ul>
-<li>所有的Minor GC都采用copying思想；</li>
-<li>所有的Full GC都采用compacting思想；</li>
-<li>CMS GC(Old GC)采用mark-sweep思想(concurrent mark sweep)；</li>
-<li>CMS追求最短STW时间；</li>
-<li>G1 GC能够根据用户希望的STW时间制定回收计划，设计目标是取代CMS。</li>
-</ul>
-<h4 id="各种GC子模型的触发条件"><a href="#各种GC子模型的触发条件" class="headerlink" title="各种GC子模型的触发条件"></a>各种GC子模型的触发条件</h4><ul>
-<li>所有Young GC触发条件都是Eden区满了；</li>
-<li>Serial Old GC 和Parallel Old GC(并行和非并行)的触发条件是在Young GC执行前预测old会满；</li>
-<li>CMS GC的initial marking触发条件是old使用比例超过阈值；</li>
-<li>G1 GC的initial marking触发条件是整堆使用比例超过阈值；</li>
-<li>Full GC for CMS和Full GC for G1 GC的触发条件是前面的Old GC没效果。</li>
-</ul>
-<h3 id="值得注意的问题"><a href="#值得注意的问题" class="headerlink" title="值得注意的问题"></a>值得注意的问题</h3><h4 id="为什么要分代"><a href="#为什么要分代" class="headerlink" title="为什么要分代"></a>为什么要分代</h4><p>对于Serial GC来说，GC过程中需要stop the world，所以缩短一次GC的耗时是一件重要的事，而分代作为一种partition的思路，基于对象“朝生暮死”的特性，让新对象在新生代创建，并且频繁收集新生代中的垃圾，而新生代的大小通常也只占堆中的一小部分，所以能够降低STW时间。</p>
-<p>而对于<strong>并发</strong>GC来说，GC是一场和应用拼速度的游戏：应用在创建对象和引用，而GC在后面收集失效的对象和引用。在这种情形下，分代缩短GC的处理时间，就能提高GC的速度，避免或者降低GC应付不了应用不断产生的垃圾、造成STW并等待GC收集的情况。</p>
-<h4 id="为什么Young-Generation中要分为Eden和Survivor区"><a href="#为什么Young-Generation中要分为Eden和Survivor区" class="headerlink" title="为什么Young Generation中要分为Eden和Survivor区"></a>为什么Young Generation中要分为Eden和Survivor区</h4><p>如果没有年龄机制，每次Young区满了就要把存活对象放入old区，这样old区更快被填满，发生Full GC的频率增大，效率慢。设置Survivor区和年龄晋升机制就是为了让young区更频繁的触发具有高效率的Minor GC，减少Full GC频率。</p>
-<h4 id="为什么Survivor区分为两块"><a href="#为什么Survivor区分为两块" class="headerlink" title="为什么Survivor区分为两块"></a>为什么Survivor区分为两块</h4><p>显然，是为了使用Copying GC的思想，得到它的优点：高效地同时去碎片化。</p>
-<h4 id="设置forwarding-pointer和更新引用"><a href="#设置forwarding-pointer和更新引用" class="headerlink" title="设置forwarding pointer和更新引用"></a>设置forwarding pointer和更新引用</h4><p><em><a href="https://www.zhihu.com/question/42181722/answer/145085437">Ted Mosby的回答</a></em></p>
-<p>Copying GC策略中复制对象后，原对象的对象头改为指向新对象地址的指针forwarding pointer。</p>
-<h5 id="Young-GC"><a href="#Young-GC" class="headerlink" title="Young GC"></a>Young GC</h5><p>Young GC类算法中，GC roots包含原定义的GC roots加上old-&gt;young的引用，从这些roots出发，trace每一条路径，如果遇到young-&gt;old的引用，则停止这条路径的搜索；</p>
-<p>当第一次遇到一个对象，会将其copy或者promote，并在这个原对象的markword中存放forwarding pointer；如果这个对象还被其他<strong>引用</strong>指向，下一次tracing到这个对象时，会根据其存放的forwarding pointer更新这些<strong>引用</strong>。</p>
-<p>这类算法包括Serial Young GC（DefNew）、Parallel Young GC、ParNew，以及G1 GC的Young GC &amp; Mixed GC。</p>
-<h5 id="Full-GC"><a href="#Full-GC" class="headerlink" title="Full GC"></a>Full GC</h5><p>Full GC类算法中，先扫描一遍整个堆，找到所有的live objects，计算它们将要去往的新地址，先通过这些地址更改所有live objects的引用，使它们指向正确的新地址，再把live objects复制到对应的新地址上。</p>
-<p>这类算法包括Serial Old GC、PS MarkSweep GC、Parallel Old GC、Full GC for CMS和Full GC for G1 GC。</p>
-<h5 id="CMS-GC"><a href="#CMS-GC" class="headerlink" title="CMS GC"></a>CMS GC</h5><p>CMS算法的老年代GC采用标记-清除法，当ParNew GC的mark-copy结束后，再trace一遍指向老年代的引用，对扫描到的对象进行remark。</p>
-<h4 id="待读"><a href="#待读" class="headerlink" title="待读"></a>待读</h4><p><a href="https://www.zhihu.com/question/53613423/answer/135743258">RednaxelaFX的回答</a></p>
-]]></content>
-      <categories>
-        <category>Java</category>
-      </categories>
-      <tags>
-        <tag>GC</tag>
-        <tag>JVM</tag>
-        <tag>Java</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Java 基础</title>
     <url>/2021/01/28/java-basics/</url>
     <content><![CDATA[<h2 id="Java-基础"><a href="#Java-基础" class="headerlink" title="Java 基础"></a>Java 基础</h2><h3 id="运算符优先级"><a href="#运算符优先级" class="headerlink" title="运算符优先级"></a>运算符优先级</h3><table>
@@ -942,48 +860,174 @@
       </tags>
   </entry>
   <entry>
-    <title>设计模式</title>
-    <url>/2021/02/14/design-pattern/</url>
-    <content><![CDATA[<h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><p>模式是你必须在应用程序中自己实现的形式化的最佳实践。</p>
-<h3 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h3><p>工厂模式的设计意图是将对象的创建过程封装，通过同一个工厂类或接口来管理对象的创建过程。</p>
-<h4 id="简单工厂模式-Simple-Factory-Pattern"><a href="#简单工厂模式-Simple-Factory-Pattern" class="headerlink" title="简单工厂模式(Simple Factory Pattern)"></a>简单工厂模式(Simple Factory Pattern)</h4><p>简单工厂模式也叫静态工厂方法模式，通过定义一个工厂类，来对不同的参数输入返回不同类的实例。在这种模式中，工厂主要就是<strong>负责创建不同实例</strong>的逻辑，而创建出的实例是产品接口的实现类，符合产品接口的要求。</p>
-<h4 id="工厂方法模式-Factory-Method-Pattern"><a href="#工厂方法模式-Factory-Method-Pattern" class="headerlink" title="工厂方法模式(Factory Method Pattern)"></a>工厂方法模式(Factory Method Pattern)</h4><p>工厂方法模式中，工厂通过接口给出必须实现的方法，而不负责产品的创建，产品的创建由实现类完成。用户根据自己的需求选择对应的工厂，并调用工厂方法获得产品。在这个过程中，用户不需要指定产品接口下的具体某一种产品类型，可以利用对态性以总产品接口声明产品的引用。</p>
-<p>工厂方法模式的好处有：</p>
+    <title>Java VM 系列</title>
+    <url>/2021/02/16/jvm/</url>
+    <content><![CDATA[<h2 id="运行时数据区"><a href="#运行时数据区" class="headerlink" title="运行时数据区"></a>运行时数据区</h2><p><em><a href="https://www.cnblogs.com/wuzhenzhao/p/12346515.html">吴振照的博客</a></em></p>
+<p>由Java VM管理的内存区域叫运行时数据区(Runtime Data Area)，这个数据区被划分为几个逻辑区域，包括方法区、堆、虚拟机栈、程序计数器、本地方法栈。</p>
+<p>其中方法区和堆是线程共享区域，虚拟机栈、程序计数器、本地方法栈是为线程存储运行时数据的独占区域，每个线程都有一份。</p>
+<img src="/2021/02/16/jvm/runtime_data_area.png" class="" title="运行时数据区">
+
+<h3 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h3><p>方法区在JVM启动时创建，是堆的一部分，但为了与存放对象的堆区分，被取名为Non-Heap。方法区中存放<strong>运行时常量池</strong>、静态变量、类信息、即时编译器编译后的代码。方法区的内存不需要连续，在JDK 6、7中，方法区是永久代Perm Space，有JVM要求的固定大小上限；在JDK 8中，方法区改为元区域Metaspace，由JVM使用直接内存，仅被实际内存大小约束。JVM提供参数修改方法区的初始、最大、最小大小。如果方法区内存溢出，会产生错误信息OutOfMemoryError: Metaspace。</p>
+<blockquote>
+<p><strong>运行时常量池</strong></p>
+</blockquote>
+<p>运行时常量池(Runtime Constant Pool)中包含编译时已知的<strong>数值常量</strong>(已赋值的final)和运行时解析的<strong>方法</strong>、<strong>字段引用</strong>。</p>
+<a id="more"></a>
+
+<h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><p>堆是JVM内存中最大的一块，也不需要是连续的，堆内存用于存放Java对象实例和数组。因为对象的使用寿命一般较短，因此堆是垃圾回收发生的主要区域。如果堆内存溢出，会产生错误信息OutOfMemoryError: Heap Space。</p>
+<h4 id="堆内存结构"><a href="#堆内存结构" class="headerlink" title="堆内存结构"></a>堆内存结构</h4><p>堆内存结构是以优化垃圾回收为目的设计的，具体结构见「垃圾回收机制」章节。</p>
+<h4 id="对象内存结构"><a href="#对象内存结构" class="headerlink" title="对象内存结构"></a>对象内存结构</h4><p>根据前文对JVM内存结构的介绍我们可以想到，一个静态引用是从<strong>方法区</strong>指向堆对象的引用，而一个普通引用是从<strong>栈帧</strong>指向堆对象的引用。那么对象的内部结构是怎样的呢？对象是怎么和它属于的类连接的呢？</p>
+<p>在其它语言实现中，很多会用到句柄，一个句柄分别指向对应的对象和类，引用变量只需要指向句柄即可间接连接到对象和类；而在HotSpot中是采用直接操控指针的方式实现的，每个对象内存中直接存放了指向所属类的指针。</p>
+<p>在一个对象中，有对象头、实例数据和填充数据三个逻辑部分。</p>
+<h5 id="对象头"><a href="#对象头" class="headerlink" title="对象头"></a>对象头</h5><p>保存与对象整体相关的信息：</p>
 <ul>
-<li>工厂可以返回目标产品的实现类或子类，比如：<strong>文件日志工厂</strong>属于<strong>日志工厂接口</strong>的实现类，文件日志工厂可以创建并返回<strong>日志接口的实现类</strong>——<strong>文件日志</strong>，而用户只需要用日志接口接收这个返回值。</li>
-<li>可以添加新的工厂实现类来拓展功能。</li>
+<li>Mark Word: 用于保存hashcode、年龄(用于GC)、锁状态(用于分段锁)等信息，8 byte;</li>
+<li>Class Pointer: 指向方法区中的对应类数据，8 byte;</li>
+<li>Length: 数组长度，是数组对象特有的部分，4 byte。</li>
+</ul>
+<h5 id="实例数据"><a href="#实例数据" class="headerlink" title="实例数据"></a>实例数据</h5><p>保存对象的成员变量：</p>
+<ul>
+<li>boolean / byte: 1byte;</li>
+<li>short / char: 2 byte;</li>
+<li>int / float: 4 byte;</li>
+<li>long / double: 8 byte;</li>
+<li>reference: 8byte.</li>
+</ul>
+<h5 id="对齐填充"><a href="#对齐填充" class="headerlink" title="对齐填充"></a>对齐填充</h5><p>将对象的大小填充到8byte的整数倍。</p>
+<h3 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h3><p>程序计数器(Program Count Register)用于记录程序运行的进度，具体地说，用于保存当前正在执行的VM字节码指令的地址。每个线程都有一个程序计数器，通过它，线程能够在拿到cpu时间片时直接定位到该执行的指令。如果执行的是Native方法，则当前值为Undefined。</p>
+<h3 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h3><p>虚拟机栈是线程在方法调用时使用的底层存储空间，线程将调用方法所要用的数据存放在一起压入栈中，称作一个栈帧。方法的调用开始和完成就对应了一个栈帧的压入和弹出。每个栈帧中包含四个部分：</p>
+<ul>
+<li><p>局部变量表：存放方法参数和局部变量，注意，使用这些变量需要先将它们压入操作数栈中。</p>
+</li>
+<li><p>操作数栈：存储当前使用的操作数。</p>
+</li>
+<li><p>动态链接：指向<strong>运行时常量池</strong>中该栈帧对应方法的引用，支持方法中的动态链接</p>
+</li>
+<li><p>方法出口：方法返回的地址。</p>
+</li>
+</ul>
+<h3 id="本地方式栈"><a href="#本地方式栈" class="headerlink" title="本地方式栈"></a>本地方式栈</h3><p>与虚拟机栈类似，只是本地方法栈专用于本地方法的执行。</p>
+<h2 id="类加载机制"><a href="#类加载机制" class="headerlink" title="类加载机制"></a>类加载机制</h2><p><em><a href="https://www.cnblogs.com/wuzhenzhao/p/12346516.html">吴振照的博客</a></em></p>
+<p><em>待补</em></p>
+<h2 id="垃圾回收机制"><a href="#垃圾回收机制" class="headerlink" title="垃圾回收机制"></a>垃圾回收机制</h2><p>当一些对象不在被任何对象引用引用，JVM的垃圾回收机制(Garbage Collector)会帮我们释放对象占用的内存。那么GC应该怎么判断对象是否需要回收呢？有两种思想，一种是引用计数，一种是根搜索。</p>
+<h3 id="引用计数算法-Reference-Counting-GC"><a href="#引用计数算法-Reference-Counting-GC" class="headerlink" title="引用计数算法(Reference Counting GC)"></a>引用计数算法(Reference Counting GC)</h3><p>每一个对象存储一个计数变量，每当有一个地方引用它就加1，每当有一个引用失效就减1。由于一个对象在创建后必须被引用，否则就再也不能被引用，所以当计数值归0时，就说明不再会有任何引用能够引用到它。</p>
+<p>这种算法的特点是简单，可以与正常程序并发进行，但检查不出对象间的循环引用，早期的JVM曾用过这种方法。</p>
+<h3 id="根搜索算法-Tracing-GC"><a href="#根搜索算法-Tracing-GC" class="headerlink" title="根搜索算法(Tracing GC)"></a>根搜索算法(Tracing GC)</h3><p>如果把对象的引用变量关系看作一张有向图，只要定义一些一直存在的结点为根结点(GC Roots)，从根节点开始搜索，能搜索到的结点就是仍在使用中的对象。Tracing GC的实现可以使用广度优先算法，算法的思想是将结点分为白、灰、黑三种颜色：白色代表还没搜索到的结点；灰色代表正在搜索的结点，也就是说这个对象仍有引用没有遍历完，将其放入搜索队列；黑色代表已经搜索过的结点，放入集合。具体实现方法是，申请一段连续地址作为队列，从根集合出发进行广度优先搜索，在搜索的过程中，只扫描没有标记过的对象，先标记这些对象，再将其放入队尾。</p>
+<p>在tracing GC中包含GC Roots、Stop The World的概念，基于根搜索的标记思想又衍生出不同的回收方案。</p>
+<h4 id="GC-Roots"><a href="#GC-Roots" class="headerlink" title="GC Roots"></a>GC Roots</h4><p>GC Roots包括：</p>
+<ul>
+<li>虚拟机栈中引用的对象，即栈帧中的局部变量表中的引用对象；</li>
+<li>方法区中的常量引用的对象；</li>
+<li>方法区中的类静态属性引用的对象；</li>
+<li>本地方法栈中JNI的引用对象；</li>
+<li>活跃线程。</li>
+</ul>
+<h4 id="Stop-The-World"><a href="#Stop-The-World" class="headerlink" title="Stop The World"></a>Stop The World</h4><p>由于程序在运行过程中，对象的引用关系是动态变化的，所以要进行Tracing和marking，必须暂停所有应用线程。JVM会让所有线程运行到安全点(safepoint)，并触发一次Stop The World(STW)。暂停的时间取决于存活对象的多少。</p>
+<h4 id="内存回收方法"><a href="#内存回收方法" class="headerlink" title="内存回收方法"></a>内存回收方法</h4><p>在根搜索标记阶段完成后，就需要真正地回收内存了，在这一步可以采用不同的方法。</p>
+<h5 id="标记清除"><a href="#标记清除" class="headerlink" title="标记清除"></a>标记清除</h5><p>标记阶段结束后，直接回收所有没被标记的对象，这种方法的好处就是在引用计数法的效果上弥补了循环引用问题的不足，而比起其他tracing算法，它不需要移动对象；缺点是需要用一个表来维护所有没被标记的对象，而且回收后会产生内存碎片。</p>
+<h5 id="标记整理-Compacting-GC"><a href="#标记整理-Compacting-GC" class="headerlink" title="标记整理(Compacting GC)"></a>标记整理(Compacting GC)</h5><p>标记阶段结束后，将所有的标记对象向内存地址的一边移动，相当于“整理”内存。这样就不会有内存碎片，新对象的创建地址只需要用一个指针指示。缺点是整理耗费的时间长。</p>
+<h5 id="标记复制-Copying-GC"><a href="#标记复制-Copying-GC" class="headerlink" title="标记复制(Copying GC)"></a>标记复制(Copying GC)</h5><p>Copying的思想是把内存分成大小相等的两块，每次只使用其中一块。每当需要垃圾回收时，通过tracing标记所有存活的对象，把它们拷贝到另外一块内存中。这种方法的好处是标记和复制可以同时进行，而且复制操作中目标地址是连续的，原地址也不需要备份，实现更高效，也不会产生内存碎片；缺点就是需要两倍大小的内存空间。</p>
+<p>Copying GC是HotSpot GC中负责新生代垃圾回收的算法主要采用的方法，因为新生代中大多数对象的生命周期都很短，每次标记只有少量对象能存活，因此需要复制的对象就少，算法效率更高。</p>
+<h5 id="Adaptive-GC"><a href="#Adaptive-GC" class="headerlink" title="Adaptive GC"></a>Adaptive GC</h5><p>这种思想是根据当前情况选择合适的GC算法去处理。分代其实也有一点Adaptive GC思想，只是分代并不是动态选择，而是划分好了不同的情况，并规定每种情况用哪种GC算法。</p>
+<h3 id="Cheney算法——Minor-GC的起源"><a href="#Cheney算法——Minor-GC的起源" class="headerlink" title="Cheney算法——Minor GC的起源"></a>Cheney算法——Minor GC的起源</h3><p><em><a href="https://hllvm-group.iteye.com/group/topic/39376#post-257329">R大的文章</a></em></p>
+<p>Minor GC与其对应在serial GC中的实现类DefNewGeneration使用的就是Cheney算法的变种，Cheney是一种经典的copying算法，它的实现思想就是上文介绍的标记复制方法，具体来说，有以下几个重点：</p>
+<ol>
+<li>使用一块连续的地址空间，划分成from-space和to-space。</li>
+<li>从GC Roots中逐个扫描指向堆的引用，每扫描到一个对象，就把它从from-space拷贝到to-space，并在原对象里记录forwarding pointer，用于标识这个对象被移动到的新位置。并且，每通过<strong>引用</strong>扫描到一个引用对象、拷贝这个对象后，就将这个引用<strong>修正</strong>为指向拷贝后的新对象。</li>
+<li>扫描到一个对象时，通过是否有forwarding pointer来判断对象是否被扫描过。所以forwarding pointer既有转发、更新引用的作用，也有标记(mark)作用。</li>
+<li>to-space区域用一个指针(scanned)指示已经完成扫描的对象位置，另一个指针(top)指示新来的对象应该放到哪里，逻辑上地址是由低到高。由于一个对象可能包含多个引用，每扫描到一个引用，都需要将引用对象拷贝到to-space的对应位置，但对象本身并没有扫描完成，所以to-space成为了一个隐式的队列结构，bottom~scanned区域是完成扫描的对象，scanned~top区域是已经扫描到但没扫描完的对象，top~end是未分配的空间。</li>
+</ol>
+<h3 id="堆内存划分"><a href="#堆内存划分" class="headerlink" title="堆内存划分"></a>堆内存划分</h3><p>JVM研究人员发现，对象的生命周期各不相同，其中大部分对象的生命周期都很短，根据年龄划分对象和对象存放区域，能够有效地利用copying算法的优势，从而提高整个GC体系的效率。因此堆内存在HotSpot虚拟机中，以优化垃圾回收算法为目的，划分为新生代(Young Generation)、年老代(Old Generation)和永久代(Permanent Generation)。其中新生代又被划分为Eden区和Survivor区，Survivor区又被分为survivor0和survivor1两半，对应copying算法中的from-space和to-space。新生代中 Eden : S0 : S1 = 8 : 1 : 1。</p>
+<img src="/2021/02/16/jvm/heap_area.png" class="" title="堆内存结构">
+
+<p>一般情况下，新创建的对象会被分配到eden区，而大对象会被直接分配到old区。</p>
+<p>常说的Minor GC，是负责整个young区的垃圾回收器的俗称。当eden区被放满，就会对eden区进行一次minor GC，把eden和from-space中存活的对象复制到to-space，并且年龄+1，年龄到达阈值的对象会被移到old区。to-space总是在结束前和from-space互换，保证只有from-space有对象。当to-space在一次GC过程中被填满了，minor GC就会把所有存活对象放入old区。</p>
+<p>Old区空间比较大，且在这里的对象都已经很老了比较长(从统计学上看，对象的生命周期要么很短，要么偏长)，所以old区进行GC的频率远小于young区，负责old区的GC俗称为Major GC。又因为只有CMS具有单独处理old区的GC，其他垃圾处理器在处理old时都会先触发一次Minor GC，或者像G1直接收集整个堆，所以很多时候也把Major GC称为Full GC，Full GC指收集整个堆的GC模式。</p>
+<h3 id="垃圾回收器"><a href="#垃圾回收器" class="headerlink" title="垃圾回收器"></a>垃圾回收器</h3><p><em><a href="https://www.jianshu.com/p/5261a62e4d29">简欲明心的文章</a><em>、</em><a href="https://www.zhihu.com/question/41922036/answer/144566789">Ted Mosby的回答</a></em></p>
+<p>垃圾回收器通过设计、组合和优化不同分代使用的算法产生，是指整个垃圾回收模型。这里归纳几种GC的特点。</p>
+<p>Serial GC =  Serial Young GC + Serial Old GC (Full GC)</p>
+<p>Parallel GC = Parallel Young GC + (非并行) PS MarkSweep GC (Full GC) / (并行) Parallel Old GC (Full GC)</p>
+<p>CMS = ParNew GC(Young GC)  + CMS GC(Old GC) + Full GC for CMS(备用)</p>
+<p>G1 GC = Young GC + mixed GC(Young + part of Old) + Full GC for G1 GC(备用)</p>
+<h4 id="各种GC模型的特点"><a href="#各种GC模型的特点" class="headerlink" title="各种GC模型的特点"></a>各种GC模型的特点</h4><ul>
+<li>所有的Minor GC都采用copying思想；</li>
+<li>所有的Full GC都采用compacting思想；</li>
+<li>CMS GC(Old GC)采用mark-sweep思想(concurrent mark sweep)；</li>
+<li>CMS追求最短STW时间；</li>
+<li>G1 GC能够根据用户希望的STW时间制定回收计划，设计目标是取代CMS。</li>
+</ul>
+<h4 id="各种GC子模型的触发条件"><a href="#各种GC子模型的触发条件" class="headerlink" title="各种GC子模型的触发条件"></a>各种GC子模型的触发条件</h4><ul>
+<li>所有Young GC触发条件都是Eden区满了；</li>
+<li>Serial Old GC 和Parallel Old GC(并行和非并行)的触发条件是在Young GC执行前预测old会满；</li>
+<li>CMS GC的initial marking触发条件是old使用比例超过阈值；</li>
+<li>G1 GC的initial marking触发条件是整堆使用比例超过阈值；</li>
+<li>Full GC for CMS和Full GC for G1 GC的触发条件是前面的Old GC没效果。</li>
+</ul>
+<h3 id="值得注意的问题"><a href="#值得注意的问题" class="headerlink" title="值得注意的问题"></a>值得注意的问题</h3><h4 id="为什么要分代"><a href="#为什么要分代" class="headerlink" title="为什么要分代"></a>为什么要分代</h4><p>对于Serial GC来说，GC过程中需要stop the world，所以缩短一次GC的耗时是一件重要的事，而分代作为一种partition的思路，基于对象“朝生暮死”的特性，让新对象在新生代创建，并且频繁收集新生代中的垃圾，而新生代的大小通常也只占堆中的一小部分，所以能够降低STW时间。</p>
+<p>而对于<strong>并发</strong>GC来说，GC是一场和应用拼速度的游戏：应用在创建对象和引用，而GC在后面收集失效的对象和引用。在这种情形下，分代缩短GC的处理时间，就能提高GC的速度，避免或者降低GC应付不了应用不断产生的垃圾、造成STW并等待GC收集的情况。</p>
+<h4 id="为什么Young-Generation中要分为Eden和Survivor区"><a href="#为什么Young-Generation中要分为Eden和Survivor区" class="headerlink" title="为什么Young Generation中要分为Eden和Survivor区"></a>为什么Young Generation中要分为Eden和Survivor区</h4><p>如果没有年龄机制，每次Young区满了就要把存活对象放入old区，这样old区更快被填满，发生Full GC的频率增大，效率慢。设置Survivor区和年龄晋升机制就是为了让young区更频繁的触发具有高效率的Minor GC，减少Full GC频率。</p>
+<h4 id="为什么Survivor区分为两块"><a href="#为什么Survivor区分为两块" class="headerlink" title="为什么Survivor区分为两块"></a>为什么Survivor区分为两块</h4><p>显然，是为了使用Copying GC的思想，得到它的优点：高效地同时去碎片化。</p>
+<h4 id="设置forwarding-pointer和更新引用"><a href="#设置forwarding-pointer和更新引用" class="headerlink" title="设置forwarding pointer和更新引用"></a>设置forwarding pointer和更新引用</h4><p><em><a href="https://www.zhihu.com/question/42181722/answer/145085437">Ted Mosby的回答</a></em></p>
+<p>Copying GC策略中复制对象后，原对象的对象头改为指向新对象地址的指针forwarding pointer。</p>
+<h5 id="Young-GC"><a href="#Young-GC" class="headerlink" title="Young GC"></a>Young GC</h5><p>Young GC类算法中，GC roots包含原定义的GC roots加上old-&gt;young的引用，从这些roots出发，trace每一条路径，如果遇到young-&gt;old的引用，则停止这条路径的搜索；</p>
+<p>当第一次遇到一个对象，会将其copy或者promote，并在这个原对象的markword中存放forwarding pointer；如果这个对象还被其他<strong>引用</strong>指向，下一次tracing到这个对象时，会根据其存放的forwarding pointer更新这些<strong>引用</strong>。</p>
+<p>这类算法包括Serial Young GC（DefNew）、Parallel Young GC、ParNew，以及G1 GC的Young GC &amp; Mixed GC。</p>
+<h5 id="Full-GC"><a href="#Full-GC" class="headerlink" title="Full GC"></a>Full GC</h5><p>Full GC类算法中，先扫描一遍整个堆，找到所有的live objects，计算它们将要去往的新地址，先通过这些地址更改所有live objects的引用，使它们指向正确的新地址，再把live objects复制到对应的新地址上。</p>
+<p>这类算法包括Serial Old GC、PS MarkSweep GC、Parallel Old GC、Full GC for CMS和Full GC for G1 GC。</p>
+<h5 id="CMS-GC"><a href="#CMS-GC" class="headerlink" title="CMS GC"></a>CMS GC</h5><p>CMS算法的老年代GC采用标记-清除法，当ParNew GC的mark-copy结束后，再trace一遍指向老年代的引用，对扫描到的对象进行remark。</p>
+<h4 id="待读"><a href="#待读" class="headerlink" title="待读"></a>待读</h4><p><a href="https://www.zhihu.com/question/53613423/answer/135743258">RednaxelaFX的回答</a></p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>GC</tag>
+        <tag>JVM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Singleton Pattern</title>
+    <url>/2021/01/28/singleton-pattern/</url>
+    <content><![CDATA[<p>This post references <a href="https://www.journaldev.com/1377/java-singleton-design-pattern-best-practices-examples">JournalDev</a>, and was written in English for personnal practicing.</p>
+<h1 id="Singleton-Pattern"><a href="#Singleton-Pattern" class="headerlink" title="Singleton Pattern"></a>Singleton Pattern</h1><p>Singleton pattern restricts the instantiation of a class and ensures that only one instance of the class exists in the Java virtual machine.</p>
+<p>To implement a singleton pattern, we should follow three concepts.</p>
+<ul>
+<li>Private constructor to prevent new instantiation act from other class.</li>
+<li>Private static variable of the same class that is the only instance of the class.</li>
+<li>Public static method that returns the instance of the class, providing the only way for outer programs to get the instance of the singleton class.</li>
 </ul>
 <a id="more"></a>
 
-<h4 id="抽象工厂模式-Abstract-Factory-Pattern"><a href="#抽象工厂模式-Abstract-Factory-Pattern" class="headerlink" title="抽象工厂模式(Abstract Factory Pattern)"></a>抽象工厂模式(Abstract Factory Pattern)</h4><p>抽象工厂模式中，工厂接口可以根据需求选择代工厂(子接口)来完成生产工作，而用户只需要使用这个总工厂，不用自己找代工厂。即：工厂通过静态方法帮用户<strong>选择</strong>对应的代工厂，并给用户<strong>返回</strong>代工厂的<strong>实现类</strong>。这样，用户不用关心选哪个代工厂，而是利用多态性，用最上层接口(总工厂)声明引用。</p>
-<p>如果工厂还支持不同的产品加工方法，那么所有代工厂可以使用同一套方法名，从而对用户透明，用户仍然不必知道是哪个代工厂。</p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>如果说工厂方法是对<strong>产品类型</strong>的透明，那么抽象工厂就是对<strong>子工厂类型</strong>的透明。</p>
-<p>工厂或代工厂还可以对创建过的产品进行缓存，当新的需求与缓存的产品对应时直接返回缓存的产品，从而优化内存占用和运行时间。例如Integer的valueOf()方法缓存了+/-128的整形数字包装对象。</p>
-<h3 id="适配器"><a href="#适配器" class="headerlink" title="适配器"></a>适配器</h3><p>适配器主要是用来完成不同类型对象的转换，就像将显示器的HDMI头转为DP头一样，是为了让原类型(HDMI插头)能在目标位置(显卡的DP槽)使用。</p>
-<p>比如将Calleble适配成Runnable用于创建Thread:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RunnableAdapter</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Callable&lt;?&gt; callable;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RunnableAdapter</span><span class="params">(Callable&lt;?&gt; callable)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.callable = callable;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            callable.call();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">        &#125;</span><br><span class="line">   </span><br></pre></td></tr></table></figure>
-<p>或比如将某个容器类型的数据转换成另一个容器类型  <code>Arrays.asList()</code>等等。</p>
-<h3 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h3><p>通过对原对象包装，产生一个持有原对象的代理对象，我们可以在执行原对象的目标方法时添加额外的逻辑，比如条件判断、在方法执行前添加逻辑、在方法执行后添加逻辑等。这样一来，代码的设计模式就变成：</p>
-<ul>
-<li><p>A接口：只定义接口；</p>
-</li>
-<li><p>ABusiness类：A接口的某个业务逻辑；</p>
-</li>
-<li><p>APermissionProxy类：只实现A接口的权限检查代理。</p>
-</li>
-</ul>
-<p>从而保证了代理的职责单一、泛用，降低耦合。</p>
-<p>虚代理：只有当真正需要调用时才创建对象，在这之前只是让调用者持有一个代理对象。</p>
-<p>远程代理：负责把方法访问转换成远程调用，然后返回结果。</p>
+<h2 id="Implemention-practices"><a href="#Implemention-practices" class="headerlink" title="Implemention practices"></a>Implemention practices</h2><h3 id="1-Eager-initialization"><a href="#1-Eager-initialization" class="headerlink" title="1. Eager initialization"></a>1. Eager initialization</h3><p>In eager initialization, the instance of singleton class is created when class is loaded by Java virtual machine. While it is the easiest way to create a singleton class, it has a drawback that instance is created even if it may not be used by any program.</p>
+<p>Implemention is as follows.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EagerInitializedSingleton</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> EagerInitializedSingleton instance = <span class="keyword">new</span> EagerInitializedSingleton();</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">EagerInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> EagerInitializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-Static-block-initialization"><a href="#2-Static-block-initialization" class="headerlink" title="2. Static block initialization"></a>2. Static block initialization</h3><p>Static block initialization is similar to eager initialization, but implement by using static block and exception throwing.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticBlockSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> StaticBlockSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">StaticBlockSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">static</span>&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            instance = <span class="keyword">new</span> StaticBlockSingleton();</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;Exception occured in creating singleton instance&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StaticBlockSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-Lazy-Initialization"><a href="#3-Lazy-Initialization" class="headerlink" title="3. Lazy Initialization"></a>3. Lazy Initialization</h3><p>Lazy initialization implementation only creates instance at the first time accessed.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazyInitializedSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazyInitializedSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazyInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LazyInitializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">            instance = <span class="keyword">new</span> LazyInitializedSingleton();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>This implemention is not thread-safe. When two threads are inside the if condition at the same time, they will get different instances of the “singleton” class.</p>
+<h3 id="4-Thread-Safe-Singleton"><a href="#4-Thread-Safe-Singleton" class="headerlink" title="4. Thread Safe Singleton"></a>4. Thread Safe Singleton</h3><p>To make above program thread-safe, the easiest way is adding <code>synchronized</code> to the method <code>getInstance()</code>. But notice that we only need to create the instance at the first time (when first few thread in the if condition) method is called. </p>
+<p>To avoid extra time-consuming, <strong>double checked locking</strong> principle is used. In this approach, synchronized block is used outside the instance initialization code, with two if condition inside and outside the synchronized block respectively.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazyInitializedSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazyInitializedSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazyInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ThreadSafeSingleton <span class="title">getInstanceUsingDoubleLocking</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (ThreadSafeSingleton.class) &#123;</span><br><span class="line">                <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">                    instance = <span class="keyword">new</span> ThreadSafeSingleton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The double check part is to prevent later threads in first <code>if</code> block (which wait and get the lock) from creating new instances.</p>
+<h3 id="5-Bill-Pugh-Singleton-Implementation"><a href="#5-Bill-Pugh-Singleton-Implementation" class="headerlink" title="5. Bill Pugh Singleton Implementation"></a>5. Bill Pugh Singleton Implementation</h3><p>Still, above implemention used to fail in certain scenarios where large amount of threads try to get the instance simultaneously. So Bill Pugh came up with a different approach to create the Singleton class using an <a href="https://www.journaldev.com/996/java-inner-class">inner static helper class</a>.</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BillPughSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">BillPughSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHelper</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> BillPughSingleton INSTANCE = <span class="keyword">new</span> BillPughSingleton();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> BillPughSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHelper.INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SingletonHelper is a static nested/inner class, which gets loaded only when someone calls the <em>getInstance</em> method.</p>
+<h3 id="6-Enum-Singleton"><a href="#6-Enum-Singleton" class="headerlink" title="6. Enum Singleton"></a>6. Enum Singleton</h3><p>Enum singleton is used to overcome <strong><em>reflection</em></strong> problem (which can destroy singleton pattern we talked above).</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">EnumSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    INSTANCE;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="7-SerializedSingleton"><a href="#7-SerializedSingleton" class="headerlink" title="7. SerializedSingleton"></a>7. SerializedSingleton</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SerializedSingleton</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">7604766932017737115L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">SerializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHelper</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> SerializedSingleton instance = <span class="keyword">new</span> SerializedSingleton();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> SerializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHelper.instance;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>The problem with serialized singleton class is that whenever we deserialize it, it will create a new instance of the class.</p>
+</blockquote>
+<p><strong><em>Mark to update later.</em></strong></p>
 ]]></content>
       <categories>
         <category>Design Patterns</category>
       </categories>
       <tags>
-        <tag>Factory Pattern</tag>
-        <tag>Adapter Pattern</tag>
-        <tag>Agent Pattern</tag>
         <tag>Design Patterns</tag>
+        <tag>Singleton Pattern</tag>
       </tags>
   </entry>
   <entry>
@@ -1050,53 +1094,12 @@
 <p>对链表排序，需要从左往右找插入位置，可以从dummyHead查找，就不用考虑头结点的问题。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ListNode lastSorted = head;</span><br><span class="line">ListNode cur = head.next;</span><br><span class="line"><span class="keyword">while</span> (cur != <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (lastSorted.val &lt;= cur.val) &#123;</span><br><span class="line">        lastSorted = lastSorted.next;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// 找到插入位置: prev.next</span></span><br><span class="line">        ListNode prev = dummyHead;</span><br><span class="line">        <span class="keyword">while</span> (prev.next.val &lt;= cur.val) &#123;</span><br><span class="line">            prev = prev.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 先把cur后面的接在有序区间末尾，再把cur插入找到的位置</span></span><br><span class="line">        <span class="comment">// 相当于remove(cur); insert(cur);</span></span><br><span class="line">        lastSorted.next = cur.next;</span><br><span class="line">        cur.next = prev.next;</span><br><span class="line">        prev.next = cur;</span><br><span class="line">    &#125;</span><br><span class="line">    cur = lastSorted.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h4 id=""><a href="#" class="headerlink" title=""></a></h4>]]></content>
+      <categories>
+        <category>Algorithm &amp; Data Structure</category>
+      </categories>
       <tags>
         <tag>Heap</tag>
         <tag>Quicksort</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Singleton Pattern</title>
-    <url>/2021/01/28/singleton-pattern/</url>
-    <content><![CDATA[<p>This post references <a href="https://www.journaldev.com/1377/java-singleton-design-pattern-best-practices-examples">JournalDev</a>, and was written in English for personnal practicing.</p>
-<h1 id="Singleton-Pattern"><a href="#Singleton-Pattern" class="headerlink" title="Singleton Pattern"></a>Singleton Pattern</h1><p>Singleton pattern restricts the instantiation of a class and ensures that only one instance of the class exists in the Java virtual machine.</p>
-<p>To implement a singleton pattern, we should follow three concepts.</p>
-<ul>
-<li>Private constructor to prevent new instantiation act from other class.</li>
-<li>Private static variable of the same class that is the only instance of the class.</li>
-<li>Public static method that returns the instance of the class, providing the only way for outer programs to get the instance of the singleton class.</li>
-</ul>
-<a id="more"></a>
-
-<h2 id="Implemention-practices"><a href="#Implemention-practices" class="headerlink" title="Implemention practices"></a>Implemention practices</h2><h3 id="1-Eager-initialization"><a href="#1-Eager-initialization" class="headerlink" title="1. Eager initialization"></a>1. Eager initialization</h3><p>In eager initialization, the instance of singleton class is created when class is loaded by Java virtual machine. While it is the easiest way to create a singleton class, it has a drawback that instance is created even if it may not be used by any program.</p>
-<p>Implemention is as follows.</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EagerInitializedSingleton</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> EagerInitializedSingleton instance = <span class="keyword">new</span> EagerInitializedSingleton();</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">EagerInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> EagerInitializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="2-Static-block-initialization"><a href="#2-Static-block-initialization" class="headerlink" title="2. Static block initialization"></a>2. Static block initialization</h3><p>Static block initialization is similar to eager initialization, but implement by using static block and exception throwing.</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticBlockSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> StaticBlockSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">StaticBlockSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">static</span>&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            instance = <span class="keyword">new</span> StaticBlockSingleton();</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;Exception occured in creating singleton instance&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StaticBlockSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="3-Lazy-Initialization"><a href="#3-Lazy-Initialization" class="headerlink" title="3. Lazy Initialization"></a>3. Lazy Initialization</h3><p>Lazy initialization implementation only creates instance at the first time accessed.</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazyInitializedSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazyInitializedSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazyInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LazyInitializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">            instance = <span class="keyword">new</span> LazyInitializedSingleton();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>This implemention is not thread-safe. When two threads are inside the if condition at the same time, they will get different instances of the “singleton” class.</p>
-<h3 id="4-Thread-Safe-Singleton"><a href="#4-Thread-Safe-Singleton" class="headerlink" title="4. Thread Safe Singleton"></a>4. Thread Safe Singleton</h3><p>To make above program thread-safe, the easiest way is adding <code>synchronized</code> to the method <code>getInstance()</code>. But notice that we only need to create the instance at the first time (when first few thread in the if condition) method is called. </p>
-<p>To avoid extra time-consuming, <strong>double checked locking</strong> principle is used. In this approach, synchronized block is used outside the instance initialization code, with two if condition inside and outside the synchronized block respectively.</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazyInitializedSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazyInitializedSingleton instance;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazyInitializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ThreadSafeSingleton <span class="title">getInstanceUsingDoubleLocking</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (ThreadSafeSingleton.class) &#123;</span><br><span class="line">                <span class="keyword">if</span>(instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">                    instance = <span class="keyword">new</span> ThreadSafeSingleton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>The double check part is to prevent later threads in first <code>if</code> block (which wait and get the lock) from creating new instances.</p>
-<h3 id="5-Bill-Pugh-Singleton-Implementation"><a href="#5-Bill-Pugh-Singleton-Implementation" class="headerlink" title="5. Bill Pugh Singleton Implementation"></a>5. Bill Pugh Singleton Implementation</h3><p>Still, above implemention used to fail in certain scenarios where large amount of threads try to get the instance simultaneously. So Bill Pugh came up with a different approach to create the Singleton class using an <a href="https://www.journaldev.com/996/java-inner-class">inner static helper class</a>.</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BillPughSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">BillPughSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHelper</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> BillPughSingleton INSTANCE = <span class="keyword">new</span> BillPughSingleton();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> BillPughSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHelper.INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>SingletonHelper is a static nested/inner class, which gets loaded only when someone calls the <em>getInstance</em> method.</p>
-<h3 id="6-Enum-Singleton"><a href="#6-Enum-Singleton" class="headerlink" title="6. Enum Singleton"></a>6. Enum Singleton</h3><p>Enum singleton is used to overcome <strong><em>reflection</em></strong> problem (which can destroy singleton pattern we talked above).</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">EnumSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    INSTANCE;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="7-SerializedSingleton"><a href="#7-SerializedSingleton" class="headerlink" title="7. SerializedSingleton"></a>7. SerializedSingleton</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SerializedSingleton</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">7604766932017737115L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">SerializedSingleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHelper</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> SerializedSingleton instance = <span class="keyword">new</span> SerializedSingleton();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> SerializedSingleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHelper.instance;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>The problem with serialized singleton class is that whenever we deserialize it, it will create a new instance of the class.</p>
-</blockquote>
-<p><strong><em>Mark to update later.</em></strong></p>
-]]></content>
-      <categories>
-        <category>Design Patterns</category>
-      </categories>
-      <tags>
-        <tag>Design Patterns</tag>
-        <tag>Singleton Pattern</tag>
       </tags>
   </entry>
   <entry>
@@ -1397,19 +1400,31 @@
 </ul>
 <h3 id="值得思考的问题"><a href="#值得思考的问题" class="headerlink" title="值得思考的问题"></a>值得思考的问题</h3><h4 id="为什么要分层？"><a href="#为什么要分层？" class="headerlink" title="为什么要分层？"></a>为什么要分层？</h4><p>建立分层的模型能够让不同的功能相互分离，各司其职，彼此通过简单的接口连接，让复杂系统在设计和迭代时更加清晰易用，且更容易拓展新的技术/协议/功能。</p>
 <h2 id="应用层协议"><a href="#应用层协议" class="headerlink" title="应用层协议"></a>应用层协议</h2><h3 id="HTTP-协议"><a href="#HTTP-协议" class="headerlink" title="HTTP 协议"></a>HTTP 协议</h3><h4 id="Request-报文"><a href="#Request-报文" class="headerlink" title="Request 报文"></a>Request 报文</h4><p>状态行、请求头、消息主体：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">method</span>&gt;</span> <span class="tag">&lt;<span class="name">request-URL</span>&gt;</span> <span class="tag">&lt;<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">headers</span>&gt;</span></span><br><span class="line">  </span><br><span class="line"><span class="tag">&lt;<span class="name">entity-body</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>其中method有四种：GET, POST, PUT, DELETE, 分别是对资源的查增改删；</p>
-<p>URL就是资源的地址，描述method的操作对象。</p>
-<p>例如GET请求：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">GET &#x2F;books&#x2F;?sex&#x3D;man&amp;name&#x3D;Professional HTTP&#x2F;1.1</span><br><span class="line">Host: www.example.com</span><br><span class="line">User-Agent: Mozilla&#x2F;5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.6)</span><br><span class="line">Gecko&#x2F;20050225 Firefox&#x2F;1.0.1</span><br><span class="line">Connection: Keep-Alive</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>POST请求：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">POST &#x2F; HTTP&#x2F;1.1</span><br><span class="line">Host: www.example.com</span><br><span class="line">User-Agent: Mozilla&#x2F;5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.6)</span><br><span class="line">Gecko&#x2F;20050225 Firefox&#x2F;1.0.1</span><br><span class="line">Content-Type: application&#x2F;x-www-form-urlencoded</span><br><span class="line">Content-Length: 40</span><br><span class="line">Connection: Keep-Alive</span><br><span class="line"></span><br><span class="line">sex&#x3D;man&amp;name&#x3D;Professional</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&lt;method&gt; &lt;request-URL&gt; &lt;version&gt;</span><br><span class="line">&lt;headers&gt;</span><br><span class="line">  </span><br><span class="line">&lt;entity-body&gt;</span><br></pre></td></tr></table></figure>
+<p>其中method有四种：GET, POST, PUT, DELETE, 分别是对资源的查增改删；还有HEAD, OPTION, TRACE等方法。</p>
+<p>URI：统一资源标识符(identifier)</p>
+<p>URL：统一资源定位符(locator)</p>
+<p>URN：统一资源名称(name)</p>
+<p>URL和URN都是URI。</p>
+<h5 id="GET请求"><a href="#GET请求" class="headerlink" title="GET请求"></a>GET请求</h5><figure class="highlight http"><table><tr><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/books/?sex=man&amp;name=Professional</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>www.example.com</span><br><span class="line"><span class="attribute">User-Agent</span><span class="punctuation">: </span>Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.6)</span><br><span class="line">Gecko/20050225 Firefox/1.0.1</span><br><span class="line">Connection: Keep-Alive \r\n</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>在headers中包括但不限于以下参数：</p>
+<ul>
+<li>User-Agent：用户代理，例如wget也是一种用户代理</li>
+<li>Accept-Encoding：接受的编码类型</li>
+<li>Accept-Language：接受的语言</li>
+<li>Cookie: 标识客户端身份</li>
+<li>Host：访问哪个虚拟机</li>
+<li>If-Modified-Since：如果在规定时间之后没更新，就返回304告知我可以使用缓存，否则返回我请求的资源。</li>
+<li>Authorization：认证信息</li>
+<li>Connection：Keep-Alive在1.0需要手动开启，1.1默认开启。Closed在1.1中手动禁用keep-alive。</li>
+</ul>
+<h5 id="POST请求"><a href="#POST请求" class="headerlink" title="POST请求"></a>POST请求</h5><figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>www.example.com</span><br><span class="line"><span class="attribute">User-Agent</span><span class="punctuation">: </span>Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.6)</span><br><span class="line">Gecko/20050225 Firefox/1.0.1</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Content-Length: 40</span><br><span class="line">Connection: Keep-Alive</span><br><span class="line"></span><br><span class="line">sex=man&amp;name=Professional</span><br></pre></td></tr></table></figure>
 <p>GET请求的长度受到特定浏览器及服务器的限制，POST请求理论上没有大小限制，服务器处于安全因素考虑会有一定的限制。</p>
 <p>GET方法没有携带数据，POST方法携带Body。</p>
 <p>POST的content-type 可以是 <code>application/x-www-form-urlencoded</code> 或<code>multipart/form-data</code>。前者如<code>sex=man&amp;name=Professional</code>，后者是指定一个boundary，消息主体通过*<code>--boundary</code><em>分隔不同字段，并以</em><code>--boundary--</code>*结束。还有新的content-type，如<code>application/json</code>, <code>text/xml</code>,  <code>application/x-protobuf</code>。</p>
 <h4 id="Response-报文"><a href="#Response-报文" class="headerlink" title="Response 报文"></a>Response 报文</h4><p>状态行、响应头、响应正文（对应Request），如：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line"></span><br><span class="line">Server:Apache Tomcat/5.0.12  </span><br><span class="line">Date:Mon,6Oct2003 13:23:42 GMT</span><br><span class="line">Content-Length:112</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span>...</span><br></pre></td></tr></table></figure>
-<p>状态码有：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="meta">HTTP/1.1</span> <span class="number">200</span> OK</span><br><span class="line"></span><br><span class="line">Server:Apache Tomcat/5.0.12  </span><br><span class="line">Date:Mon,6Oct2003 13:23:42 GMT</span><br><span class="line">Content-Length:112</span><br><span class="line"></span><br><span class="line">&lt;html&gt;...</span><br></pre></td></tr></table></figure>
+<p>状态码包括但不限于：</p>
 <ul>
 <li><code>200 OK</code> 客户端请求成功</li>
 <li><code>301 Moved Permanently</code> 请求永久重定向</li>
@@ -1424,11 +1439,21 @@
 <li><code>502 Bad Gateway</code> 作为网关或代理的服务器尝试执行请求时，从上游服务器接收到无效的相应</li>
 <li><code>503 Service Unavailable</code> 服务器当前不能够处理客户端的请求，在一段时间之后，服务器可能会恢复正常</li>
 </ul>
+<p>headers包括但不限于：</p>
+<ul>
+<li>Connection：同request</li>
+<li>Content-Encoding：压缩格式，如gzip</li>
+<li>Content-Type：如MIME类型，使用的字符集等</li>
+<li>Date：相应日期</li>
+<li>Server：使用的服务器</li>
+<li>Transfer-Encoding：传输方式，只有chunked一种可选项，见下文</li>
+</ul>
+<p>body包含返回的文件，如xx.html, xx.php</p>
 <h4 id="Keep-alive"><a href="#Keep-alive" class="headerlink" title="Keep-alive"></a>Keep-alive</h4><p>HTTP1.0中，默认采取完成“请求-应答”后关闭连接的方式，也就是HTTP协议的无连接特点。而Keep-Alive模式不会立刻关闭连接，避免了重新建立连接。如果客户端浏览器支持Keep-Alive，就在请求头中设置字段 <code>Connection: Keep-Alive</code>，如果服务器也支持这种模式，会在相应头中也设置同样的字段，这样Keep-Alive模式就开启了。</p>
 <p>HTTP1.1中，默认采取Keep-Alive模式，如果设置字段 <code>Connection: close</code>才关闭。而目前大多数浏览器都是用HTTP1.1协议，这种情况下能否开启Keep-Alive模式取决于服务器的设置。</p>
 <p>Keep-Alive的作用是保持下层的TCP连接，并且要求设置一个<strong>超时阈值</strong>和<strong>最大接受请求次数的阈值</strong>，达到阈值会断开连接。</p>
 <p>需要注意的是，Keep-Alive只允许保持连接，但HTTP仍然是无状态的，也就是说不同的请求-响应内容仍然是<strong>独立、互不影响</strong>的。此外，程序不应该依赖它的保持连接特性，因为连接会因为各种原因断开。</p>
-<h4 id="Chunked-传输"><a href="#Chunked-传输" class="headerlink" title="Chunked 传输"></a>Chunked 传输</h4><p>如果在HTTP消息头部设置字段<code>Transfer-Encoding: chunked</code>，则表示消息分块传输。</p>
+<h4 id="chunked-传输"><a href="#chunked-传输" class="headerlink" title="chunked 传输"></a>chunked 传输</h4><p>如果在HTTP消息头部设置字段<code>Transfer-Encoding: chunked</code>，则表示消息分块传输。</p>
 <p>每一个非空块都由<code>块字节数 + CRLF + 数据</code>组成，最后一块是空块，由<code>0+CRLF</code>组成，表示本次传输数据结束。</p>
 <p>例如：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HTTP&#x2F;1.1 200 OK</span><br><span class="line">Content-Type: text&#x2F;plain</span><br><span class="line">Transfer-Encoding: chunked</span><br><span class="line"></span><br><span class="line">25</span><br><span class="line">This is the data in the first chunk</span><br><span class="line"></span><br><span class="line">1A</span><br><span class="line">and this is the second one</span><br><span class="line">0</span><br></pre></td></tr></table></figure>
@@ -1534,37 +1559,58 @@
 <p>另一种是session ticket。服务器将双方协商的密钥等通信信息加密为session ticket附在extension中并发给客户端，由客户端保存。当需要会话恢复时，服务器能够对session ticket进行解密，从而获得会话密钥，重新建立会话连接。</p>
 <p>类似于http协议中的session(服务器保存)和cookie(客户端保存)。</p>
 <p>详细的会话恢复通信过程见参考博客。</p>
+<h3 id="密钥"><a href="#密钥" class="headerlink" title="密钥"></a>密钥</h3><h4 id="非对称加密"><a href="#非对称加密" class="headerlink" title="非对称加密"></a>非对称加密</h4><p>非对称加密英文是public-key cryptography，即公钥加密。服务器生成一对密钥，加密和解密使用不同的密钥，因此称为非对称密钥。非对称密钥可以用来加密、解密信息，也可以制作数字签名。两者的区别是应用场景不同，前者是所有客户端都可以加密，而解密只能是服务器；后者是所有人都可以解密，而加密者是唯一的。非对称加密算法有RSA、DSA等。</p>
+<h5 id="加密解密"><a href="#加密解密" class="headerlink" title="加密解密"></a>加密解密</h5><p>以RSA加密算法为例，服务器生成一对公钥和私钥，自己保留私钥，并把公钥发送给客户端，客户端发送的报文都用这个公钥加密，这样就只有服务器的唯一私钥可以解密，防止其他人获取报文中的信息。</p>
+<h5 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h5><p>因为公钥是可以被他人截取到的，所以为了防止服务器发出的报文被他人替换成假报文发给客户端，可以使用数字签名。首先将要发送的报文用hash算法生成摘要，再将摘要用私钥加密，作为数字签名，在发送报文时加上数字签名。这样，客户端能够：</p>
+<ul>
+<li>收到报文后可以用公钥解密数字签名部分，得到hash摘要信息。</li>
+<li>计算明文报文部分的hash摘要，和解密出的摘要对比，如果相同就说明报文没有被篡改。</li>
+</ul>
+<h5 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h5><p>数字签名解决了发回的报文被他人修改冒充的问题，那么如果有人在最开始，服务器向客户端发送公钥的阶段就冒充呢？如果有人截取到服务器发出的公钥信息，并向客户端发自己的公钥，那么客户端加密的所有报文都能被这个人截取并且解密，不仅如此，冒充者还能用私钥生成数字签名，破解上述的防护措施。</p>
+<p>数字证书(Certificate Authority, CA)就是解决这个问题的。被认证的权威机构用自己的私钥加密真实服务器的公钥，产生数字证书发给客户端，客户端再用CA的公钥解密获得真实服务器的公钥，这个过程也就是对”服务器公钥”的加密解密。这样，权威机构加密的真实公钥就不怕被替换了。</p>
+<p>问题来了，CA机构颁发的数字证书不怕被他人伪造吗？实际上这里还有证书的分级，根证书是预装在操作系统里的，从根证书开始每一级保证下一级证书的可信度，到CA机构的证书，构成一条信用链，因此只要上级证书可信，当前证书就可信。</p>
+<h4 id="对称加密"><a href="#对称加密" class="headerlink" title="对称加密"></a>对称加密</h4><p>对称加密算法中，加密和解密都是用同一个密钥，因此称为对称密钥。使用对称密钥的优势是加/解密速度快，适合于对大数据量进行加密。密钥越长越难破解，加解密速度越慢，反之同理。但问题在于，加解密钥相同就意味着要把这个密钥发送给目标客户端时，他人只要截取了这个密钥，就既能加密也能解密了。通常为保证安全性，采用<strong>非对称密钥</strong>加密<strong>对称密钥</strong>，这样密钥能够安全送到客户端手上，并且之后的通信就可以使用对称密钥快速加解密了。对称加密算法有DES、AES等。</p>
 <h2 id="传输层协议"><a href="#传输层协议" class="headerlink" title="传输层协议"></a>传输层协议</h2><h3 id="TCP协议"><a href="#TCP协议" class="headerlink" title="TCP协议"></a>TCP协议</h3><h4 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h4><p>当客户端要向服务器发送请求，首先需要通过三次握手协议建立TCP连接：</p>
 <ul>
-<li>Client端告诉Server端将要开始发送数据，并告知将要使用的同步位和序列号(SYN_bit=1,  seq_A=x)；</li>
-<li>Server端发回自己将要使用的同步位和序列号(SYN_bit=1, seq=y)，以及对Client端的确认信号(ACK_A=x+1)；</li>
-<li>Client端发回确认信号ACK_B=y+1，表示双方的连接是稳定的，并将开始发送数据。</li>
+<li>客户端告诉服务器将要开始发送数据，并告知将要使用的同步位和序列号(SYN = 1,  seq = x)；</li>
+<li>服务器发回自己将要使用的同步位和序列号(SYN = 1, seq = y)，以及对客户端的确认信号(ACK = x + 1)；</li>
+<li>客户端发回确认信号(ACK = y + 1)，表示双方的连接是稳定的，并将开始发送数据。</li>
 </ul>
 
 
-<h4 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h4><p>当客户端和服务端完成了通信，需要关闭连接时，采用四次挥手协议：</p>
-<p>如果是Client端向Server端提出关闭连接（反之同理），</p>
+<h4 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h4><p>当客户端和服务器完成了通信，需要关闭连接时，采用四次挥手协议：</p>
+<p>如果是客户端向服务器提出关闭连接（反之同理），</p>
 <ul>
-<li><p>Client端发送FIN_A报文，表示自己这边的数据已经发完了，进入FIN_WAI_1状态；</p>
+<li><p>客户端发送FIN报文，表示自己这边的数据已经发完了，进入FIN_WAI_1状态；</p>
 </li>
-<li><p>Server端收到FIN_A报文，发回ACK_A报文，作为收到FIN报文的确认；</p>
+<li><p>服务器收到FIN报文，发回ACK报文，作为收到FIN报文的确认；</p>
 <ul>
-<li>Client端收到ACK_A报文，进入FIN_WAIT_2状态，继续接收Server端的数据；</li>
+<li>客户端收到ACK报文，进入FIN_WAIT_2状态，继续接收服务器的数据；</li>
 </ul>
 </li>
-<li><p>Server端的数据也发完了，向Client端发送FIN_B报文；</p>
+<li><p>服务器的数据也发完了，向客户端发送FIN报文；</p>
 </li>
-<li><p>Client端收到FIN_B报文也向Server端返回一个ACK_B报文，通知对方准备可以关闭连接了，自己进入TIME_WAIT状态；</p>
+<li><p>客户端收到FIN报文也向服务器返回一个ACK报文，通知对方准备可以关闭连接了，自己进入TIME_WAIT状态；</p>
 <ul>
-<li><p>Server端收到ACK_B报文，关闭连接；</p>
+<li><p>服务器收到ACK报文，关闭连接；</p>
 </li>
-<li><p>Client端TIME_WAIT时间用完，关闭连接。</p>
+<li><p>客户端TIME_WAIT时间用完，关闭连接。</p>
 </li>
 </ul>
 </li>
 </ul>
 
 
+
+
+<h4 id="CLOSE-WAIT-和-TIME-WAIT"><a href="#CLOSE-WAIT-和-TIME-WAIT" class="headerlink" title="CLOSE_WAIT 和 TIME_WAIT"></a>CLOSE_WAIT 和 TIME_WAIT</h4><p>在TCP的四次挥手中，接收端收到发送端的FIN报文、回复ACK之后，就会进入CLOSE_WAIT状态，此时发送端收到ACK进入FIN_WAIT_2状态。这时，在这两个状态中，接收端仍有数据没发完或正要发完，而发送端在等待接收端发完并发来FIN报文。</p>
+<p>当接收端准备好关闭连接后，向发送端发送FIN报文，此时接收端进入LAST_ACK状态，等待最后一个ACK；发送端等来FIN报文，回复最后一个ACK，就进入TIME_WAIT状态，在TIME_WAIT状态等待2个MSL (Maximum Segment Lifetime) ，才关闭连接；而接收方收到最后一个ACK就随即关闭连接。</p>
+<p>主动关闭连接的一端只所以需要在TIME_WAIT状态等2个MSL时间，主要是防止发生几种情况：</p>
+<ol>
+<li>自己的ACK在传输过程中丢失了，被动关闭的一方没有收到ACK，一直处于LAST_ACK状态。这时，主动方认为连接已经关闭，而被动方认为连接还没关闭，主动方如果需要再次开启连接，会被被动方拒绝，因为端口复用+端口号被占用。</li>
+<li>如果双方正常地立即关闭了连接，而又因为需求重新建立了连接，且端口还是原来的端口，这时上个连接中丢失的数据包(网络拥堵等原因)最终姗姗来迟传输到了对方主机，序列号也正好是新连接进行到的序列号，就会被错误接收，而真正的数据包被丢弃。</li>
+</ol>
+<p>因此，等待一段时间是有效的解决方法。而2个MSL时间确保ACK丢失后，被关闭方重发的FIN能够赶在关闭方关闭连接之前发到。MSL的值在RFC中建议为2分钟，在实际工程实现中多为30秒。</p>
 <h4 id="SYN-攻击"><a href="#SYN-攻击" class="headerlink" title="SYN 攻击"></a>SYN 攻击</h4><h5 id="攻击原理"><a href="#攻击原理" class="headerlink" title="攻击原理"></a>攻击原理</h5><p>前文介绍过TCP协议建立连接的三次握手，其中第一步是客户端向服务器发送SYN，服务器回复SYN+ACK，并等待客户端的ACK。在服务器等待客户端的第三次握手时，TCP连接处于半开连接(half-open connect)状态，服务器将这种连接存储在一个半连接队列里，当收到客户端的第三次握手ACK，就将对应的半连接从队列里移到连接队列。</p>
 <p>SYN攻击属于DoS攻击的一种，DoS(Denial of Service)攻击意为拒绝服务攻击，就是利用三次握手的缺陷，不断向服务器发送SYN包(第一次握手)，而又不答复ACK包(第三次握手)，使服务器的半开连接堆满了半连接队列，这时正常用户发送到服务器的连接建立请求包就会被丢弃。此外，服务器维护大量的半连接耗费大量的资源和存储空间，可能造成系统瘫痪，且大量的数据传输可能引起网络拥堵。</p>
 <p>普通的SYN攻击使用同一个真实IP伪造大量的SYN包发给服务器。显然这种攻击很容易被服务器识别，只需要在防火墙中禁止掉相应IP的访问就能防御攻击。攻击者还可以伪造大量不同的IP来混淆防御者的视线，或指使不同的真实ip发起DoS攻击，从而构成分布式DoS攻击，也就是DDoS(Distributed DoS)攻击。</p>
@@ -1582,14 +1628,6 @@
 <p>当半连接队列满了之后，服务器继续接收客户端的SYN包，但此时服务器发回的数据包中的初始SYN按照SYN Cookies算法生成，当客户端收到SYN+ACK后，返回的ACK应该是收到的SYN+1，这是服务器收到ACK减去1，再与发去的SYN cookie比对，如果符合就从cookies中解码出相应的信息，用来重构SYN连接条目。</p>
 </li>
 </ol>
-<h4 id="CLOSE-WAIT-和-TIME-WAIT"><a href="#CLOSE-WAIT-和-TIME-WAIT" class="headerlink" title="CLOSE_WAIT 和 TIME_WAIT"></a>CLOSE_WAIT 和 TIME_WAIT</h4><p>在TCP的四次挥手中，接收端收到发送端的FIN报文、回复ACK之后，就会进入CLOSE_WAIT状态，此时发送端收到ACK进入FIN_WAIT_2状态。这时，在这两个状态中，接收端仍有数据没发完或正要发完，而发送端在等待接收端发完并发来FIN报文。</p>
-<p>当接收端准备好关闭连接后，向发送端发送FIN报文，此时接收端进入LAST_ACK状态，等待最后一个ACK；发送端等来FIN报文，回复最后一个ACK，就进入TIME_WAIT状态，在TIME_WAIT状态等待2个MSL (Maximum Segment Lifetime) ，才关闭连接；而接收方收到最后一个ACK就随即关闭连接。</p>
-<p>主动关闭连接的一端只所以需要在TIME_WAIT状态等2个MSL时间，主要是防止发生几种情况：</p>
-<ol>
-<li>自己的ACK在传输过程中丢失了，被动关闭的一方没有收到ACK，一直处于LAST_ACK状态。这时，主动方认为连接已经关闭，而被动方认为连接还没关闭，主动方如果需要再次开启连接，会被被动方拒绝，因为端口复用+端口号被占用。</li>
-<li>如果双方正常地立即关闭了连接，而又因为需求重新建立了连接，且端口还是原来的端口，这时上个连接中丢失的数据包(网络拥堵等原因)最终姗姗来迟传输到了对方主机，序列号也正好是新连接进行到的序列号，就会被错误接收，而真正的数据包被丢弃。</li>
-</ol>
-<p>因此，等待一段时间是有效的解决方法。而2个MSL时间确保ACK丢失后，被关闭方重发的FIN能够赶在关闭方关闭连接之前发到。MSL的值在RFC中建议为2分钟，在实际工程实现中多为30秒。</p>
 <h4 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h4><p>如果数据传输时每次发送一个数据包都需要等待ACK才发送下一个，显然会浪费大量的时间用于等待ACK，而在对方能容纳的范围内尽量地连续发送数据能够最大地提升通信效率。在TCP中，接收方向发送方告知自己能接收的窗口大小，而发送方就按照窗口大小连续地发送数据，每当收到一个累计ACK后，就将窗口相应地往右滑动，将已确认的数据包从左边移出窗口，将新的等待发送的数据从右边加入窗口，这就是TCP的滑动窗口方法。</p>
 <p>从上面的流程中，我们应该知道，在发送窗口内的数据是按顺序依次发送的，所以窗口内的数据一定有两种状态：<strong>已经发出但还没收到确认的</strong>和<strong>未发出但能够发出</strong>的。</p>
 <p>让我们分别从发送方和接收方的视角来看：</p>
@@ -1609,28 +1647,47 @@
 <h5 id="SACK"><a href="#SACK" class="headerlink" title="SACK"></a>SACK</h5><p>选择确认(Selective Acknowledgement, SACK)方法在快速重传的基础上实现，当收到乱序报文段，就返回最近收到的乱序包的左右边界。</p>
 <h5 id="DSACK"><a href="#DSACK" class="headerlink" title="DSACK"></a>DSACK</h5><p>重复选择确认(Duplicated SACK)</p>
 <h4 id="keepalive"><a href="#keepalive" class="headerlink" title="keepalive"></a>keepalive</h4><p><em>待填</em></p>
-<h4 id="值得注意的问题"><a href="#值得注意的问题" class="headerlink" title="值得注意的问题"></a>值得注意的问题</h4><h5 id="为什么连接的时候是三次握手，关闭的时候却是四次握手？"><a href="#为什么连接的时候是三次握手，关闭的时候却是四次握手？" class="headerlink" title="为什么连接的时候是三次握手，关闭的时候却是四次握手？"></a>为什么连接的时候是三次握手，关闭的时候却是四次握手？</h5><p>因为建立连接时，当Server端收到Client端的SYN连接请求报文后，可以直接发送SYN+ACK报文。其中ACK报文是用来应答的，SYN报文是用来同步的。</p>
-<p>但是关闭连接时，当Server端收到FIN报文时，先回复ACK报文。等到Server端所有的数据都发送完了，才发送FIN报文。因为两个报文不能一起发送。故需要四步握手。</p>
+<h4 id="值得注意的问题"><a href="#值得注意的问题" class="headerlink" title="值得注意的问题"></a>值得注意的问题</h4><h5 id="为什么连接的时候是三次握手，关闭的时候却是四次握手？"><a href="#为什么连接的时候是三次握手，关闭的时候却是四次握手？" class="headerlink" title="为什么连接的时候是三次握手，关闭的时候却是四次握手？"></a>为什么连接的时候是三次握手，关闭的时候却是四次握手？</h5><p>因为建立连接时，当服务器收到客户端的SYN连接请求报文后，可以直接发送SYN+ACK报文。其中ACK报文是用来应答的，SYN报文是用来同步的。</p>
+<p>但是关闭连接时，当服务器收到FIN报文时，先回复ACK报文。等到服务器所有的数据都发送完了，才发送FIN报文。因为两个报文不能一起发送。故需要四步握手。</p>
 <h5 id="TCP和UDP的区别？"><a href="#TCP和UDP的区别？" class="headerlink" title="TCP和UDP的区别？"></a>TCP和UDP的区别？</h5><p>TCP为了建立可靠的连接，引入了一系列策略，比如握手协议、流量控制、拥塞控制、确认/重传机制，这些都是需要牺牲时间来完成的。</p>
 <p>而UDP不面向连接，所以不用握手；不关注对方是否收到，所以不需要确认和重传。</p>
 <p>因此，TCP适合要求可靠连接、对准确性要求较高而对效率要求较低的场景，比如文件传输、接收邮件等；UDP适合对效率要求高，对准确性要求较低的场景，比如实时聊天(包括文字、语音、视频聊天)、广播通信。</p>
-<h2 id="密钥"><a href="#密钥" class="headerlink" title="密钥"></a>密钥</h2><h3 id="非对称加密"><a href="#非对称加密" class="headerlink" title="非对称加密"></a>非对称加密</h3><p>非对称加密英文是public-key cryptography，即公钥加密。服务器生成一对密钥，加密和解密使用不同的密钥，因此称为非对称密钥。非对称密钥可以用来加密、解密信息，也可以制作数字签名。两者的区别是应用场景不同，前者是所有客户端都可以加密，而解密只能是服务器；后者是所有人都可以解密，而加密者是唯一的。非对称加密算法有RSA、DSA等。</p>
-<h4 id="加密解密"><a href="#加密解密" class="headerlink" title="加密解密"></a>加密解密</h4><p>以RSA加密算法为例，服务器生成一对公钥和私钥，自己保留私钥，并把公钥发送给客户端，客户端发送的报文都用这个公钥加密，这样就只有服务器的唯一私钥可以解密，防止其他人获取报文中的信息。</p>
-<h4 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h4><p>因为公钥是可以被他人截取到的，所以为了防止服务器发出的报文被他人替换成假报文发给客户端，可以使用数字签名。首先将要发送的报文用hash算法生成摘要，再将摘要用私钥加密，作为数字签名，在发送报文时加上数字签名。这样，客户端能够：</p>
+<h2 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h2><h3 id="域名解析过程"><a href="#域名解析过程" class="headerlink" title="域名解析过程"></a>域名解析过程</h3><p>http报文中使用的URL是由一段域名和路径组成的，域名相当于唯一ip对外使用的代号，一个ip可以映射多个域名，用于不同的虚拟服务器。域名主要由DNS服务器负责解析，客户端(主要是浏览器)解析域名的完整流程是逐级尝试：</p>
 <ul>
-<li>收到报文后可以用公钥解密数字签名部分，得到hash摘要信息。</li>
-<li>计算明文报文部分的hash摘要，和解密出的摘要对比，如果相同就说明报文没有被篡改。</li>
+<li>浏览器查找自己的DNS缓存。这种缓存一般时效短，容量小。</li>
+<li>浏览器查找操作系统的DNS缓存。</li>
+<li>从hosts文件中查找。</li>
+<li>发起DNS系统调用，向最近的DNS服务器(一般是Local DNS)发起域名解析请求。使用UDP协议向DNS服务器的53端口发起请求。<ul>
+<li>DNS服务器查找本地缓存，如果有就发回给客户端。</li>
+<li>如果没有，代浏览器发送迭代(或者递归)DNS请求。以迭代为例：<ul>
+<li>向根域服务器发起DNS请求，查找域名的顶级域服务器(.com, .tk)IP。</li>
+<li>向顶级域服务器发起DNS请求，查找域名(<code>www.xxx.com</code>)服务器的IP。</li>
+<li>向域名服务器发起DNS请求，查找目标域名的IP。</li>
+<li>DNS服务器获得IP，保存在本地缓存中，并发回给浏览器。</li>
 </ul>
-<h4 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h4><p>数字签名解决了发回的报文被他人修改冒充的问题，那么如果有人在最开始，服务器向客户端发送公钥的阶段就冒充呢？如果有人截取到服务器发出的公钥信息，并向客户端发自己的公钥，那么客户端加密的所有报文都能被这个人截取并且解密，不仅如此，冒充者还能用私钥生成数字签名，破解上述的防护措施。</p>
-<p>数字证书(Certificate Authority, CA)就是解决这个问题的。被认证的权威机构用自己的私钥加密真实服务器的公钥，产生数字证书发给客户端，客户端再用CA的公钥解密获得真实服务器的公钥，这个过程也就是对”服务器公钥”的加密解密。这样，权威机构加密的真实公钥就不怕被替换了。</p>
-<p>问题来了，CA机构颁发的数字证书不怕被他人伪造吗？实际上这里还有证书的分级，根证书是预装在操作系统里的，从根证书开始每一级保证下一级证书的可信度，到CA机构的证书，构成一条信用链，因此只要上级证书可信，当前证书就可信。</p>
-<h3 id="对称加密"><a href="#对称加密" class="headerlink" title="对称加密"></a>对称加密</h3><p>对称加密算法中，加密和解密都是用同一个密钥，因此称为对称密钥。使用对称密钥的优势是加/解密速度快，适合于对大数据量进行加密。密钥越长越难破解，加解密速度越慢，反之同理。但问题在于，加解密钥相同就意味着要把这个密钥发送给目标客户端时，他人只要截取了这个密钥，就既能加密也能解密了。通常为保证安全性，采用<strong>非对称密钥</strong>加密<strong>对称密钥</strong>，这样密钥能够安全送到客户端手上，并且之后的通信就可以使用对称密钥快速加解密了。对称加密算法有DES、AES等。</p>
-<h2 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h2><h3 id="域名解析过程"><a href="#域名解析过程" class="headerlink" title="域名解析过程"></a>域名解析过程</h3><p><em>代填</em></p>
+</li>
+</ul>
+</li>
+<li>浏览器获得IP，保存在内部缓存中，继续下一步操作。</li>
+</ul>
 <h3 id="DNS劫持"><a href="#DNS劫持" class="headerlink" title="DNS劫持"></a>DNS劫持</h3><p>通过攻击域名解析服务器、修改服务器中某些域名的解析结果，使所有向其发出该域名解析请求的客户端拿到的都是被篡改的ip地址。</p>
 <p>或者伪装成域名解析器，做成钓鱼服务器，当接受到域名解析请求，就像客户端返回冒充的ip地址。</p>
 <p>解决方法：修改自己的DNS配置为未被劫持的服务器。</p>
 <h3 id="DNS污染"><a href="#DNS污染" class="headerlink" title="DNS污染"></a>DNS污染</h3><p>由于通常的域名查询没有任何认证机制，而且域名查询通常基于无连接不可靠的UDP协议，查询者只能接受最先到达的格式正确结果，并丢弃之后的结果，所以通过监听UDP的53端口进行IDS入侵检测，当发现目标域名，就制作伪装的返回包发给请求方，使其得到错误的ip地址，这就是DNS缓存污染，也叫DNS缓存投毒。</p>
 <p>解决方法：修改hosts文件，自己配置正确的ip。</p>
+<h2 id="一次HTTP请求的完整过程"><a href="#一次HTTP请求的完整过程" class="headerlink" title="一次HTTP请求的完整过程"></a>一次HTTP请求的完整过程</h2><p>当浏览器向服务器发起一次http请求(如GET请求)，会经过以下过程：</p>
+<ol>
+<li>解析域名，获得真正的ip地址。</li>
+<li>建立TCP连接，完成三次握手。</li>
+<li>发出请求报文。</li>
+<li>服务器返回响应报文。</li>
+<li>浏览器解析html代码，开启多线程请求其中的静态资源，其中有两点：<ul>
+<li>如果是keep-alive，就不用再建立新的连接</li>
+<li>如果本地有同名资源，就在GET请求中加入If-Modifed-Since字段，如果没有更新就是用本地缓存。</li>
+</ul>
+</li>
+<li>整合代码解析结果和资源，渲染网页。</li>
+</ol>
 <p><em>To be continued..</em></p>
 ]]></content>
       <categories>
