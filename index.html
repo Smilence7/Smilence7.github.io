@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">15</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -214,7 +214,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-count">29</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -255,6 +255,106 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://zayeum.com/2021/02/24/locks/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar-small-mage.png">
+      <meta itemprop="name" content="Zayeum">
+      <meta itemprop="description" content="Wanna be a mage, a great mage.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zayeum's Carriage">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/02/24/locks/" class="post-title-link" itemprop="url">锁系列</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-02-24 00:00:00 / 修改时间：16:58:47" itemprop="dateCreated datePublished" datetime="2021-02-24T00:00:00+08:00">2021-02-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Multithread-Concurrency/" itemprop="url" rel="index"><span itemprop="name">Multithread & Concurrency</span></a>
+        </span>
+    </span>
+
+  
+  
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="ReentrantReadWriteLock"><a href="#ReentrantReadWriteLock" class="headerlink" title="ReentrantReadWriteLock"></a>ReentrantReadWriteLock</h2><p>在一些业务场景中，读数据的操作次数远大于写数据，这是如果读写操作都使用独占锁，会非常影响业务性能；如果允许读操作并发，写操作互斥，并且用读锁和写锁的一些获取规则来防止读脏数据，类似于数据库中读写锁的思想，就能解放大部分读操作的等待时间，j.u.c包中的ReentrantReadWriteLock(简称读写锁)就是对这样的读写锁的实现。</p>
+<p>读写锁是基于Lock实现的一种读写分离的锁，与ReentrantLock相同的是，它们都借助AQS工具类实现独占锁和共享锁，都支持重入，且都能选择公平锁或非公平锁模式。读写锁的特点是读锁与写锁分离，读锁基于共享锁实现，写锁基于独占锁实现，并增加了读写规则：写锁只有在没有线程获取读锁和写锁的情况下获取成功，读锁只能在没有线程获取写锁的情况下获取成功。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/02/24/locks/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -357,124 +457,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://zayeum.com/2021/02/17/sort/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar-small-mage.png">
-      <meta itemprop="name" content="Zayeum">
-      <meta itemprop="description" content="Wanna be a mage, a great mage.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zayeum's Carriage">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/17/sort/" class="post-title-link" itemprop="url">排序系列</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-02-17 00:00:00 / 修改时间：14:56:47" itemprop="dateCreated datePublished" datetime="2021-02-17T00:00:00+08:00">2021-02-17</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Algorithm-Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Algorithm & Data Structure</span></a>
-        </span>
-    </span>
-
-  
-  
-  
-      </div>
-      <div class="post-meta">
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>7.6k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>7 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆 / 优先队列保证在O(log n)的复杂度下插入和维护一个有序数据，有两种实现，一种是跳表，一种是二叉堆。</p>
-<h3 id="二叉堆"><a href="#二叉堆" class="headerlink" title="二叉堆"></a>二叉堆</h3><p>二叉堆(也是优先队列)的特性可以用来维护TopK的数据，也可以用来排序。</p>
-<p>建堆的过程是从最后一个非叶子结点开始，对每个结点从上往下堆化，每次堆化时间与结点高度有关，求和后利用错位相减和等比公式可以得到时间复杂度O(n)；</p>
-<p>插入操作是把新数据插入到数组末尾，更新size的同时对末尾位置进行一次从下往上的堆化，时间复杂度为O(logn)；</p>
-<p>弹出操作是用O(1)的时间复杂度获取堆顶数据，并用数组末尾的数据覆盖堆顶数据，更新size的同时对堆顶进行一次从上往下的堆化，时间复杂度为O(logn)。</p>
-<p>如果维护的是变长的堆，在size达到数据长度时进行扩容；</p>
-<p>如果维护的是固定长度的堆(主要用于TopK的场景)，需要注意：</p>
-<ul>
-<li><p>在堆size没到达固定值之前，按size维护堆；</p>
-</li>
-<li><p>当size达到设定的固定值后：</p>
-<ul>
-<li>插入操作时，如果插入的数据小于小顶堆(维护TopK大)的堆顶或大于大顶堆(维护TopK小)的堆顶就可以直接忽略，否则只需要用插入元素覆盖堆顶，并对堆顶做从上往下的堆化即可(而不是插入在堆尾)，时间复杂度也是O(logn)；</li>
-<li>定长堆一般不涉及删除操作。</li>
-</ul>
-</li>
-</ul>
-<p>而堆排序的过程是在建堆后不断将堆顶元素与数组末尾元素交换，从堆顶进行从上往下的堆化，并将size减1，时间复杂度为O(n*logn)。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/02/17/sort/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -519,13 +503,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">54k</span>
+    <span title="站点总字数">60k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">49 分钟</span>
+    <span title="站点阅读时长">54 分钟</span>
   </span>
 </div>
 

@@ -1,5 +1,5 @@
+https://zayeum.com/2021/02/24/locks/
 https://zayeum.com/2021/02/24/synchronized/
 https://zayeum.com/2021/02/17/sort/
 https://zayeum.com/2021/02/16/jvm/
 https://zayeum.com/2021/02/15/io-models/
-https://zayeum.com/2021/02/14/design-pattern/
