@@ -27,13 +27,13 @@
   </script>
 <meta name="description" content="ReentrantReadWriteLock在一些业务场景中，读数据的操作次数远大于写数据，这是如果读写操作都使用独占锁，会非常影响业务性能；如果允许读操作并发，写操作互斥，并且用读锁和写锁的一些获取规则来防止读脏数据，类似于数据库中读写锁的思想，就能解放大部分读操作的等待时间，j.u.c包中的ReentrantReadWriteLock(简称读写锁)就是对这样的读写锁的实现。 读写锁是基于Loc">
 <meta property="og:type" content="article">
-<meta property="og:title" content="锁系列">
+<meta property="og:title" content="Lock 系列">
 <meta property="og:url" content="https://zayeum.com/2021/02/24/locks/index.html">
 <meta property="og:site_name" content="Zayeum&#39;s Carriage">
 <meta property="og:description" content="ReentrantReadWriteLock在一些业务场景中，读数据的操作次数远大于写数据，这是如果读写操作都使用独占锁，会非常影响业务性能；如果允许读操作并发，写操作互斥，并且用读锁和写锁的一些获取规则来防止读脏数据，类似于数据库中读写锁的思想，就能解放大部分读操作的等待时间，j.u.c包中的ReentrantReadWriteLock(简称读写锁)就是对这样的读写锁的实现。 读写锁是基于Loc">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-02-23T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-02-24T08:58:47.459Z">
+<meta property="article:modified_time" content="2021-02-24T09:16:02.682Z">
 <meta property="article:author" content="Zayeum">
 <meta property="article:tag" content="Locks">
 <meta property="article:tag" content="ReentrantReadWriteLock">
@@ -54,7 +54,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>锁系列 | Zayeum's Carriage</title>
+<title>Lock 系列 | Zayeum's Carriage</title>
   
 
 
@@ -192,7 +192,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ReentrantReadWriteLock"><span class="nav-text">ReentrantReadWriteLock</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%86%99%E9%94%81%E8%8E%B7%E5%8F%96%E8%AE%A1%E6%95%B0"><span class="nav-text">读写锁获取计数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E9%94%81%E8%8E%B7%E5%8F%96"><span class="nav-text">写锁获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E9%94%81%E9%87%8A%E6%94%BE"><span class="nav-text">写锁释放</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E9%94%81%E8%8E%B7%E5%8F%96"><span class="nav-text">读锁获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E9%94%81%E9%87%8A%E6%94%BE"><span class="nav-text">读锁释放</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ReentrantLock"><span class="nav-text">ReentrantLock</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%85%A5%E6%80%A7%E5%AE%9E%E7%8E%B0"><span class="nav-text">重入性实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AQS%E5%92%8CReentrantLock%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-text">AQS和ReentrantLock的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NonfairSync%E5%92%8CFairSync"><span class="nav-text">NonfairSync和FairSync</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81%E8%8E%B7%E5%8F%96"><span class="nav-text">非公平锁获取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%AC%E5%B9%B3%E9%94%81%E8%8E%B7%E5%8F%96"><span class="nav-text">公平锁获取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8A%E6%94%BE"><span class="nav-text">释放</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ReentrantReadWriteLock"><span class="nav-text">ReentrantReadWriteLock</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%86%99%E9%94%81%E8%8E%B7%E5%8F%96%E8%AE%A1%E6%95%B0"><span class="nav-text">读写锁获取计数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E9%94%81%E8%8E%B7%E5%8F%96"><span class="nav-text">写锁获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E9%94%81%E9%87%8A%E6%94%BE"><span class="nav-text">写锁释放</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E9%94%81%E8%8E%B7%E5%8F%96"><span class="nav-text">读锁获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E9%94%81%E9%87%8A%E6%94%BE"><span class="nav-text">读锁释放</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ReentrantLock"><span class="nav-text">ReentrantLock</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%85%A5%E6%80%A7%E5%AE%9E%E7%8E%B0"><span class="nav-text">重入性实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AQS%E5%92%8CReentrantLock%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-text">AQS和ReentrantLock的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NonfairSync%E5%92%8CFairSync"><span class="nav-text">NonfairSync和FairSync</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81%E8%8E%B7%E5%8F%96"><span class="nav-text">非公平锁获取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%AC%E5%B9%B3%E9%94%81%E8%8E%B7%E5%8F%96"><span class="nav-text">公平锁获取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8A%E6%94%BE"><span class="nav-text">释放</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8Esynchronized%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-text">与synchronized的比较</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -285,7 +285,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          锁系列
+          Lock 系列
         </h1>
 
         <div class="post-meta-container">
@@ -297,7 +297,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-02-24 00:00:00 / 修改时间：16:58:47" itemprop="dateCreated datePublished" datetime="2021-02-24T00:00:00+08:00">2021-02-24</time>
+      <time title="创建时间：2021-02-24 00:00:00 / 修改时间：17:16:02" itemprop="dateCreated datePublished" datetime="2021-02-24T00:00:00+08:00">2021-02-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -331,7 +331,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>5.5k</span>
+      <span>5.7k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -352,6 +352,8 @@
         <h2 id="ReentrantReadWriteLock"><a href="#ReentrantReadWriteLock" class="headerlink" title="ReentrantReadWriteLock"></a>ReentrantReadWriteLock</h2><p>在一些业务场景中，读数据的操作次数远大于写数据，这是如果读写操作都使用独占锁，会非常影响业务性能；如果允许读操作并发，写操作互斥，并且用读锁和写锁的一些获取规则来防止读脏数据，类似于数据库中读写锁的思想，就能解放大部分读操作的等待时间，j.u.c包中的ReentrantReadWriteLock(简称读写锁)就是对这样的读写锁的实现。</p>
 <p>读写锁是基于Lock实现的一种读写分离的锁，与ReentrantLock相同的是，它们都借助AQS工具类实现独占锁和共享锁，都支持重入，且都能选择公平锁或非公平锁模式。读写锁的特点是读锁与写锁分离，读锁基于共享锁实现，写锁基于独占锁实现，并增加了读写规则：写锁只有在没有线程获取读锁和写锁的情况下获取成功，读锁只能在没有线程获取写锁的情况下获取成功。</p>
 <a id="more"></a>
+
+
 
 <h3 id="读写锁获取计数"><a href="#读写锁获取计数" class="headerlink" title="读写锁获取计数"></a>读写锁获取计数</h3><p>要实现读锁、写锁被线程持有状态的逻辑，就需要对读锁和写锁被获取次数计数。在源码中，使用32位的int类型变量保存读锁、写锁的状态，其中高16位保存读锁状态，低16位保存写状态，获取状态时通过位运算提取需要的部分(mask取低位，右移取高位)。注意，虽然写锁是独占锁，只能同时被同一个线程获取，但写锁是可重入的，所以每次重入时会对其计数+1。</p>
 <h3 id="写锁获取"><a href="#写锁获取" class="headerlink" title="写锁获取"></a>写锁获取</h3><p>Java8源码是这样的：</p>
@@ -389,6 +391,8 @@
 <h3 id="AQS和ReentrantLock的关系"><a href="#AQS和ReentrantLock的关系" class="headerlink" title="AQS和ReentrantLock的关系"></a>AQS和ReentrantLock的关系</h3><p>AQS(AbstractQueuedSynchronizer)是一个抽象类，其中定义了等待队列的双向链表结构，CAS入队、出队方法，锁的所属者记录，以及独占锁和共享锁不同的获取和排队逻辑。ReentrantLock用抽象静态内部类Sync继承了AQS类，用于实现一些通用的同步器方法，再以静态内部类NonfairSync和FairSync对Sync类进一步继承实现。</p>
 <h3 id="NonfairSync和FairSync"><a href="#NonfairSync和FairSync" class="headerlink" title="NonfairSync和FairSync"></a>NonfairSync和FairSync</h3><p>公平锁和非公平锁的区别在于锁的获取过程。在公平锁申请中，尝试修改锁状态之前先判断等待队列中有没有在排队的线程，也就是说自己必须先排队。</p>
 <h4 id="非公平锁获取"><a href="#非公平锁获取" class="headerlink" title="非公平锁获取"></a>非公平锁获取</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">nonfairTryAcquire</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">int</span> c = getState();</span><br><span class="line">    <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (compareAndSetState(<span class="number">0</span>, acquires)) &#123;</span><br><span class="line">            setExclusiveOwnerThread(current);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">        <span class="keyword">int</span> nextc = c + acquires;</span><br><span class="line">        <span class="keyword">if</span> (nextc &lt; <span class="number">0</span>) <span class="comment">// overflow</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">&quot;Maximum lock count exceeded&quot;</span>);</span><br><span class="line">        setState(nextc);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
 <h4 id="公平锁获取"><a href="#公平锁获取" class="headerlink" title="公平锁获取"></a>公平锁获取</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryAcquire</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">int</span> c = getState();</span><br><span class="line">    <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!hasQueuedPredecessors() &amp;&amp;</span><br><span class="line">            compareAndSetState(<span class="number">0</span>, acquires)) &#123;</span><br><span class="line">            setExclusiveOwnerThread(current);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">        <span class="keyword">int</span> nextc = c + acquires;</span><br><span class="line">        <span class="keyword">if</span> (nextc &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">&quot;Maximum lock count exceeded&quot;</span>);</span><br><span class="line">        setState(nextc);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>在读写锁中没有提到(但也存在)的是，如果锁获取失败，还要将当前线程放入等待队列，并打断线程。源码中通过<code>lock()</code>方法来包装一层新的逻辑：</p>
 <ul>
@@ -400,6 +404,13 @@
 <h4 id="释放"><a href="#释放" class="headerlink" title="释放"></a>释放</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryRelease</span><span class="params">(<span class="keyword">int</span> releases)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = getState() - releases;</span><br><span class="line">    <span class="keyword">if</span> (Thread.currentThread() != getExclusiveOwnerThread())</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalMonitorStateException();</span><br><span class="line">    <span class="keyword">boolean</span> free = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;</span><br><span class="line">        free = <span class="keyword">true</span>;</span><br><span class="line">        setExclusiveOwnerThread(<span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    setState(c);</span><br><span class="line">    <span class="keyword">return</span> free;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>两种锁的释放逻辑是一样的。</p>
 <p>ReentrantLock默认在无参情况下默认使用非公平锁模式，当指定构造器参数为true时才使用公平锁。这是因为非公平锁的吞吐量更大，性能更好，不过缺点显然是线程竞争不公平。</p>
+<h3 id="与synchronized的比较"><a href="#与synchronized的比较" class="headerlink" title="与synchronized的比较"></a>与synchronized的比较</h3><p>可重入锁和synchronized锁都是阻塞式同步锁，区别在于：</p>
+<ul>
+<li>synchronized是关键字，隐式地获得和释放锁；ReentrantLock是类，通过实例化对象可以在代码中显式的获得、释放锁。</li>
+<li>ReentrantLock可响应中断，更灵活。</li>
+<li>synchronized互斥逻辑是由JVM完成的；ReentrantLock互斥逻辑是由API完成的。</li>
+<li>ReentrantLock可以支持公平锁。</li>
+</ul>
 
     </div>
 
@@ -484,7 +495,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">54 分钟</span>
+    <span title="站点阅读时长">55 分钟</span>
   </span>
 </div>
 
