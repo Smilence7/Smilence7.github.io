@@ -201,20 +201,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -264,7 +264,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://zayeum.com/2021/02/07/volatile/">
+    <link itemprop="mainEntityOfPage" href="https://zayeum.com/2021/02/15/io-models/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar-small-mage.png">
@@ -277,7 +277,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/07/volatile/" class="post-title-link" itemprop="url">volatile 关键字</a>
+          <a href="/2021/02/15/io-models/" class="post-title-link" itemprop="url">I/O 模型</a>
         </h2>
 
         <div class="post-meta-container">
@@ -287,23 +287,17 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2021-02-07 00:00:00" itemprop="dateCreated datePublished" datetime="2021-02-07T00:00:00+08:00">2021-02-07</time>
+      <time title="创建时间：2021-02-15 00:00:00 / 修改时间：10:18:23" itemprop="dateCreated datePublished" datetime="2021-02-15T00:00:00+08:00">2021-02-15</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-02-10 20:42:18" itemprop="dateModified" datetime="2021-02-10T20:42:18+08:00">2021-02-10</time>
-      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Multithread-Concurrency/" itemprop="url" rel="index"><span itemprop="name">Multithread & Concurrency</span></a>
+          <a href="/categories/Operation-System/" itemprop="url" rel="index"><span itemprop="name">Operation System</span></a>
         </span>
     </span>
 
@@ -317,7 +311,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.6k</span>
+      <span>1.5k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -335,16 +329,11 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h3 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h3><p>volatile解决的问题：针对变量的轻量级同步解决方案。</p>
-<p>由于cpu读写速度与主存之间存在巨大的差异，所以Java的内存模型中，每个cpu的线程把共享变量从主存拷贝到自己cpu内的工作内存，来保证处理速度。这就会产生各线程的工作内存间数据不可见的问题。解决数据可见性，就解决了针对变量级别的同步机制。</p>
-<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><ol>
-<li>当对volatile变量进行写操作时，JVM会向处理器发送带Lock前缀的指令，处理器收到这种指令会马上将本地缓存写回主存；</li>
-<li>每个处理器通过嗅探在总线上传播的数据来检查自己的缓存是否失效；</li>
-<li>处理器将过期的缓存标记，当要用到对应数据时，从主存中把新数据读到本地缓存中，防止读脏数据。</li>
-</ol>
+          <h2 id="IO模型"><a href="#IO模型" class="headerlink" title="IO模型"></a>IO模型</h2><h3 id="各种IO模型"><a href="#各种IO模型" class="headerlink" title="各种IO模型"></a>各种IO模型</h3><h4 id="阻塞-IO"><a href="#阻塞-IO" class="headerlink" title="阻塞 IO"></a>阻塞 IO</h4><p>缺省情形下，所有文件操作都是阻塞的。在进程空间中进行系统调用 (比如<code>recvfrom</code>)，系统切换到内核态准备接受数据，并将数据从内核拷贝到用户空间(进程内存)，返回成功提示，期间进程一直等待操作完成的返回结果。</p>
+<h4 id="非阻塞-IO"><a href="#非阻塞-IO" class="headerlink" title="非阻塞 IO"></a>非阻塞 IO</h4><p>进程执行系统调用后，如果内核IO操作没完成就返回一个错误；进程通过轮询的方式不断执行系统调用确认操作是否完成，直到返回成功提示。虽然这种方式是非阻塞的，但在获得成功返回之后执行的IO操作是阻塞的，所以整体上是同步的。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/02/07/volatile/#more" rel="contents">
+              <a class="btn" href="/2021/02/15/io-models/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -375,7 +364,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://zayeum.com/2021/02/04/binary-search-tree/">
+    <link itemprop="mainEntityOfPage" href="https://zayeum.com/2021/02/14/design-pattern/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar-small-mage.png">
@@ -388,7 +377,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/04/binary-search-tree/" class="post-title-link" itemprop="url">查找树系列</a>
+          <a href="/2021/02/14/design-pattern/" class="post-title-link" itemprop="url">设计模式</a>
         </h2>
 
         <div class="post-meta-container">
@@ -399,14 +388,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-02-04 00:00:00" itemprop="dateCreated datePublished" datetime="2021-02-04T00:00:00+08:00">2021-02-04</time>
+      <time title="创建时间：2021-02-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-02-14T00:00:00+08:00">2021-02-14</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-02-10 16:14:56" itemprop="dateModified" datetime="2021-02-10T16:14:56+08:00">2021-02-10</time>
+        <time title="修改时间：2021-02-23 14:44:54" itemprop="dateModified" datetime="2021-02-23T14:44:54+08:00">2021-02-23</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -414,7 +403,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Algorithm-Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Algorithm & Data Structure</span></a>
+          <a href="/categories/Design-Patterns/" itemprop="url" rel="index"><span itemprop="name">Design Patterns</span></a>
         </span>
     </span>
 
@@ -428,7 +417,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.3k</span>
+      <span>3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -446,12 +435,18 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h2><p>二叉查找树定义每个结点的左子树里的元素值都小于该节点、右子树里的元素都大于该节点，这样的定义使它的中序遍历就是升序的有序数据，时间复杂度为O(n)。</p>
-<p>查找操作：从根节点出发，小于就递归左子树，大于就递归右子树，直到等于根节点就返回。</p>
-<p>插入操作：一直递归比较，直到找到该分支底部的位置（左小右大向下查找，直到左/右子树为空，就新建一个结点放到左/右子结点）。</p>
+          <h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><p>模式是你必须在应用程序中自己实现的形式化的最佳实践。</p>
+<h3 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h3><p>工厂模式的设计意图是将对象的创建过程封装，通过同一个工厂类或接口来管理对象的创建过程。</p>
+<h4 id="简单工厂模式-Simple-Factory-Pattern"><a href="#简单工厂模式-Simple-Factory-Pattern" class="headerlink" title="简单工厂模式(Simple Factory Pattern)"></a>简单工厂模式(Simple Factory Pattern)</h4><p>简单工厂模式也叫静态工厂方法模式，通过定义一个工厂类，来对不同的参数输入返回不同类的实例。在这种模式中，工厂主要就是<strong>负责创建不同实例</strong>的逻辑，而创建出的实例是产品接口的实现类，符合产品接口的要求。</p>
+<h4 id="工厂方法模式-Factory-Method-Pattern"><a href="#工厂方法模式-Factory-Method-Pattern" class="headerlink" title="工厂方法模式(Factory Method Pattern)"></a>工厂方法模式(Factory Method Pattern)</h4><p>工厂方法模式中，工厂通过接口给出必须实现的方法，而不负责产品的创建，产品的创建由实现类完成。用户根据自己的需求选择对应的工厂，并调用工厂方法获得产品。在这个过程中，用户不需要指定产品接口下的具体某一种产品类型，可以利用对态性以总产品接口声明产品的引用。</p>
+<p>工厂方法模式的好处有：</p>
+<ul>
+<li>工厂可以返回目标产品的实现类或子类，比如：<strong>文件日志工厂</strong>属于<strong>日志工厂接口</strong>的实现类，文件日志工厂可以创建并返回<strong>日志接口的实现类</strong>——<strong>文件日志</strong>，而用户只需要用日志接口接收这个返回值。</li>
+<li>可以添加新的工厂实现类来拓展功能。</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/02/04/binary-search-tree/#more" rel="contents">
+              <a class="btn" href="/2021/02/14/design-pattern/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -475,7 +470,7 @@
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -520,13 +515,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">60k</span>
+    <span title="站点总字数">64k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">55 分钟</span>
+    <span title="站点阅读时长">58 分钟</span>
   </span>
 </div>
 

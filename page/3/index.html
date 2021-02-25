@@ -201,20 +201,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -264,7 +264,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://zayeum.com/2021/02/15/io-models/">
+    <link itemprop="mainEntityOfPage" href="https://zayeum.com/2021/02/17/sort/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar-small-mage.png">
@@ -277,7 +277,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/15/io-models/" class="post-title-link" itemprop="url">I/O 模型</a>
+          <a href="/2021/02/17/sort/" class="post-title-link" itemprop="url">排序系列</a>
         </h2>
 
         <div class="post-meta-container">
@@ -289,7 +289,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-02-15 00:00:00 / 修改时间：10:18:23" itemprop="dateCreated datePublished" datetime="2021-02-15T00:00:00+08:00">2021-02-15</time>
+      <time title="创建时间：2021-02-17 00:00:00 / 修改时间：14:56:47" itemprop="dateCreated datePublished" datetime="2021-02-17T00:00:00+08:00">2021-02-17</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -297,7 +297,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Operation-System/" itemprop="url" rel="index"><span itemprop="name">Operation System</span></a>
+          <a href="/categories/Algorithm-Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Algorithm & Data Structure</span></a>
         </span>
     </span>
 
@@ -311,14 +311,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.5k</span>
+      <span>7.6k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>7 分钟</span>
     </span>
 </div>
 
@@ -329,11 +329,27 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="IO模型"><a href="#IO模型" class="headerlink" title="IO模型"></a>IO模型</h2><h3 id="各种IO模型"><a href="#各种IO模型" class="headerlink" title="各种IO模型"></a>各种IO模型</h3><h4 id="阻塞-IO"><a href="#阻塞-IO" class="headerlink" title="阻塞 IO"></a>阻塞 IO</h4><p>缺省情形下，所有文件操作都是阻塞的。在进程空间中进行系统调用 (比如<code>recvfrom</code>)，系统切换到内核态准备接受数据，并将数据从内核拷贝到用户空间(进程内存)，返回成功提示，期间进程一直等待操作完成的返回结果。</p>
-<h4 id="非阻塞-IO"><a href="#非阻塞-IO" class="headerlink" title="非阻塞 IO"></a>非阻塞 IO</h4><p>进程执行系统调用后，如果内核IO操作没完成就返回一个错误；进程通过轮询的方式不断执行系统调用确认操作是否完成，直到返回成功提示。虽然这种方式是非阻塞的，但在获得成功返回之后执行的IO操作是阻塞的，所以整体上是同步的。</p>
+          <h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆 / 优先队列保证在O(log n)的复杂度下插入和维护一个有序数据，有两种实现，一种是跳表，一种是二叉堆。</p>
+<h3 id="二叉堆"><a href="#二叉堆" class="headerlink" title="二叉堆"></a>二叉堆</h3><p>二叉堆(也是优先队列)的特性可以用来维护TopK的数据，也可以用来排序。</p>
+<p>建堆的过程是从最后一个非叶子结点开始，对每个结点从上往下堆化，每次堆化时间与结点高度有关，求和后利用错位相减和等比公式可以得到时间复杂度O(n)；</p>
+<p>插入操作是把新数据插入到数组末尾，更新size的同时对末尾位置进行一次从下往上的堆化，时间复杂度为O(logn)；</p>
+<p>弹出操作是用O(1)的时间复杂度获取堆顶数据，并用数组末尾的数据覆盖堆顶数据，更新size的同时对堆顶进行一次从上往下的堆化，时间复杂度为O(logn)。</p>
+<p>如果维护的是变长的堆，在size达到数据长度时进行扩容；</p>
+<p>如果维护的是固定长度的堆(主要用于TopK的场景)，需要注意：</p>
+<ul>
+<li><p>在堆size没到达固定值之前，按size维护堆；</p>
+</li>
+<li><p>当size达到设定的固定值后：</p>
+<ul>
+<li>插入操作时，如果插入的数据小于小顶堆(维护TopK大)的堆顶或大于大顶堆(维护TopK小)的堆顶就可以直接忽略，否则只需要用插入元素覆盖堆顶，并对堆顶做从上往下的堆化即可(而不是插入在堆尾)，时间复杂度也是O(logn)；</li>
+<li>定长堆一般不涉及删除操作。</li>
+</ul>
+</li>
+</ul>
+<p>而堆排序的过程是在建堆后不断将堆顶元素与数组末尾元素交换，从堆顶进行从上往下的堆化，并将size减1，时间复杂度为O(n*logn)。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/02/15/io-models/#more" rel="contents">
+              <a class="btn" href="/2021/02/17/sort/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -364,7 +380,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://zayeum.com/2021/02/14/design-pattern/">
+    <link itemprop="mainEntityOfPage" href="https://zayeum.com/2021/02/16/jvm/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar-small-mage.png">
@@ -377,7 +393,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/14/design-pattern/" class="post-title-link" itemprop="url">设计模式</a>
+          <a href="/2021/02/16/jvm/" class="post-title-link" itemprop="url">Java VM 系列</a>
         </h2>
 
         <div class="post-meta-container">
@@ -388,14 +404,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-02-14 00:00:00" itemprop="dateCreated datePublished" datetime="2021-02-14T00:00:00+08:00">2021-02-14</time>
+      <time title="创建时间：2021-02-16 00:00:00" itemprop="dateCreated datePublished" datetime="2021-02-16T00:00:00+08:00">2021-02-16</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-02-23 14:44:54" itemprop="dateModified" datetime="2021-02-23T14:44:54+08:00">2021-02-23</time>
+        <time title="修改时间：2021-02-23 15:41:42" itemprop="dateModified" datetime="2021-02-23T15:41:42+08:00">2021-02-23</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -403,7 +419,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Design-Patterns/" itemprop="url" rel="index"><span itemprop="name">Design Patterns</span></a>
+          <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
         </span>
     </span>
 
@@ -417,14 +433,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3k</span>
+      <span>7.1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
+      <span>6 分钟</span>
     </span>
 </div>
 
@@ -435,18 +451,13 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><p>模式是你必须在应用程序中自己实现的形式化的最佳实践。</p>
-<h3 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h3><p>工厂模式的设计意图是将对象的创建过程封装，通过同一个工厂类或接口来管理对象的创建过程。</p>
-<h4 id="简单工厂模式-Simple-Factory-Pattern"><a href="#简单工厂模式-Simple-Factory-Pattern" class="headerlink" title="简单工厂模式(Simple Factory Pattern)"></a>简单工厂模式(Simple Factory Pattern)</h4><p>简单工厂模式也叫静态工厂方法模式，通过定义一个工厂类，来对不同的参数输入返回不同类的实例。在这种模式中，工厂主要就是<strong>负责创建不同实例</strong>的逻辑，而创建出的实例是产品接口的实现类，符合产品接口的要求。</p>
-<h4 id="工厂方法模式-Factory-Method-Pattern"><a href="#工厂方法模式-Factory-Method-Pattern" class="headerlink" title="工厂方法模式(Factory Method Pattern)"></a>工厂方法模式(Factory Method Pattern)</h4><p>工厂方法模式中，工厂通过接口给出必须实现的方法，而不负责产品的创建，产品的创建由实现类完成。用户根据自己的需求选择对应的工厂，并调用工厂方法获得产品。在这个过程中，用户不需要指定产品接口下的具体某一种产品类型，可以利用对态性以总产品接口声明产品的引用。</p>
-<p>工厂方法模式的好处有：</p>
-<ul>
-<li>工厂可以返回目标产品的实现类或子类，比如：<strong>文件日志工厂</strong>属于<strong>日志工厂接口</strong>的实现类，文件日志工厂可以创建并返回<strong>日志接口的实现类</strong>——<strong>文件日志</strong>，而用户只需要用日志接口接收这个返回值。</li>
-<li>可以添加新的工厂实现类来拓展功能。</li>
-</ul>
+          <h2 id="运行时数据区"><a href="#运行时数据区" class="headerlink" title="运行时数据区"></a>运行时数据区</h2><p><em><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wuzhenzhao/p/12346515.html">吴振照的博客</a></em></p>
+<p>由Java VM管理的内存区域叫运行时数据区(Runtime Data Area)，这个数据区被划分为几个逻辑区域，包括方法区、堆、虚拟机栈、程序计数器、本地方法栈。</p>
+<p>其中方法区和堆是线程共享区域，虚拟机栈、程序计数器、本地方法栈是为线程存储运行时数据的独占区域，每个线程都有一份。</p>
+<img src="/2021/02/16/jvm/runtime_data_area.png" class="" title="运行时数据区">
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/02/14/design-pattern/#more" rel="contents">
+              <a class="btn" href="/2021/02/16/jvm/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -470,7 +481,7 @@
 
 
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -515,13 +526,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">60k</span>
+    <span title="站点总字数">64k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">55 分钟</span>
+    <span title="站点阅读时长">58 分钟</span>
   </span>
 </div>
 

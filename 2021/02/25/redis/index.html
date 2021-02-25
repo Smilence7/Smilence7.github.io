@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-hat.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-hat.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-hat.png">
+  <link rel="mask-icon" href="/images/safari-pinned-tab-hat.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto+Serif+SC:300,300italic,400,400italic,700,700italic%7CDancing+Script:300,300italic,400,400italic,700,700italic%7CSource+Code+Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css">
+  <script src="//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zayeum.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="Redis数据结构Redis在底层使用redis对象来包装不同的数据结构，在一个Redis对象中，包含三个字段，分别是对外的数据结构类型，对内的基础数据结构类型，以及指向具体数据结构地址的指针。 对外的数据结构有string、list、hash、set、zset五种，对内数据结构有int，embstr，sds，哈希表，双向链表，压缩列表，整形集合，跳表8种。 对外数据结构StringString是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis 系列">
+<meta property="og:url" content="https://zayeum.com/2021/02/25/redis/index.html">
+<meta property="og:site_name" content="Zayeum&#39;s Carriage">
+<meta property="og:description" content="Redis数据结构Redis在底层使用redis对象来包装不同的数据结构，在一个Redis对象中，包含三个字段，分别是对外的数据结构类型，对内的基础数据结构类型，以及指向具体数据结构地址的指针。 对外的数据结构有string、list、hash、set、zset五种，对内数据结构有int，embstr，sds，哈希表，双向链表，压缩列表，整形集合，跳表8种。 对外数据结构StringString是">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-02-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-02-25T12:46:37.512Z">
+<meta property="article:author" content="Zayeum">
+<meta property="article:tag" content="Redis">
+<meta property="article:tag" content="Algorithm &amp; Data Structure">
+<meta property="article:tag" content="Database">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://zayeum.com/2021/02/25/redis/">
+
+
+<script data-pjax class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>Redis 系列 | Zayeum's Carriage</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Zayeum's Carriage</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">旅之途中</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-text">Redis数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E5%A4%96%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-text">对外数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#String"><span class="nav-text">String</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#List"><span class="nav-text">List</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hash"><span class="nav-text">Hash</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Set"><span class="nav-text">Set</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Zset"><span class="nav-text">Zset</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E5%86%85%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-text">对内数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SDS"><span class="nav-text">SDS</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#sdshdr%E7%BB%93%E6%9E%84"><span class="nav-text">sdshdr结构</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A9%BA%E9%97%B4%E9%A2%84%E5%88%86%E9%85%8D%E7%AD%96%E7%95%A5"><span class="nav-text">空间预分配策略</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%83%B0%E6%80%A7%E7%A9%BA%E9%97%B4%E9%87%8A%E6%94%BE%E7%AD%96%E7%95%A5"><span class="nav-text">惰性空间释放策略</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LinkedList"><span class="nav-text">LinkedList</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Ziplist"><span class="nav-text">Ziplist</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hash-1"><span class="nav-text">Hash</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Intset"><span class="nav-text">Intset</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%B3%E8%A1%A8"><span class="nav-text">跳表</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Zayeum"
+      src="/images/avatar-small-mage.png">
+  <p class="site-author-name" itemprop="name">Zayeum</p>
+  <div class="site-description" itemprop="description">Wanna be a mage, a great mage.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Smilence7" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Smilence7" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:smilence7@outlook.com" title="E-Mail → mailto:smilence7@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zayeum.com/2021/02/25/redis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar-small-mage.png">
+      <meta itemprop="name" content="Zayeum">
+      <meta itemprop="description" content="Wanna be a mage, a great mage.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zayeum's Carriage">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Redis 系列
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-02-25 00:00:00 / 修改时间：20:46:37" itemprop="dateCreated datePublished" datetime="2021-02-25T00:00:00+08:00">2021-02-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Database/" itemprop="url" rel="index"><span itemprop="name">Database</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/2021/02/25/redis/#waline-comments" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" id="/2021/02/25/redis/" data-xid="/2021/02/25/redis/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="Redis数据结构"><a href="#Redis数据结构" class="headerlink" title="Redis数据结构"></a>Redis数据结构</h2><p>Redis在底层使用redis对象来包装不同的数据结构，在一个Redis对象中，包含三个字段，分别是对外的数据结构类型，对内的基础数据结构类型，以及指向具体数据结构地址的指针。</p>
+<p>对外的数据结构有string、list、hash、set、zset五种，对内数据结构有int，embstr，sds，哈希表，双向链表，压缩列表，整形集合，跳表8种。</p>
+<h3 id="对外数据结构"><a href="#对外数据结构" class="headerlink" title="对外数据结构"></a>对外数据结构</h3><h4 id="String"><a href="#String" class="headerlink" title="String"></a>String</h4><p>String是字符串，其底层实现分为三种。如果字符串是纯数字，则用int类型存储；如果是较小的字符串，会用embstr编码的SDS存储；如果是大字符串，使用SDS存储。</p>
+<h4 id="List"><a href="#List" class="headerlink" title="List"></a>List</h4><p>List是列表。如果列表的元素长度64字节，且列表元素数量小于512，会使用压缩列表ziplist存储；否则使用双向链表linkedlist存储。</p>
+<a id="more"></a>
+
+<h4 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h4><p>Hash是哈希表。同List的条件使用ziplist；否则使用Hashtable存储。</p>
+<h4 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h4><p>Set是集合。只有整数类型且元素数量小于512的集合使用intset存储；其他集合使用hashtable存储(所有value指向同一对象)。</p>
+<h4 id="Zset"><a href="#Zset" class="headerlink" title="Zset"></a>Zset</h4><p>Zset也叫Sorted Set，是有序集合。元素长度小于64且个数小于128时使用ziplist实现，否则使用跳表实现。</p>
+<h3 id="对内数据结构"><a href="#对内数据结构" class="headerlink" title="对内数据结构"></a>对内数据结构</h3><h4 id="SDS"><a href="#SDS" class="headerlink" title="SDS"></a>SDS</h4><p>SDS(Simple Dynamic String)，在3.2版本中有5种长度实现，分别是32Bytes的sdshdr5, 256Bytes的sdshdr8, 64KB的sdshdr16, 4GB的sdshdr32和更大的sdshdr64。</p>
+<h5 id="sdshdr结构"><a href="#sdshdr结构" class="headerlink" title="sdshdr结构"></a>sdshdr结构</h5><p>在一个sdshdr数据结构中，包含：</p>
+<ul>
+<li>len: 已使用长度</li>
+<li>alloc: 当前分配的字节数量</li>
+<li>flag: sdshdr的种类编号(上述5种的编号)</li>
+<li>buf: 指向实际数据数组头部的指针</li>
+</ul>
+<h5 id="空间预分配策略"><a href="#空间预分配策略" class="headerlink" title="空间预分配策略"></a>空间预分配策略</h5><p>如果修改后的长度小于1MB，采取翻倍的扩容策略；如果大于等于1MB，则使用翻倍+1MB的大小作为扩容后的大小。</p>
+<h5 id="惰性空间释放策略"><a href="#惰性空间释放策略" class="headerlink" title="惰性空间释放策略"></a>惰性空间释放策略</h5><p>数据减少时，修改sdshdr中各字段，但不立即释放内存空间。</p>
+<h4 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a>LinkedList</h4><p>LinkedList数据结构中，记录链表的元信息：</p>
+<ul>
+<li>head: 指向头结点</li>
+<li>tail: 指向尾结点</li>
+<li>len: 链表长度</li>
+<li>dup: 用于复制链表节点保存的值</li>
+<li>free: 用于释放链表节点所保存的值</li>
+<li>match: 用于对比保存值和另一个输入值是否相等</li>
+</ul>
+<p>而每个ListNode包含prev和next指针，以及结点的值，构成普通的双向链表。</p>
+<p>LinkedList可以保存不同类型的值，具有多态特性。</p>
+<h4 id="Ziplist"><a href="#Ziplist" class="headerlink" title="Ziplist"></a>Ziplist</h4><p>压缩列表是由连续内存块构成的顺序数据结构，是列表和哈希表在数据量较小时的底层实现，其连续的内存块被划分为：</p>
+<ul>
+<li>zlbytes: 整个压缩列表占用的字节数，用于内存重分配或计算zlend位置。</li>
+<li>zltail: 列表尾结点与起始地址的偏移量，用于计算列表尾的地址。</li>
+<li>zllen: 列表包含的结点数量(仅在值小于4字节时有效)。</li>
+<li>entry1, entry2, …, entryN: 结点，其中又由前一个结点的长度、结点内容的类型和结点的内容组成。</li>
+<li>zlend: 0xFF(8位1)，表示列表末端。</li>
+</ul>
+<h4 id="Hash-1"><a href="#Hash-1" class="headerlink" title="Hash"></a>Hash</h4><p>同样地，哈希表数据结构dictht中，记录着哈希表的大小size、哈希掩码sizemask、已有结点的数量used和实际哈希表的指针数组table。</p>
+<p>table中的每个值都是一个指向dictEntry结构的指针，dictEntry类似于Java的Map.Entry键值对，其中包含key、val和指向下一个结点的指针，因为redis中的哈希表采用拉链法解决哈希冲突。</p>
+<p>Redis使用dict结构封装哈希表，其中主要包括两个哈希表数组ht[0]和ht[1]、计算新hashcode的索引rehashidx，这层包装主要用于扩容。在非扩容状态下，ht[0]存放的是真正的哈希表，当装载因子达到阈值后进行渐进式的扩容，这里的渐进式指的是非一次性把数据拷贝到新的哈希表上，因为一般业务中存储的键值对数据量都是很大的，一次扩容会直接导致服务暂停使用，所以采取均摊的扩容思想：创建新的键值对会根据rehashidx被rehash在ht[1]中，而对旧的键值对的查询会触发对应键值对的rehash操作。</p>
+<h4 id="Intset"><a href="#Intset" class="headerlink" title="Intset"></a>Intset</h4><p>整形集合的数据结构包含三部分：</p>
+<ul>
+<li>encoding: 编码方式，类似但不同于SDS中的flag，表示当前实现的整数类型是16位还是32位还是64位。</li>
+<li>length: 元素数量。</li>
+<li>contents: 指向数组实际存储位置。</li>
+</ul>
+<p>整形集合如果插入一个比当前encoding类型更长的整数时，需要对整个数组的所有数据进行升级，且只能升级不能降级。</p>
+<h4 id="跳表"><a href="#跳表" class="headerlink" title="跳表"></a>跳表</h4><p>跳表zskiplist包含表头结点、表尾结点、结点数量、最高索引层数level；跳表的结点zskiplistNode包含后退指针、分值score、成员对象ele和level数组。</p>
+<p>level数组是每个结点在建立时创建的所有层索引组成的数组，每一层有前进指针——指向同层的下一个索引，和跨度——记录当前索引与下个索引的距离。</p>
+<p>score是跳表排序的依据，当score相同时按成员对象ele的大小排序。</p>
+<p>ele是唯一的，指向SDS对象。</p>
+<p>zskiplist的头结点不存储有效结点，是一个dummyhead，有MAXLEVEL=32层，每层的前进指针都指向能够跳达的结点，或者为null。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"><i class="fa fa-tag"></i> Redis</a>
+              <a href="/tags/Algorithm-Data-Structure/" rel="tag"><i class="fa fa-tag"></i> Algorithm & Data Structure</a>
+              <a href="/tags/Database/" rel="tag"><i class="fa fa-tag"></i> Database</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/02/24/concurrent-collections/" rel="prev" title="并发容器系列">
+                  <i class="fa fa-chevron-left"></i> 并发容器系列
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zayeum</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">64k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">58 分钟</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/@next-theme/pjax@0.4.0/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1.0.6/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollRestoration: false,
+  scrollTo: !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+  <script>
+    NProgress.configure({
+      showSpinner: true
+    });
+    NProgress.start();
+    document.addEventListener('readystatechange', () => {
+      if (document.readyState === 'interactive') {
+        NProgress.inc(0.8);
+      }
+      if (document.readyState === 'complete') {
+        NProgress.done();
+      }
+    });
+    document.addEventListener('pjax:send', () => {
+      NProgress.start();
+    });
+    document.addEventListener('pjax:success', () => {
+      NProgress.done();
+    });
+  </script>
+
+  
+
+
+
+    <div class="pjax">
+
+  <script src="//cdn.jsdelivr.net/npm/quicklink@2.0.0/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink.listen({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://zayeum.com/2021/02/25/redis/',]
+      });
+      });
+  </script>
+<script>
+NexT.utils.loadComments('#waline-comments', () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js', () => {
+    new Waline(Object.assign({
+      lang: 'zh-CN'
+    }, {"enable":true,"serverURL":"https://comment-api-seven.vercel.app","placeholder":"欢迎在这里评论...","avatar":"monsterid","meta":["nick","mail","link"],"pageSize":10,"visitor":false,"comment_count":false,"requiredFields":["nick"],"lang":"zh-cn","libUrl":null}, {
+      el: '#waline-comments',
+      path: "/2021/02/25/redis/",
+    }));
+  }, window.Waline);
+});
+</script>
+<script type="text/javascript" src="/js/fold_action.js"></script>
+
+    </div>
+</body>
+</html>
