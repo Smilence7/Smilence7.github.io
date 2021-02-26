@@ -287,10 +287,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2021-02-25 00:00:00 / 修改时间：20:46:37" itemprop="dateCreated datePublished" datetime="2021-02-25T00:00:00+08:00">2021-02-25</time>
+      <time title="创建时间：2021-02-25 00:00:00" itemprop="dateCreated datePublished" datetime="2021-02-25T00:00:00+08:00">2021-02-25</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-02-26 15:12:23" itemprop="dateModified" datetime="2021-02-26T15:12:23+08:00">2021-02-26</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -311,7 +317,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2.2k</span>
+      <span>2.7k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -329,7 +335,11 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="Redis数据结构"><a href="#Redis数据结构" class="headerlink" title="Redis数据结构"></a>Redis数据结构</h2><p>Redis在底层使用redis对象来包装不同的数据结构，在一个Redis对象中，包含三个字段，分别是对外的数据结构类型，对内的基础数据结构类型，以及指向具体数据结构地址的指针。</p>
+          <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>Redis是基于内存的、单线程的非关系型数据库。</p>
+<p>基于内存是指数据库运行在主存空间中，因此读写速度比硬盘数据库快得多，性能瓶颈从CPU转移到了内存和网络上。</p>
+<p>单线程是指数据库仅使用一个线程完成IO复用过程，遍历、拷贝就绪的IO文件到线程中，对IO数据进行读/写处理操作。单线程下不存在线程安全问题，避免了线程频繁地上下文切换，单线程实现的系统可维护性高。在6.0版本后，Redis的处理模型划分为IO复用处理、文件分发、就绪事件读取(从内核拷贝到用户线程)、事件处理器(handler)，其中IO复用、文件分发、事件处理仍然由一个主线程完成，而就绪事件读取采用多线程完成。具体来说，主线程完成IO复用得到返回之后，会将就绪的IO事件分发给多个线程，这些线程负责就绪事件的数据拷贝，将数据从内核拷贝到用户进程，所有线程完成拷贝后，再由主线程的handler模块依次处理这些IO事件。因此这里的多线程并不会产生数据的线程安全问题，因为它们只负责将数据从内核缓冲区拿到Redis进程中，实际的数据读写操作仍然是顺序同步的。</p>
+<p>非关系型数据库是以各种抽象形式的数据结构保存在实际地址中的数据库，比如定义键值对数据的存储形式，并将其以哈希表形式抽象使用。相比之下，关系型数据库是固定的表形式，其抽象形式是固定的表格字段与数据行。</p>
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>Redis在底层使用redis对象来包装不同的数据结构，在一个Redis对象中，包含三个字段，分别是对外的数据结构类型，对内的基础数据结构类型，以及指向具体数据结构地址的指针。</p>
 <p>对外的数据结构有string、list、hash、set、zset五种，对内数据结构有int，embstr，sds，哈希表，双向链表，压缩列表，整形集合，跳表8种。</p>
 <h3 id="对外数据结构"><a href="#对外数据结构" class="headerlink" title="对外数据结构"></a>对外数据结构</h3><h4 id="String"><a href="#String" class="headerlink" title="String"></a>String</h4><p>String是字符串，其底层实现分为三种。如果字符串是纯数字，则用int类型存储；如果是较小的字符串，会用embstr编码的SDS存储；如果是大字符串，使用SDS存储。</p>
 <h4 id="List"><a href="#List" class="headerlink" title="List"></a>List</h4><p>List是列表。如果列表的元素长度64字节，且列表元素数量小于512，会使用压缩列表ziplist存储；否则使用双向链表linkedlist存储。</p>
