@@ -1214,6 +1214,80 @@
       </tags>
   </entry>
   <entry>
+    <title>synchronized 关键字</title>
+    <url>/2021/02/24/synchronized/</url>
+    <content><![CDATA[<h3 id="解决的问题"><a href="#解决的问题" class="headerlink" title="解决的问题"></a>解决的问题</h3><p>synchronized关键字的设计目的很简单，就是悲观地认为线程间的并发操作会引发线程安全问题，由此设计出在这种场景下使用的同步互斥机制，但由最初的重量级阻塞方案优化为后来的锁升级方案，保证不同的线程竞争规模下的程序执行效率。</p>
+<h3 id="synchronized与字节码"><a href="#synchronized与字节码" class="headerlink" title="synchronized与字节码"></a>synchronized与字节码</h3><p>当synchronized关键字修饰方法时，对应的字节码处会有ACC_SYNCHRONIZED标识来隐式使用monitor_enter/monitor_exit；</p>
+<p>当修饰代码块时，对应的字节码显式地使用monitor_enter/monitor_exit。</p>
+<a id="more"></a>
+
+<h3 id="synchronized-的-happens-before-原则"><a href="#synchronized-的-happens-before-原则" class="headerlink" title="synchronized 的 happens-before 原则"></a>synchronized 的 happens-before 原则</h3><p>对一个monitor的解锁 happens-before 于随后对同一个monitor的加锁，由于happens-before的传递性以及as-if-serial原则，保证了程序运行结果的线程安全型。</p>
+<h3 id="锁升级"><a href="#锁升级" class="headerlink" title="锁升级"></a>锁升级</h3><p>在一些高并发场景中，如果只有少量线程操作会产生线程安全问题，或者只有小部分时间产生线程安全问题，那么使用moniter锁会严重影响程序效率。因此优化了synchronized关键字，使其成为动态的、可升级的锁。</p>
+<img src="/2021/02/24/synchronized/markword.png" class="">
+
+
+
+<h4 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h4><p>偏向锁是synchronized对象的初始锁状态，它在对象头中记录线程ID和epoch，来表示当前锁的偏向线程。</p>
+<h5 id="偏向锁的获取"><a href="#偏向锁的获取" class="headerlink" title="偏向锁的获取"></a>偏向锁的获取</h5><p>当一个线程获取一个synchronized对象时，如果其对象头的锁状态为偏向锁，则检查其Thread ID：</p>
+<ul>
+<li>如果Thread ID是当前线程，则已经获取了锁，开始执行同步代码块；</li>
+<li>如果不是，尝试用CAS操作替换Thread ID为当前线程：<ul>
+<li>如果成功，获得锁，开始执行同步代码块；</li>
+<li>如果失败，进入偏向锁<strong>撤销/升级</strong>过程。</li>
+</ul>
+</li>
+</ul>
+<h5 id="偏向锁的撤销和升级"><a href="#偏向锁的撤销和升级" class="headerlink" title="偏向锁的撤销和升级"></a>偏向锁的撤销和升级</h5><p>首先我们需要知道，synchronized锁在初始状态是偏向锁，当发生竞争时，有可能撤销为无锁状态，也可能升级为轻量级锁，选择的依据就是当前发生的竞争是同步(实时)发生的竞争、还是“历史”(已经退出同步块的线程)竞争。偏向锁撤销过程开始的条件是当有线程尝试CAS修改偏向锁Thread ID时修改失败，这时，等待持有锁的线程执行到safepoint时暂停线程，对其进行检查：</p>
+<ul>
+<li>如果线程已经不存活或者退出了同步块，则把偏向锁撤销为无锁状态，唤醒原线程，而当前线程继续CAS操作修改Thread ID(回到偏向锁的获取阶段)；</li>
+<li>如果线程未退出同步代码块，则升级为轻量级锁：<ul>
+<li>在原持有锁的线程栈中分配Lock Record空间，把对象头的Mark Word拷贝到Lock Record中，修改对象头Mark Word的前面部分(除了锁标识位)为指向Lock Record的指针，此时原线程获得了轻量级锁，唤醒原线程；</li>
+<li>当前线程则开始轻量级锁的<strong>获取</strong>过程。</li>
+</ul>
+</li>
+</ul>
+<p>偏向锁和无锁状态其实比较类似，所以锁标识位都为01，之所以要区分是为了重入逻辑简单(如果是偏向锁就判断重入)，偏向锁或者无锁升级为轻量级锁的原则或者说思想很简单：不能让我等待(只要持有锁的线程还在执行同步代码块，当前线程就只能等待)，一旦我要等待，就升级轻量级锁。</p>
+<h4 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h4><p>轻量级锁如前提到的，通过在Mark Word中分配指向线程栈中的Lock Record，来表示对象被这个线程占用。而Lock Record就是线程占用对象之前的Mark Word的拷贝，也被称为Displaced Mark Word，用于锁的释放。</p>
+<h5 id="轻量级锁的获取"><a href="#轻量级锁的获取" class="headerlink" title="轻量级锁的获取"></a>轻量级锁的获取</h5><p>如果一个线程检测到当前对象的锁状态为轻量级锁，会先把Mark Word拷贝到当前线程栈的Lock Record中，然后尝试CAS操作修改对象的锁指针，使其指向自己的Lock Record：</p>
+<ul>
+<li>如果成功，获得轻量级锁，开始执行同步代码块；</li>
+<li>如果失败，自旋地使用CAS操作尝试修改锁指针，如果次数耗尽，就升级为重量级锁：<ul>
+<li>暂停原线程，修改锁状态，修改锁指针为指向monitor的指针，原线程获取重量级锁，唤醒原线程；</li>
+<li>当前线程进入阻塞队列。</li>
+</ul>
+</li>
+<li>如果是重入(修改前和修改后相等)，则将Lock Record设为null。</li>
+</ul>
+<h5 id="轻量级锁的解锁"><a href="#轻量级锁的解锁" class="headerlink" title="轻量级锁的解锁"></a>轻量级锁的解锁</h5><p>轻量级锁的释放就是尝试用CAS操作将线程的Lock Record替换回对象头的Mark Word(重入的释放什么都不用做，也不用替换回去)：</p>
+<ul>
+<li>如果成功则对象恢复了之前的状态，释放成功；</li>
+<li>如果失败，则升级为重量级锁：<ul>
+<li>当前线程获得monitor，并释放monitor；</li>
+<li>其他线程竞争重量级锁的monitor。</li>
+</ul>
+</li>
+</ul>
+<h4 id="重量级锁"><a href="#重量级锁" class="headerlink" title="重量级锁"></a>重量级锁</h4><p>重量级锁就是原来的synchronized监视器锁，在对象头的Mark Word中锁标识位为10，前面部分为指向monitor的指针。</p>
+<p>monitor是由C++代码实现、java代码包装的，在java被包装为一个名为ObjectMonitor的对象，其中包含几个主要字段：</p>
+<ul>
+<li>recursions: 线程重入次数</li>
+<li>object: Monitor对象</li>
+<li>owner: 持有者</li>
+<li>waitSet: wait状态的线程列表</li>
+<li>cxq: 单向列表</li>
+<li>entryList: block状态线程列表</li>
+</ul>
+<p>ObjectMonitor的方法中包含大量的CAS操作(相比膨胀前的各种锁CAS操作次数)，需要大量的内核态和用户态的切换，因此非常耗费资源和时间(比轻量级锁的CPU自旋更加耗资源)。</p>
+]]></content>
+      <categories>
+        <category>Multithread &amp; Concurrency</category>
+      </categories>
+      <tags>
+        <tag>Multithread &amp; Concurrency</tag>
+        <tag>synchronized</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>volatile 关键字</title>
     <url>/2021/02/07/volatile/</url>
     <content><![CDATA[<h3 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h3><p>volatile解决的问题：针对变量的轻量级同步解决方案。</p>
@@ -1298,80 +1372,6 @@
       </tags>
   </entry>
   <entry>
-    <title>synchronized 关键字</title>
-    <url>/2021/02/24/synchronized/</url>
-    <content><![CDATA[<h3 id="解决的问题"><a href="#解决的问题" class="headerlink" title="解决的问题"></a>解决的问题</h3><p>synchronized关键字的设计目的很简单，就是悲观地认为线程间的并发操作会引发线程安全问题，由此设计出在这种场景下使用的同步互斥机制，但由最初的重量级阻塞方案优化为后来的锁升级方案，保证不同的线程竞争规模下的程序执行效率。</p>
-<h3 id="synchronized与字节码"><a href="#synchronized与字节码" class="headerlink" title="synchronized与字节码"></a>synchronized与字节码</h3><p>当synchronized关键字修饰方法时，对应的字节码处会有ACC_SYNCHRONIZED标识来隐式使用monitor_enter/monitor_exit；</p>
-<p>当修饰代码块时，对应的字节码显式地使用monitor_enter/monitor_exit。</p>
-<a id="more"></a>
-
-<h3 id="synchronized-的-happens-before-原则"><a href="#synchronized-的-happens-before-原则" class="headerlink" title="synchronized 的 happens-before 原则"></a>synchronized 的 happens-before 原则</h3><p>对一个monitor的解锁 happens-before 于随后对同一个monitor的加锁，由于happens-before的传递性以及as-if-serial原则，保证了程序运行结果的线程安全型。</p>
-<h3 id="锁升级"><a href="#锁升级" class="headerlink" title="锁升级"></a>锁升级</h3><p>在一些高并发场景中，如果只有少量线程操作会产生线程安全问题，或者只有小部分时间产生线程安全问题，那么使用moniter锁会严重影响程序效率。因此优化了synchronized关键字，使其成为动态的、可升级的锁。</p>
-<img src="/2021/02/24/synchronized/markword.png" class="">
-
-
-
-<h4 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h4><p>偏向锁是synchronized对象的初始锁状态，它在对象头中记录线程ID和epoch，来表示当前锁的偏向线程。</p>
-<h5 id="偏向锁的获取"><a href="#偏向锁的获取" class="headerlink" title="偏向锁的获取"></a>偏向锁的获取</h5><p>当一个线程获取一个synchronized对象时，如果其对象头的锁状态为偏向锁，则检查其Thread ID：</p>
-<ul>
-<li>如果Thread ID是当前线程，则已经获取了锁，开始执行同步代码块；</li>
-<li>如果不是，尝试用CAS操作替换Thread ID为当前线程：<ul>
-<li>如果成功，获得锁，开始执行同步代码块；</li>
-<li>如果失败，进入偏向锁<strong>撤销/升级</strong>过程。</li>
-</ul>
-</li>
-</ul>
-<h5 id="偏向锁的撤销和升级"><a href="#偏向锁的撤销和升级" class="headerlink" title="偏向锁的撤销和升级"></a>偏向锁的撤销和升级</h5><p>首先我们需要知道，synchronized锁在初始状态是偏向锁，当发生竞争时，有可能撤销为无锁状态，也可能升级为轻量级锁，选择的依据就是当前发生的竞争是同步(实时)发生的竞争、还是“历史”(已经退出同步块的线程)竞争。偏向锁撤销过程开始的条件是当有线程尝试CAS修改偏向锁Thread ID时修改失败，这时，等待持有锁的线程执行到safepoint时暂停线程，对其进行检查：</p>
-<ul>
-<li>如果线程已经不存活或者退出了同步块，则把偏向锁撤销为无锁状态，唤醒原线程，而当前线程继续CAS操作修改Thread ID(回到偏向锁的获取阶段)；</li>
-<li>如果线程未退出同步代码块，则升级为轻量级锁：<ul>
-<li>在原持有锁的线程栈中分配Lock Record空间，把对象头的Mark Word拷贝到Lock Record中，修改对象头Mark Word的前面部分(除了锁标识位)为指向Lock Record的指针，此时原线程获得了轻量级锁，唤醒原线程；</li>
-<li>当前线程则开始轻量级锁的<strong>获取</strong>过程。</li>
-</ul>
-</li>
-</ul>
-<p>偏向锁和无锁状态其实比较类似，所以锁标识位都为01，之所以要区分是为了重入逻辑简单(如果是偏向锁就判断重入)，偏向锁或者无锁升级为轻量级锁的原则或者说思想很简单：不能让我等待(只要持有锁的线程还在执行同步代码块，当前线程就只能等待)，一旦我要等待，就升级轻量级锁。</p>
-<h4 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h4><p>轻量级锁如前提到的，通过在Mark Word中分配指向线程栈中的Lock Record，来表示对象被这个线程占用。而Lock Record就是线程占用对象之前的Mark Word的拷贝，也被称为Displaced Mark Word，用于锁的释放。</p>
-<h5 id="轻量级锁的获取"><a href="#轻量级锁的获取" class="headerlink" title="轻量级锁的获取"></a>轻量级锁的获取</h5><p>如果一个线程检测到当前对象的锁状态为轻量级锁，会先把Mark Word拷贝到当前线程栈的Lock Record中，然后尝试CAS操作修改对象的锁指针，使其指向自己的Lock Record：</p>
-<ul>
-<li>如果成功，获得轻量级锁，开始执行同步代码块；</li>
-<li>如果失败，自旋地使用CAS操作尝试修改锁指针，如果次数耗尽，就升级为重量级锁：<ul>
-<li>暂停原线程，修改锁状态，修改锁指针为指向monitor的指针，原线程获取重量级锁，唤醒原线程；</li>
-<li>当前线程进入阻塞队列。</li>
-</ul>
-</li>
-<li>如果是重入(修改前和修改后相等)，则将Lock Record设为null。</li>
-</ul>
-<h5 id="轻量级锁的解锁"><a href="#轻量级锁的解锁" class="headerlink" title="轻量级锁的解锁"></a>轻量级锁的解锁</h5><p>轻量级锁的释放就是尝试用CAS操作将线程的Lock Record替换回对象头的Mark Word(重入的释放什么都不用做，也不用替换回去)：</p>
-<ul>
-<li>如果成功则对象恢复了之前的状态，释放成功；</li>
-<li>如果失败，则升级为重量级锁：<ul>
-<li>当前线程获得monitor，并释放monitor；</li>
-<li>其他线程竞争重量级锁的monitor。</li>
-</ul>
-</li>
-</ul>
-<h4 id="重量级锁"><a href="#重量级锁" class="headerlink" title="重量级锁"></a>重量级锁</h4><p>重量级锁就是原来的synchronized监视器锁，在对象头的Mark Word中锁标识位为10，前面部分为指向monitor的指针。</p>
-<p>monitor是由C++代码实现、java代码包装的，在java被包装为一个名为ObjectMonitor的对象，其中包含几个主要字段：</p>
-<ul>
-<li>recursions: 线程重入次数</li>
-<li>object: Monitor对象</li>
-<li>owner: 持有者</li>
-<li>waitSet: wait状态的线程列表</li>
-<li>cxq: 单向列表</li>
-<li>entryList: block状态线程列表</li>
-</ul>
-<p>ObjectMonitor的方法中包含大量的CAS操作(相比膨胀前的各种锁CAS操作次数)，需要大量的内核态和用户态的切换，因此非常耗费资源和时间(比轻量级锁的CPU自旋更加耗资源)。</p>
-]]></content>
-      <categories>
-        <category>Multithread &amp; Concurrency</category>
-      </categories>
-      <tags>
-        <tag>Multithread &amp; Concurrency</tag>
-        <tag>synchronized</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Wordpress Docker部署</title>
     <url>/2021/01/23/wordpress/</url>
     <content><![CDATA[<h4 id="安装-docker"><a href="#安装-docker" class="headerlink" title="安装 docker"></a>安装 docker</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">yum install docker-ce</span><br><span class="line">sudo systemctl start docker</span><br><span class="line">sudo systemctl <span class="built_in">enable</span> docker</span><br></pre></td></tr></table></figure>
@@ -1424,7 +1424,7 @@
 <blockquote>
 <p><strong>运行时常量池</strong></p>
 </blockquote>
-<p>运行时常量池(Runtime Constant Pool)中包含编译时已知的<strong>数值常量</strong>(已赋值的final)和运行时解析的<strong>方法</strong>、<strong>字段引用</strong>。</p>
+<p>运行时常量池(Runtime Constant Pool)中包含编译时已知的<strong>字面量</strong>和运行时解析的<strong>方法</strong>、<strong>字段引用</strong>。</p>
 <h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><p>堆是JVM内存中最大的一块，也不需要是连续的，堆内存用于存放Java对象实例和数组。因为对象的使用寿命一般较短，因此堆是垃圾回收发生的主要区域。如果堆内存溢出，会产生错误信息OutOfMemoryError: Heap Space。</p>
 <h4 id="堆内存结构"><a href="#堆内存结构" class="headerlink" title="堆内存结构"></a>堆内存结构</h4><p>堆内存结构是以优化垃圾回收为目的设计的，具体结构见「垃圾回收机制」章节。</p>
 <h4 id="对象内存结构"><a href="#对象内存结构" class="headerlink" title="对象内存结构"></a>对象内存结构</h4><p>根据前文对JVM内存结构的介绍我们可以想到，一个静态引用是从<strong>方法区</strong>指向堆对象的引用，而一个普通引用是从<strong>栈帧</strong>指向堆对象的引用。那么对象的内部结构是怎样的呢？对象是怎么和它属于的类连接的呢？</p>
@@ -1461,16 +1461,17 @@
 <h2 id="类加载机制"><a href="#类加载机制" class="headerlink" title="类加载机制"></a>类加载机制</h2><p><em><a href="https://www.cnblogs.com/wuzhenzhao/p/12346516.html">吴振照的博客</a></em></p>
 <p>Java文件在编译时经过词法分析器、tokens流、语法分析器、语法树、语义分析器、注解抽象语法树、字节码生成器这一系列操作转换成字节码，保存在.class文件中。类文件在运行时被加载到虚拟机，其中包括加载、链接(验证、准备、解析)、初始化这三个阶段。</p>
 <h3 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h3><h4 id="加载过程"><a href="#加载过程" class="headerlink" title="加载过程"></a>加载过程</h4><ul>
-<li>通过类的全限定名获取二进制字节流</li>
-<li>将字节流代表的静态存储结构转化为方法区的运行时数据结构</li>
+<li>通过类的全限定名获取.class字节码文件</li>
+<li>将字节码中的静态存储结构转化为方法区的运行时数据结构</li>
 <li>在Java堆中生成代表这个类的java.lang.Class对象，作为这些静态数据的访问入口</li>
 </ul>
-<h4 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h4><p>加载由类加载器ClassLoader完成，类加载器从上到下有Bootstrap, Extension, App, Custom四种，加载时首先从下到上检查这个类所属的类加载器是否加载过，保证所有ClassLoader只加载一次，如果没有加载过，则从上到下逐层尝试加载此类(双亲委派机制)。</p>
-<h4 id="双亲委派"><a href="#双亲委派" class="headerlink" title="双亲委派"></a>双亲委派</h4><p>某个具体的类加载器收到加载请求时，会先尝试递归地让父类加载器完成，最终由最上层能够加载的父类加载器执行加载，这样做可以让不同加载环境加载的某个类都是同一个类，比如，不会加载产生不同的Object类。</p>
-<h3 id="链接-link"><a href="#链接-link" class="headerlink" title="链接(link)"></a>链接(link)</h3><h4 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h4><p>确保字节流中的信息符合虚拟机要求，包括文件格式验证、原数据验证、字节码验证、符号引用验证；</p>
+<h4 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h4><p>加载由类加载器ClassLoader完成，类加载器从上到下有Bootstrap, Extension, System, Custom四种，Bootstrap加载核心类库，Extension加载扩展类，System加载类路径下的类，而Custom是用户自定义的类加载器。加载类时采用双亲委派机制。</p>
+<h4 id="双亲委派"><a href="#双亲委派" class="headerlink" title="双亲委派"></a>双亲委派</h4><p>某个具体的类加载器收到加载请求时，会先从上往下检查是否被某个类加载器加载过，如果没有加载过，再从下往上递归地让父类加载器完成，最终由最上层能够加载的父类加载器执行加载，这样做可以避免重复加载，同时考虑了安全因素(如果类在核心类库中被加载过了，就不会被自定义的同名类替换)。</p>
+<h3 id="链接-link"><a href="#链接-link" class="headerlink" title="链接(link)"></a>链接(link)</h3><h4 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h4><p>确保字节码中的信息符合虚拟机要求，包括文件格式验证、原数据验证、字节码验证、符号引用验证；</p>
 <h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><p>给类变量(类静态变量)分配内存和设置初始化值(final静态变量在编译期被赋值保存在方法区的运行时常量池)。</p>
-<h4 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h4><p>把常量池中的符号引用替换为直接引用。</p>
-<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>在运行时，JVM根据语句执行顺序对<strong>类对象</strong>进行初始化，当运行时发生以下情况时触发初始化：</p>
+<h4 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h4><p>把常量池中的符号引用替换为直接引用，如果引用指向未被加载的类或类成员，会先加载这个类。</p>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>执行由编译器收集好的类的初始化器(类变量赋值语句和静态代码块)，进行初始化。</p>
+<p>在运行时，JVM根据语句执行顺序对<strong>类对象</strong>进行初始化，当运行时发生以下情况时触发初始化：</p>
 <ul>
 <li>遇到new, getstatic, putstatic, invokestatic四条字节码指令时，即：实例化对象时、读取或设置非final的静态字段时、调用静态方法时，如果类还没有初始化，先触发类的初始化；</li>
 <li>调用java.lang.reflect包时，如果类还没有初始化，先触发类的初始化；</li>
@@ -1478,6 +1479,9 @@
 <li>虚拟机启动时，先初始化main方法所在的类(主类)；</li>
 <li>JDK1.7 方法句柄对应的类没有初始化，先触发初始化。</li>
 </ul>
+<h3 id="特殊：字符串的初始化"><a href="#特殊：字符串的初始化" class="headerlink" title="特殊：字符串的初始化"></a>特殊：字符串的初始化</h3><p>运行时常量池：在方法区中，保存类加载过程的字面量</p>
+<p>字符串常量池：全局存在，保存对字符串对象的唯一引用</p>
+<p>字符串对象在初始化和赋值给引用时，会先查找<strong>字符串常量池</strong>中是否已经存在相同内容的引用。字符串常量池通过维护一个HashSet&lt;String&gt;来保存所有全局共享的字符串对象，相同的字符串都会使用字符串常量池中的同一个引用。在类加载的解析阶段，JVM把字符串的引用添加到字符串常量池，但HotSpot VM的实现是采用懒加载的方式，仅当一个字符串引用第一次被执行<strong>ldc</strong>指令时，才会加载到字符串常量池。ldc的功能是将int、float或String型常量值从运行时常量池拷贝到操作数栈的栈顶，懒加载就是仅当遇到ldc指令时才实际创建字符串对象、把引用添加到字符串常量池。也就是说，在加载类时，字面量会进入<strong>当前类的运行时常量池</strong>，而不会进入<strong>全局的字符串常量池</strong>。在ldc过程中，如果字面量(Literal, 也就是”xxx”)的引用已经存在于字符串常量池，就直接使用对应的引用，否则才创建新的对象和添加引用到字符串常量池；如果使用 <code>&quot;xxx&quot;+&quot;xxx&quot;</code> 的方式，会采用stringbuffer的<code>append()</code>方式，并以<code>toString()</code>产生一个新的字符串，因为这个新字符串<strong>是在操作数栈中产生的</strong>，没有用到ldc指令，所以不会在字符串常量池中添加引用。而String对象的<code>intern()</code>方法会检查常量池是否有这个字符串对象的引用，如果没有就保存一份到常量池中，最后不管有没有都会返回它的引用。</p>
 <h2 id="垃圾回收机制"><a href="#垃圾回收机制" class="headerlink" title="垃圾回收机制"></a>垃圾回收机制</h2><p>当一些对象不在被任何对象引用引用，JVM的垃圾回收机制(Garbage Collector)会帮我们释放对象占用的内存。那么GC应该怎么判断对象是否需要回收呢？有两种思想，一种是引用计数，一种是根搜索。</p>
 <h3 id="引用计数算法-Reference-Counting-GC"><a href="#引用计数算法-Reference-Counting-GC" class="headerlink" title="引用计数算法(Reference Counting GC)"></a>引用计数算法(Reference Counting GC)</h3><p>每一个对象存储一个计数变量，每当有一个地方引用它就加1，每当有一个引用失效就减1。由于一个对象在创建后必须被引用，否则就再也不能被引用，所以当计数值归0时，就说明不再会有任何引用能够引用到它。</p>
 <p>这种算法的特点是简单，可以与正常程序并发进行，但检查不出对象间的循环引用，早期的JVM曾用过这种方法。</p>
@@ -1512,9 +1516,9 @@
 <p>一般情况下，新创建的对象会被分配到eden区，而大对象会被直接分配到old区。</p>
 <p>常说的Minor GC，是负责整个young区的垃圾回收器的俗称。当eden区被放满，就会对eden区进行一次minor GC，把eden和from-space中存活的对象复制到to-space，并且年龄+1，年龄到达阈值的对象会被移到old区。to-space总是在结束前和from-space互换，保证只有from-space有对象。当to-space在一次GC过程中被填满了，minor GC就会把所有存活对象放入old区。</p>
 <p>Old区空间比较大，且在这里的对象都已经很老了比较长(从统计学上看，对象的生命周期要么很短，要么偏长)，所以old区进行GC的频率远小于young区，负责old区的GC俗称为Major GC。又因为只有CMS具有单独处理old区的GC，其他垃圾处理器在处理old时都会先触发一次Minor GC，或者像G1直接收集整个堆，所以很多时候也把Major GC称为Full GC，Full GC指收集整个堆的GC模式。</p>
-<h3 id="垃圾回收器"><a href="#垃圾回收器" class="headerlink" title="垃圾回收器"></a>垃圾回收器</h3><p><em><a href="https://www.jianshu.com/p/5261a62e4d29">简欲明心的文章</a><em>、</em><a href="https://www.zhihu.com/question/41922036/answer/144566789">Ted Mosby的回答</a></em></p>
+<h3 id="垃圾回收器"><a href="#垃圾回收器" class="headerlink" title="垃圾回收器"></a>垃圾回收器</h3><p><em><a href="https://www.jianshu.com/p/5261a62e4d29">简欲明心的文章</a><em>、</em><a href="https://www.zhihu.com/question/41922036/answer/144566789">Ted Mosby的回答</a><em>、</em><a href="https://blog.csdn.net/renfufei/article/details/54885190">JVM的GC器</a></em></p>
 <p>垃圾回收器通过设计、组合和优化不同分代使用的算法产生，是指整个垃圾回收模型。这里归纳几种GC的特点。</p>
-<p>Serial GC =  Serial Young GC + Serial Old GC (Full GC)</p>
+<p>Serial GC =  Serial Young GC + Serial Old GC (Full GC)s</p>
 <p>Parallel GC = Parallel Young GC + (非并行) PS MarkSweep GC (Full GC) / (并行) Parallel Old GC (Full GC)</p>
 <p>CMS = ParNew GC(Young GC)  + CMS GC(Old GC) + Full GC for CMS(备用)</p>
 <p>G1 GC = Young GC + mixed GC(Young + part of Old) + Full GC for G1 GC(备用)</p>
@@ -1545,6 +1549,46 @@
 <p>这类算法包括Serial Old GC、PS MarkSweep GC、Parallel Old GC、Full GC for CMS和Full GC for G1 GC。</p>
 <h5 id="CMS-GC"><a href="#CMS-GC" class="headerlink" title="CMS GC"></a>CMS GC</h5><p>CMS算法的老年代GC采用标记-清除法，当ParNew GC的mark-copy结束后，再trace一遍指向老年代的引用，对扫描到的对象进行remark。</p>
 <h4 id="待读"><a href="#待读" class="headerlink" title="待读"></a>待读</h4><p><a href="https://www.zhihu.com/question/53613423/answer/135743258">RednaxelaFX的回答</a></p>
+<h3 id="JVM的关闭"><a href="#JVM的关闭" class="headerlink" title="JVM的关闭"></a>JVM的关闭</h3><p>JVM的关闭分为正常关闭、异常关闭和强制关闭三种。其中，有四种正常关闭的方法：</p>
+<ol>
+<li>所有非守护线程执行结束</li>
+<li>程序中调用System.exit(0)</li>
+<li>终端使用ctrl+c发送SIGINT信号</li>
+<li>linux命令kill -15发送SIGTERM信号</li>
+</ol>
+<p>两种异常关闭的情况：</p>
+<ol>
+<li>RuntimeException发生</li>
+<li>OOM</li>
+</ol>
+<p>强制关闭分为3种情况：</p>
+<ol>
+<li>linux命令kill -9发送SIGKILL信号</li>
+<li>程序调用Runtime.halt()</li>
+<li>断电、宕机等物理情况使系统关机</li>
+</ol>
+<p>在JVM非强制关闭的情况下，会在关闭前调用已注册的shutdown hooks，实现用户自定义的资源释放过程。钩子本质上是一个线程，因此在注册多个钩子时会并发执行，所以可能产生死锁问题，因此建议在同一个钩子中执行操作。</p>
+<p>而在强制关闭的情况下不会执行钩子方法和finalizer方法。</p>
+<h3 id="JDK命令"><a href="#JDK命令" class="headerlink" title="JDK命令"></a>JDK命令</h3><h4 id="JPS"><a href="#JPS" class="headerlink" title="JPS"></a>JPS</h4><p>jps：查看所有虚拟机执行主类名称和进程的本地虚拟机唯一ID(LVMID)</p>
+<p>jps -q: 只输出进程的本地虚拟机唯一ID</p>
+<p>jps -l: 输出主类的全名或jar包路径</p>
+<p>jps -v: 输出进程启动时JVM参数</p>
+<p>jps -m: 输出传给main()函数的参数</p>
+<h4 id="JSTAT"><a href="#JSTAT" class="headerlink" title="JSTAT"></a>JSTAT</h4><p>Jstat -&lt;option&gt; [-t] [-h&lt;lines&gt;] &lt;vmid&gt; [&lt;interval&gt; [&lt;count&gt;]]</p>
+<p>jstat用于监视虚拟机的运行状态信息</p>
+<h4 id="JINFO"><a href="#JINFO" class="headerlink" title="JINFO"></a>JINFO</h4><p>jinfo vmid 输出对应ID的虚拟机的全部参数</p>
+<p>jinfo -flag name vmid 输出对应 ID的虚拟机的对应名称的参数值</p>
+<p>jinfo -flag name [+|-]name vmid 开启或关闭对应ID的虚拟机的对应名称的参数值</p>
+<p>JSTACK</p>
+<p>jstack生成虚拟机当前时刻的线程快照</p>
+<h3 id="OOM问题排查"><a href="#OOM问题排查" class="headerlink" title="OOM问题排查"></a>OOM问题排查</h3><p>内存溢出问题会发生在堆内存区域(Java heap space)或元数据区(MetaSpace)。</p>
+<p>堆内存溢出产生的原因可能是内存泄漏或超出了预期的流量/数据量峰值。内存泄漏是指使用完的对象仍存在强引用，垃圾回收器无法对其占用的资源进行回收释放，导致可用内存不够。内存泄漏发生的情况之一是使用对象作为HashMap的键，当对象不再使用时，没有及时释放HashMap对其的引用，导致键值对不会被回收。</p>
+<p>通过设置JVM参数导出dump文件到指定目录：</p>
+<p><code>-XX:+HeapDumpOnOutOfMemoryError -XX: HeapDumpPath=oom.hprof</code></p>
+<p>使用MAT工具分析生成的文件，用Leak Suspects Reports功能可以查看怀疑的对象和堆栈信息，从堆栈信息可以追溯到发生OOM的代码段。</p>
+<p>方法区(MetaSpace)内存溢出是有太多或者太大的类被加载到方法区，可以尝试使用G1 GC回收方法区垃圾，或者排查程序是否加载了不合理的类。</p>
+<p><code>OOM Error: Unable to create new native thread</code> 发生在操作系统拒绝向JVM提供更多的线程，因为创建的线程数已经超过上限。</p>
+<p><code>OOMError: Out of swap space?</code> 发生在操作系统配置的交换空间不足或系统的另一个进程消耗所有的内存资源时，或者是用户使用了JVM的native heap memory，但没有正确地释放。</p>
 ]]></content>
       <categories>
         <category>Java</category>
