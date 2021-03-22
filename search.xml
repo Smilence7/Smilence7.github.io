@@ -879,6 +879,42 @@
 <ul>
 <li>匿名内部类/局部内部类只能访问局部final变量。因为内部类和外部类的生命周期可能不同，编译器会为内部类传入变量的拷贝值，同时，为了防止数据不一致，必须使用final修饰来防止内部类改变这个值。</li>
 </ul>
+<h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><h4 id="产生条件"><a href="#产生条件" class="headerlink" title="产生条件"></a>产生条件</h4><p>互斥：一个资源只能被一个进程/线程使用。</p>
+<p>请求与保持：一个进程/线程因请求资源而阻塞时，不会释放之前获得的资源。</p>
+<p>不剥夺：进程已获得的资源不可被强行剥夺。</p>
+<p>循环等待：死锁中的线程头尾相接形成循环等待的局面。</p>
+<h4 id="检测"><a href="#检测" class="headerlink" title="检测"></a>检测</h4><p>使用jstack 可以查看线程快照，如果发生死锁，会将等待资源信息和死锁提示显示在对应线程的信息中。</p>
+<h4 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h4><ol>
+<li>固定上锁顺序：按锁对象的hashcode顺序进行上锁，这样所有线程都会遵循同一个顺序申请锁，避免“循环等待”条件。</li>
+<li>开放调用：修改锁范围，从锁方法改为锁代码块</li>
+<li>定时锁：超时则放弃，打破“请求与保持”条件。tryLock()</li>
+</ol>
+<h3 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h3><p><a href="https://tech.meituan.com/2020/04/02/java-pooling-pratice-in-meituan.html">线程池原理及在美团业务中的实践</a></p>
+<p>线程池负责统一管理线程的创建/关闭以及任务的执行，其内部构建了一个生产者消费者模型，使用一个阻塞队列来缓冲用户提交的任务，根据线程池的设计需求来决定何时从阻塞队列的队首取出任务，分配给线程执行。</p>
+<h4 id="线程池的状态"><a href="#线程池的状态" class="headerlink" title="线程池的状态"></a>线程池的状态</h4><p>线程池有5种状态：</p>
+<ul>
+<li>RUNNING：正常运行状态，通过阻塞队列、核心线程数、最大线程数来管理线程和任务</li>
+<li>SHUTDOWN：不再接收新的任务，会继续处理正在运行的和阻塞队列中的任务</li>
+<li>STOP：不再接收新任务，放弃阻塞队列的任务，并且中断正在处理的任务</li>
+<li>TIDYING：关闭前的状态，此时没有执行的任务，有效线程数为0</li>
+<li>TERMINATED：terminated方法执行后的状态，表示已经关闭</li>
+</ul>
+<p>在线程池的生命周期中，运行中的线程池被调用shutdown()会进入SHUTDOWN状态，被调用shutdownNow()会进入STOP状态；</p>
+<p>SHUTDOWN状态时，如果所有任务都执行完成(包括阻塞队列中的)，且工作线程数为0时，会进入TIDYING状态；</p>
+<p>STOP状态时，工作线程数为0时进入TYDYING状态；</p>
+<p>TYDYING状态通过调用terminated方法进入TERMINATED状态。</p>
+<h4 id="阻塞队列"><a href="#阻塞队列" class="headerlink" title="阻塞队列"></a>阻塞队列</h4><p>ArrayBlockingQueue是基于数组的有界阻塞队列</p>
+<p>LinkedBlockingQueue是基于链表的有界(Integer.MAX_VALUE)阻塞队列</p>
+<p>PriorityBlockingQueue是基于优先级排序的无界队列，默认自然序排序，可以实现compareTo()</p>
+<p>DelayQueue是基于PriorityBlockingQueue的无界队列，可以指定多久才从队列中获取当前元素，从而延时执行任务</p>
+<p>SynchronousQueue是不存储元素的阻塞队列，每一个put操作必须等待take操作才能添加元素</p>
+<p>LinkedTransferQueue是基于链表的无界阻塞队列，比LinkedTransferQueue多了transfer和tryTransfer方法</p>
+<p>LinkedBlockingDeque是基于链表的双向阻塞队列</p>
+<h4 id="Worker"><a href="#Worker" class="headerlink" title="Worker"></a>Worker</h4><p>在线程池中，Worker类基于AQS类实现了不可重入的独占锁，每个worker对象持有一个线程对象和runnable对象，代表对应的线程和执行的任务</p>
+<h4 id="线程池的配置"><a href="#线程池的配置" class="headerlink" title="线程池的配置"></a>线程池的配置</h4><p>CPU密集型的任务应该配置少量线程，如NCPU+1；IO密集型任务需要等待IO操作，所以应该配置尽可能多的线程，如NCPU*2。</p>
+<p>如果核心线程数设置过少，而实际业务的流量很大，会出现大量拒绝服务的情况，触发接口降级。</p>
+<p>如果队列容量设置过大，则会导致大量任务阻塞在队列中，最大线程数失效，而下游服务的大量调用因为超时而失败。</p>
+<p>线程池提供了一系列set方法，使其可以在运行时动态地更改线程池参数，而线程池能够根据新的参数进行相应的调整。</p>
 <h2 id="Java-源码"><a href="#Java-源码" class="headerlink" title="Java 源码"></a>Java 源码</h2><h3 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h3><p>我们知道HashMap通过对key计算哈希值来高效存取映射关系，当遇到哈希冲突，对应位置的结点会以链表的形式向下扩展。这里具体聊一下Java 8中，HashMap的实现逻辑。</p>
 <p>首先，在调用构造函数时，如果没有指定初始大小和装载因子，会使用默认的装载因子0.75、初始阈值0、初始大小16。其中<strong>阈值</strong>的含义是当装填的因子超过该值时就扩容。注意：构造函数只是设定了参数值，并没有创建数组。</p>
 <p>当调用<code>put()</code>方法时，实际上执行的是<code>putVal()</code>方法，<code>put()</code>方法帮我们隐藏了<code>onlyIfAbsent</code>和<code>evict</code>参数。前者为true表示遇到相同键值不进行覆盖，默认为false；后者为false表示table在创造模式(creation mode)，默认为true。</p>
@@ -916,6 +952,9 @@
 </li>
 </ol>
 <h4 id="树化逻辑"><a href="#树化逻辑" class="headerlink" title="树化逻辑"></a>树化逻辑</h4><p><em>待更新</em></p>
+<h5 id="为什么HashMap的size必须是2的幂次方"><a href="#为什么HashMap的size必须是2的幂次方" class="headerlink" title="为什么HashMap的size必须是2的幂次方"></a>为什么HashMap的size必须是2的幂次方</h5><p>哈希函数计算出的hashcode是32位长度的int值，需要用模运算映射到对应的哈希数组中，如果数组长度为2的整数幂，则可以通过size-1作为掩码，使用(size-1)&amp;hash来实现模运算，速度比%运算符更快。</p>
+<h5 id="为什么要先比较hashcode，再比较equals，为什么需要两个比较过程"><a href="#为什么要先比较hashcode，再比较equals，为什么需要两个比较过程" class="headerlink" title="为什么要先比较hashcode，再比较equals，为什么需要两个比较过程"></a>为什么要先比较hashcode，再比较equals，为什么需要两个比较过程</h5><p>hashcode设计出来用于快速比较两个对象是否相同，因为相同对象的hashcode一定相等，所以如果两个对象的hashcode不同，对象一定不相等。基于此，可以在执行equals判断方法之前先执行更快的hashcode比较，因为hashcode是32位整形数字，相比自定义的字段比较规则更快，可以排除掉非hash冲突的情况。如果hashcode相等，再进一步比较equals，确认是否哈希冲突。</p>
+<h5 id="HashMap为什么会出现链表成环"><a href="#HashMap为什么会出现链表成环" class="headerlink" title="HashMap为什么会出现链表成环"></a>HashMap为什么会出现链表成环</h5><p>因为HashMap的扩容迁移方法中，对哈希桶中链表的拷贝是采用头插法，迁移过后元素的顺序会倒置。而其中有一条语句是临时保存当前结点的下一个结点，如果一个线程保存了头结点的下个结点，此时被打断，而另一个线程完成了此链表的迁移，结点间的连接顺序被更改，这时第一个线程恢复执行就会使链表成环。</p>
 ]]></content>
       <categories>
         <category>Java</category>
@@ -998,6 +1037,115 @@
         <tag>Locks</tag>
         <tag>ReentrantReadWriteLock</tag>
         <tag>ReentrantLock</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>操作系统</title>
+    <url>/2021/03/22/os/</url>
+    <content><![CDATA[<h3 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h3><p>每个进程拥有一个结构体task_struct(指向mm_struct)，即进程描述符PCB。每个进程创建时拥有一段虚拟内存地址，通过页表映射到实际的物理地址。32位系统使用32位总线产生2^32bit=4GB的地址空间，64位系统并没有使用64位总线，而是受限于操作系统，最大256G内存。</p>
+<h4 id="分页和页表"><a href="#分页和页表" class="headerlink" title="分页和页表"></a>分页和页表</h4><p>如果对每个地址建立到物理地址的映射，在32位的情况下就需要32GB的空间存放映射表(32位虚拟地址-&gt;32位虚拟地址)。因此操作系统引入了页的概念，将物理内存以4K为单位划分为页，这样建立的映射表就只有8MB。</p>
+<p>页表(地址映射表)保存在CR3控制寄存器中，进程切换时，内核会切换上下文，其中就包括的寄存器，上一个进程的寄存器会被保存回task_struct，下一个寄存器从task_struct被拷贝到寄存器中。</p>
+<p>task_struct中的pgd项指向PGD(page global directory)表，PGD表指向PMD(page middle directory)表，PMD表指向页表(page index)，再通过偏移量(offset)获得最终的物理地址，构成多级页表模式。</p>
+<h4 id="内存寻址"><a href="#内存寻址" class="headerlink" title="内存寻址"></a>内存寻址</h4><p>每个CPU核中都有一个内存控制单元(MMU)，它负责将虚拟地址转为物理地址。MMU通过页表高速缓存(TLB)和页表查询单元(table walk unit)完成这一系列工作。如果高速缓存命中，则直接得到物理地址；否则通过页表查询物理地址并更新缓存。如果页表没有命中内存中的页，从外部存储中加载对应页。</p>
+<p>多级页表节约了很多内存，因为一个进程占用的地址通常是远小于最大值的(32位是4GB)，页表分级后，如果一级页表是空的，就不需要分配二级页表。</p>
+<h3 id="进程的创建"><a href="#进程的创建" class="headerlink" title="进程的创建"></a>进程的创建</h3><p>fork()方法返回一个pid，这个方法会向父进程返回子进程的pid，向子进程本身返回0。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    pid = fork();</span><br><span class="line">    <span class="keyword">if</span> (pid == <span class="number">-1</span>)&#123;</span><br><span class="line">        perror(<span class="string">&quot;pipe()&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (pid == <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="comment">// child process</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    	<span class="comment">// parent process  </span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><em>TODO..</em></p>
+<h3 id="进程间通信-IPC"><a href="#进程间通信-IPC" class="headerlink" title="进程间通信(IPC)"></a>进程间通信(IPC)</h3><h4 id="管道-Pipe"><a href="#管道-Pipe" class="headerlink" title="管道(Pipe)"></a>管道(Pipe)</h4><p>半双工。只能用于有亲缘关系的进程间通信，因为必须由父进程打开一个管道文件，通过fork()产生子进程和共享的管道文件。</p>
+<p><code>int pipe(int pipefd[2]);</code> 可以产生一个管道文件，并且由pipefd[0]存储读方式打开的描述符，pipefd[1]存储写方式打开的描述符。</p>
+<p>fork()之后，子进程也拥有同一组文件描述符，这时父子进程可以通过相应的文件描述符实现双向通信，但同一时间只能使用一种方向，所以是半双工的。</p>
+<h4 id="有名管道-FIFO-Named-Pipe"><a href="#有名管道-FIFO-Named-Pipe" class="headerlink" title="有名管道(FIFO / Named Pipe)"></a>有名管道(FIFO / Named Pipe)</h4><p>半双工，读写的两端如果只有一端存在，会<strong>阻塞等待</strong>。可以用于任意两个进程之间的通信。</p>
+<p>FIFO的本质也是文件，但这个文件在系统中存在名字。通过保证进程的同步读/写来通信，使用字符串命名FIFO，通过名字创建、读/写对应的FIFO。</p>
+<h5 id="创建FIFO"><a href="#创建FIFO" class="headerlink" title="创建FIFO"></a>创建FIFO</h5><p><code>int mkfifo(const char *pathname, mode_t mode);</code> </p>
+<p>其中pathname是FIFO的名字，mode是定义文件权限的参数。创建出的文件类型最前面有一个p标识。</p>
+<h5 id="打开-读写FIFO"><a href="#打开-读写FIFO" class="headerlink" title="打开/读写FIFO"></a>打开/读写FIFO</h5><p>FIFO也是以文件的形式存在的，创建之后使用open()方式读打开/写打开，返回文件描述符。读写FIFO也是同理，read() / write()。</p>
+<h5 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h5><p>服务端</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FIFO1 <span class="meta-string">&quot;/tmp/fifo.1&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FIFO2 <span class="meta-string">&quot;/tmp/fifo.2&quot;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> readfd, writefd;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建两个管道</span></span><br><span class="line">    <span class="keyword">if</span> ((mkfifo(FIFO1, <span class="number">0777</span>) &lt; <span class="number">0</span>) &amp;&amp; (errno != EEXIST))</span><br><span class="line">        Perror(<span class="string">&quot;can&#x27;t create FIFO1&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> ((mkfifo(FIFO2, <span class="number">0777</span>) &lt; <span class="number">0</span>) &amp;&amp; (errno != EEXIST)) &#123;</span><br><span class="line">        <span class="comment">// 进程结束后自动删除第一个管道</span></span><br><span class="line">        unlink(FIFO1); </span><br><span class="line">        Perror(<span class="string">&quot;can&#x27;t create FIFO2&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 读打开第二个，写打开第一个</span></span><br><span class="line">    readfd = open(FIFO2, O_RDONLY, <span class="number">0</span>);</span><br><span class="line">    writefd = open(FIFO1, O_WRONLY, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 进程结束后自动删除</span></span><br><span class="line">    unlink(FIFO1);</span><br><span class="line">    unlink(FIFO2);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用管道</span></span><br><span class="line">    server(readfd, writefd);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>客户端</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FIFO1 <span class="meta-string">&quot;/tmp/fifo.1&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FIFO2 <span class="meta-string">&quot;/tmp/fifo.2&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">// 同上</span></span><br><span class="line">    <span class="keyword">int</span> readfd, writefd;</span><br><span class="line">    <span class="keyword">if</span> ((mkfifo(FIFO1, <span class="number">0777</span>) &lt; <span class="number">0</span>) &amp;&amp; (errno != EEXIST))</span><br><span class="line">        Perror(<span class="string">&quot;can&#x27;t create FIFO1&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> ((mkfifo(FIFO2, <span class="number">0777</span>) &lt; <span class="number">0</span>) &amp;&amp; (errno != EEXIST)) &#123;</span><br><span class="line">        unlink(FIFO1);</span><br><span class="line">        Perror(<span class="string">&quot;can&#x27;t create FIFO2&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 反过来</span></span><br><span class="line">    writefd = open(FIFO2, O_WRONLY);</span><br><span class="line">    readfd = open(FIFO1, O_RDONLY);</span><br><span class="line">    <span class="comment">// 使用管道</span></span><br><span class="line">    client(readfd, writefd);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="共享内存"><a href="#共享内存" class="headerlink" title="共享内存"></a>共享内存</h4><p>多个进程直接读写共享的内存块来实现通信，而不是使用文件方式的读写，是最快的进程通信方法。</p>
+<p><code>int shmget(key_t key, size_t size, int shmflg)</code></p>
+<p>shmflg参数有三种选择：0表示取共享内存标识符，如果不存在就返回错误代码(ENOENT)；IPC_CREAT表示如果没找到key就创建一个新的返回，如果找到了就返回这个标识符；IPC_CREAT|IPC_EXCL表示如果没找到就创建返回，如果找到了返回错误代码(EEXIST)。</p>
+<p>shmat() 挂接一个共享内存区段，使用返回值进行数据读写。</p>
+<p>共享内存需要严格控制并发同步才能保证数据的有效性，比如结合信号量使用。</p>
+<h4 id="信号、信号量"><a href="#信号、信号量" class="headerlink" title="信号、信号量"></a>信号、信号量</h4><p><em>TODO</em></p>
+<h4 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h4><p><em>TODO</em></p>
+<h3 id="僵尸进程-孤儿进程"><a href="#僵尸进程-孤儿进程" class="headerlink" title="僵尸进程/孤儿进程"></a>僵尸进程/孤儿进程</h3><p>当一个子进程因终止而退出时，系统进程表为其保留退出状态信息，需要父进程调用wait()或waitpid()方法来收集这些信息，子进程才会真正被删除；如果父进程没有调用这些方法，子进程会一直占用系统资源，被称为僵尸进程(zombie)。</p>
+<p>当一个父进程先于其子进程终止退出，就没有人为子进程“善后”了，此时子进程成为孤儿进程(orphan)，由init进程接管。而init进程会循环地对子进程调用wait()，为子进程处理退出时的善后工作。</p>
+<p>孤儿进程不会产生不良影响，而僵尸进程会占用系统资源。如果僵尸进程过多，需要找到大量产生僵尸进程的父进程，通过kill命令终止其运行，从而让僵尸进程变成孤儿进程，被init进程接管并wait()释放。</p>
+<h3 id="线程切换的开销"><a href="#线程切换的开销" class="headerlink" title="线程切换的开销"></a>线程切换的开销</h3><p><a href="https://zhuanlan.zhihu.com/p/52845869">https://zhuanlan.zhihu.com/p/52845869</a></p>
+<p>线程切换开销：切换CPU上下文、切换内核栈；</p>
+<p>进程切换开销：切换CPU上下文、切换内核栈、切换虚拟空间地址(进程被分配的内存地址)；</p>
+<h4 id="CPU上下文切换"><a href="#CPU上下文切换" class="headerlink" title="CPU上下文切换"></a>CPU上下文切换</h4><p>CPU上下文包括程序计数器和寄存器，CPU执行任何指令都需要依赖这两者。在切换时需要把上一个<strong>任务</strong>的上下文保存在<strong>事先开辟的内核空间task_struct中</strong>，在任务重新调度时再加载进来。</p>
+<p>任务分为线程上下文切换、进程上下文切换、中断上下文切换。</p>
+<h4 id="虚拟空间地址"><a href="#虚拟空间地址" class="headerlink" title="虚拟空间地址"></a>虚拟空间地址</h4><p>虚拟地址到物理地址通过地址空间映射完成，这种映射关系被保存在<strong>页表</strong>中。</p>
+<p>如果是进程上下文切换，切换虚拟地址空间实际上就是切换页表，那么 快表会失效。页表切换后，原先的快表也就失效了，导致cache命中率降低，程序运行效率会降低。</p>
+<p>快表：快表(TLB)是一种特殊的cache，用于保存常用的地址映射，加速页表查找。</p>
+<h4 id="切换内核栈"><a href="#切换内核栈" class="headerlink" title="切换内核栈"></a>切换内核栈</h4><p>线程/进程的上下文切换必须由内核完成，所以需要经过系统调用从用户态陷入内核态，再回到用户态，需要保存和切换内核栈。</p>
+<h3 id="Java线程调度"><a href="#Java线程调度" class="headerlink" title="Java线程调度"></a>Java线程调度</h3><p>Java线程调度的策略取决于JVM的实现以及运行的操作系统。</p>
+<p>在windows上，Java线程被一对一地绑定到win32线程，win32线程再一对一地绑定到内核级线程。Java6的实现是将线程的10个优先级被映射为Win32的5个线程优先级，windows分为6个进程优先级和6个线程优先级，由两者决定了线程的最终优先级(1~36级)。</p>
+<p>在linux上，java线程也是被一对一映射到内核级线程上，JVM将线程的10个优先级映射为linux的线程nice值(谦让值)，nice值越高就越有可能把cpu让给别的线程用。</p>
+<p>hotspot除了将线程按优先级映射到操作系统原生线程之外，不做任何干扰线程调度的事，全部交由操作系统处理。</p>
+<h3 id="操作系统线程调度"><a href="#操作系统线程调度" class="headerlink" title="操作系统线程调度"></a>操作系统线程调度</h3><p>操作系统对CPU时间分配的基本单位应该是线程，线程是执行任务的最小单位。如果调度时前后的线程不属于一个进程，就会触发进程上下文切换；否则只需要线程上下文切换，而具体的调度方法有以下几种。</p>
+<h4 id="优先服务算法"><a href="#优先服务算法" class="headerlink" title="优先服务算法"></a>优先服务算法</h4><p>先来先服务：按进入队列的时间顺序分配CPU使用权.</p>
+<p>短作业优先：每次选出估计运行时间最短的线程分配CPU使用权.</p>
+<h4 id="优先级调度"><a href="#优先级调度" class="headerlink" title="优先级调度"></a>优先级调度</h4><p>调度是总是选择优先级最高的进程，对紧迫型任务有利。</p>
+<p>非抢占式优先权：当一个最高优先权的线程拿到CPU使用权后，就一直执行直到完成，或因其他原因让出使用权。</p>
+<p>抢占式优先权：当一个最高优先权进程拿到CPU使用权后，如果有更高优先级的线程出现，会立即将使用权分配给新的最高优先级线程。常用于实时系统。</p>
+<h4 id="时间片轮转"><a href="#时间片轮转" class="headerlink" title="时间片轮转"></a>时间片轮转</h4><p>就绪进程按时间顺序排成队列，CPU轮流分配时间片给队列中的进程。</p>
+<h4 id="多级反馈队列"><a href="#多级反馈队列" class="headerlink" title="多级反馈队列"></a>多级反馈队列</h4><p>设置多个不同级别的队列，每级队列的时间片逐级递增，新的就绪进程首先进入1级队列，当在1级队列中分到的时间片执行完还没有完成就进入2级队列，在2级队列会分到比1级队列多一倍的时间片，以此类推。</p>
+<h3 id="Kill和信号"><a href="#Kill和信号" class="headerlink" title="Kill和信号"></a>Kill和信号</h3><p>kill命令实际上是一个程序，根据后面的参数给对应的进程发送一个信号，比如-9对应<code>SIGKILL</code>，用于强制结束进程；-15对应<code>SIGTERM</code>(默认参数)；而键盘按下<code>Control+C</code>会发送一个<code>SIGINT</code>(interrupt signal)。每次操作系统<strong>调度进程</strong>时，会通过<code>do_signal</code>函数检查其task_struct中存储信号的位置有没有需要被处理的信号，和<code>handle_signal</code>进行具体的处理。</p>
+<table>
+<thead>
+<tr>
+<th align="left">信号名称</th>
+<th align="left">用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">SIGKILL</td>
+<td align="left">强制杀死进程</td>
+</tr>
+<tr>
+<td align="left">SIGTERM</td>
+<td align="left">软件终止信号</td>
+</tr>
+<tr>
+<td align="left">SIGTSTP</td>
+<td align="left">终端来的停止信号</td>
+</tr>
+<tr>
+<td align="left">SIGPROF</td>
+<td align="left">统计分布图用计时器到时</td>
+</tr>
+<tr>
+<td align="left">SIGUSR1</td>
+<td align="left">用户定义信号1</td>
+</tr>
+<tr>
+<td align="left">SIGUSR2</td>
+<td align="left">用户定义信号2</td>
+</tr>
+<tr>
+<td align="left">SIGINT</td>
+<td align="left">中断进程</td>
+</tr>
+<tr>
+<td align="left">SIGQUIT</td>
+<td align="left">终止进程并且生成core文件</td>
+</tr>
+</tbody></table>
+<h4 id="kill-9-杀不死进程可能的原因"><a href="#kill-9-杀不死进程可能的原因" class="headerlink" title="kill -9 杀不死进程可能的原因"></a>kill -9 杀不死进程可能的原因</h4><ol>
+<li>进程是僵尸进程，虽然释放了资源，但父进程没有wait()</li>
+<li>进程处于内核态，且在等待锁资源</li>
+</ol>
+<h3 id="中断"><a href="#中断" class="headerlink" title="中断"></a>中断</h3><p>中断信号由外部设备发起，被中断控制器捕捉并将相应的信号发送给CPU。例如网卡设备收到网络数据包，会向IO APIC(高级可编程中断控制器)发送中断信号，IO APIC发给本地APIC，本地APIC发送给CPU；CPU根据情况判断是否需要处理中断，如果处理就保存上下文，并切换到中断上下文中。</p>
+<p>信号由用户态处理，而中断由内核态处理。</p>
+]]></content>
+      <tags>
+        <tag>Operation System</tag>
+        <tag>Interview</tag>
+        <tag>Computer Basics</tag>
       </tags>
   </entry>
   <entry>
@@ -1569,18 +1717,17 @@
 </ol>
 <p>在JVM非强制关闭的情况下，会在关闭前调用已注册的shutdown hooks，实现用户自定义的资源释放过程。钩子本质上是一个线程，因此在注册多个钩子时会并发执行，所以可能产生死锁问题，因此建议在同一个钩子中执行操作。</p>
 <p>而在强制关闭的情况下不会执行钩子方法和finalizer方法。</p>
-<h3 id="JDK命令"><a href="#JDK命令" class="headerlink" title="JDK命令"></a>JDK命令</h3><h4 id="JPS"><a href="#JPS" class="headerlink" title="JPS"></a>JPS</h4><p>jps：查看所有虚拟机执行主类名称和进程的本地虚拟机唯一ID(LVMID)</p>
+<h3 id="JDK命令"><a href="#JDK命令" class="headerlink" title="JDK命令"></a>JDK命令</h3><h4 id="jps"><a href="#jps" class="headerlink" title="jps"></a>jps</h4><p>jps：查看所有虚拟机执行主类名称和进程的本地虚拟机唯一ID(LVMID)</p>
 <p>jps -q: 只输出进程的本地虚拟机唯一ID</p>
 <p>jps -l: 输出主类的全名或jar包路径</p>
 <p>jps -v: 输出进程启动时JVM参数</p>
 <p>jps -m: 输出传给main()函数的参数</p>
-<h4 id="JSTAT"><a href="#JSTAT" class="headerlink" title="JSTAT"></a>JSTAT</h4><p>Jstat -&lt;option&gt; [-t] [-h&lt;lines&gt;] &lt;vmid&gt; [&lt;interval&gt; [&lt;count&gt;]]</p>
+<h4 id="jstat"><a href="#jstat" class="headerlink" title="jstat"></a>jstat</h4><p>Jstat -&lt;option&gt; [-t] [-h&lt;lines&gt;] &lt;vmid&gt; [&lt;interval&gt; [&lt;count&gt;]]</p>
 <p>jstat用于监视虚拟机的运行状态信息</p>
-<h4 id="JINFO"><a href="#JINFO" class="headerlink" title="JINFO"></a>JINFO</h4><p>jinfo vmid 输出对应ID的虚拟机的全部参数</p>
+<h4 id="jinfo"><a href="#jinfo" class="headerlink" title="jinfo"></a>jinfo</h4><p>jinfo vmid 输出对应ID的虚拟机的全部参数</p>
 <p>jinfo -flag name vmid 输出对应 ID的虚拟机的对应名称的参数值</p>
 <p>jinfo -flag name [+|-]name vmid 开启或关闭对应ID的虚拟机的对应名称的参数值</p>
-<p>JSTACK</p>
-<p>jstack生成虚拟机当前时刻的线程快照</p>
+<h4 id="Jstack"><a href="#Jstack" class="headerlink" title="Jstack"></a>Jstack</h4><p>jstack生成虚拟机当前时刻的线程快照</p>
 <h3 id="OOM问题排查"><a href="#OOM问题排查" class="headerlink" title="OOM问题排查"></a>OOM问题排查</h3><p>内存溢出问题会发生在堆内存区域(Java heap space)或元数据区(MetaSpace)。</p>
 <p>堆内存溢出产生的原因可能是内存泄漏或超出了预期的流量/数据量峰值。内存泄漏是指使用完的对象仍存在强引用，垃圾回收器无法对其占用的资源进行回收释放，导致可用内存不够。内存泄漏发生的情况之一是使用对象作为HashMap的键，当对象不再使用时，没有及时释放HashMap对其的引用，导致键值对不会被回收。</p>
 <p>通过设置JVM参数导出dump文件到指定目录：</p>
@@ -2041,8 +2188,8 @@
         <category>Network</category>
       </categories>
       <tags>
-        <tag>Network</tag>
         <tag>Computer Basics</tag>
+        <tag>Network</tag>
         <tag>Protocol</tag>
       </tags>
   </entry>

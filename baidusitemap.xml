@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://zayeum.com/2021/03/22/os/</loc>
+    <lastmod>2021-03-22</lastmod>
+  </url>
+  <url>
+    <loc>https://zayeum.com/2021/01/28/java-basics/</loc>
+    <lastmod>2021-03-22</lastmod>
+  </url>
+  <url>
     <loc>https://zayeum.com/2021/02/16/jvm/</loc>
-    <lastmod>2021-03-09</lastmod>
+    <lastmod>2021-03-22</lastmod>
   </url>
   <url>
     <loc>https://zayeum.com/2021/02/25/redis/</loc>
@@ -38,10 +46,6 @@
   </url>
   <url>
     <loc>https://zayeum.com/2021/01/31/idea-keymap/</loc>
-    <lastmod>2021-02-15</lastmod>
-  </url>
-  <url>
-    <loc>https://zayeum.com/2021/01/28/java-basics/</loc>
     <lastmod>2021-02-15</lastmod>
   </url>
   <url>

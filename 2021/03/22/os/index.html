@@ -25,30 +25,35 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"zayeum.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
-<meta name="description" content="Wanna be a mage, a great mage.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Zayeum&#39;s Carriage">
-<meta property="og:url" content="https://zayeum.com/index.html">
+<meta name="description" content="虚拟内存每个进程拥有一个结构体task_struct(指向mm_struct)，即进程描述符PCB。每个进程创建时拥有一段虚拟内存地址，通过页表映射到实际的物理地址。32位系统使用32位总线产生2^32bit&#x3D;4GB的地址空间，64位系统并没有使用64位总线，而是受限于操作系统，最大256G内存。 分页和页表如果对每个地址建立到物理地址的映射，在32位的情况下就需要32GB的空间存放映射表(32位">
+<meta property="og:type" content="article">
+<meta property="og:title" content="操作系统">
+<meta property="og:url" content="https://zayeum.com/2021/03/22/os/index.html">
 <meta property="og:site_name" content="Zayeum&#39;s Carriage">
-<meta property="og:description" content="Wanna be a mage, a great mage.">
+<meta property="og:description" content="虚拟内存每个进程拥有一个结构体task_struct(指向mm_struct)，即进程描述符PCB。每个进程创建时拥有一段虚拟内存地址，通过页表映射到实际的物理地址。32位系统使用32位总线产生2^32bit&#x3D;4GB的地址空间，64位系统并没有使用64位总线，而是受限于操作系统，最大256G内存。 分页和页表如果对每个地址建立到物理地址的映射，在32位的情况下就需要32GB的空间存放映射表(32位">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-03-22T08:43:55.006Z">
 <meta property="article:author" content="Zayeum">
+<meta property="article:tag" content="Operation System">
+<meta property="article:tag" content="Interview">
+<meta property="article:tag" content="Computer Basics">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://zayeum.com/">
+<link rel="canonical" href="https://zayeum.com/2021/03/22/os/">
 
 
 <script data-pjax class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
-<title>Zayeum's Carriage</title>
+<title>操作系统 | Zayeum's Carriage</title>
   
 
 
@@ -173,7 +178,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -186,6 +191,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98"><span class="nav-text">虚拟内存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E9%A1%B5%E5%92%8C%E9%A1%B5%E8%A1%A8"><span class="nav-text">分页和页表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80"><span class="nav-text">内存寻址</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="nav-text">进程的创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1-IPC"><span class="nav-text">进程间通信(IPC)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%A1%E9%81%93-Pipe"><span class="nav-text">管道(Pipe)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%89%E5%90%8D%E7%AE%A1%E9%81%93-FIFO-Named-Pipe"><span class="nav-text">有名管道(FIFO &#x2F; Named Pipe)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAFIFO"><span class="nav-text">创建FIFO</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%89%93%E5%BC%80-%E8%AF%BB%E5%86%99FIFO"><span class="nav-text">打开&#x2F;读写FIFO</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-text">示例</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98"><span class="nav-text">共享内存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E3%80%81%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-text">信号、信号量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-text">消息队列</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B-%E5%AD%A4%E5%84%BF%E8%BF%9B%E7%A8%8B"><span class="nav-text">僵尸进程&#x2F;孤儿进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%88%87%E6%8D%A2%E7%9A%84%E5%BC%80%E9%94%80"><span class="nav-text">线程切换的开销</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CPU%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2"><span class="nav-text">CPU上下文切换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E7%A9%BA%E9%97%B4%E5%9C%B0%E5%9D%80"><span class="nav-text">虚拟空间地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%87%E6%8D%A2%E5%86%85%E6%A0%B8%E6%A0%88"><span class="nav-text">切换内核栈</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6"><span class="nav-text">Java线程调度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6"><span class="nav-text">操作系统线程调度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E6%9C%8D%E5%8A%A1%E7%AE%97%E6%B3%95"><span class="nav-text">优先服务算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E7%BA%A7%E8%B0%83%E5%BA%A6"><span class="nav-text">优先级调度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E7%89%87%E8%BD%AE%E8%BD%AC"><span class="nav-text">时间片轮转</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E7%BA%A7%E5%8F%8D%E9%A6%88%E9%98%9F%E5%88%97"><span class="nav-text">多级反馈队列</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kill%E5%92%8C%E4%BF%A1%E5%8F%B7"><span class="nav-text">Kill和信号</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#kill-9-%E6%9D%80%E4%B8%8D%E6%AD%BB%E8%BF%9B%E7%A8%8B%E5%8F%AF%E8%83%BD%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="nav-text">kill -9 杀不死进程可能的原因</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E6%96%AD"><span class="nav-text">中断</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -254,16 +260,17 @@
 </noscript>
 
 
-    <div class="main-inner index posts-expand">
+    <div class="main-inner post posts-expand">
 
-    
+
+  
 
 
 <div class="post-block">
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://zayeum.com/2021/03/22/os/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -276,9 +283,9 @@
       <meta itemprop="name" content="Zayeum's Carriage">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/03/22/os/" class="post-title-link" itemprop="url">操作系统</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          操作系统
+        </h1>
 
         <div class="post-meta-container">
           <div class="post-meta">
@@ -293,6 +300,18 @@
     </span>
 
   
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline：</span>
+  
+    <a title="waline" href="/2021/03/22/os/#waline-comments" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" id="/2021/03/22/os/" data-xid="/2021/03/22/os/" itemprop="commentCount"></span>
+    </a>
+  </span>
   
   
       </div>
@@ -320,7 +339,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h3 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h3><p>每个进程拥有一个结构体task_struct(指向mm_struct)，即进程描述符PCB。每个进程创建时拥有一段虚拟内存地址，通过页表映射到实际的物理地址。32位系统使用32位总线产生2^32bit=4GB的地址空间，64位系统并没有使用64位总线，而是受限于操作系统，最大256G内存。</p>
+        <h3 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h3><p>每个进程拥有一个结构体task_struct(指向mm_struct)，即进程描述符PCB。每个进程创建时拥有一段虚拟内存地址，通过页表映射到实际的物理地址。32位系统使用32位总线产生2^32bit=4GB的地址空间，64位系统并没有使用64位总线，而是受限于操作系统，最大256G内存。</p>
 <h4 id="分页和页表"><a href="#分页和页表" class="headerlink" title="分页和页表"></a>分页和页表</h4><p>如果对每个地址建立到物理地址的映射，在32位的情况下就需要32GB的空间存放映射表(32位虚拟地址-&gt;32位虚拟地址)。因此操作系统引入了页的概念，将物理内存以4K为单位划分为页，这样建立的映射表就只有8MB。</p>
 <p>页表(地址映射表)保存在CR3控制寄存器中，进程切换时，内核会切换上下文，其中就包括的寄存器，上一个进程的寄存器会被保存回task_struct，下一个寄存器从task_struct被拷贝到寄存器中。</p>
 <p>task_struct中的pgd项指向PGD(page global directory)表，PGD表指向PMD(page middle directory)表，PMD表指向页表(page index)，再通过偏移量(offset)获得最终的物理地址，构成多级页表模式。</p>
@@ -420,7 +439,6 @@
 <h3 id="中断"><a href="#中断" class="headerlink" title="中断"></a>中断</h3><p>中断信号由外部设备发起，被中断控制器捕捉并将相应的信号发送给CPU。例如网卡设备收到网络数据包，会向IO APIC(高级可编程中断控制器)发送中断信号，IO APIC发给本地APIC，本地APIC发送给CPU；CPU根据情况判断是否需要处理中断，如果处理就保存上下文，并切换到中断上下文中。</p>
 <p>信号由用户态处理，而中断由内核态处理。</p>
 
-      
     </div>
 
     
@@ -428,120 +446,23 @@
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
+          <div class="post-tags">
+              <a href="/tags/Operation-System/" rel="tag"><i class="fa fa-tag"></i> Operation System</a>
+              <a href="/tags/Interview/" rel="tag"><i class="fa fa-tag"></i> Interview</a>
+              <a href="/tags/Computer-Basics/" rel="tag"><i class="fa fa-tag"></i> Computer Basics</a>
+          </div>
 
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://zayeum.com/2021/02/25/redis/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar-small-mage.png">
-      <meta itemprop="name" content="Zayeum">
-      <meta itemprop="description" content="Wanna be a mage, a great mage.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zayeum's Carriage">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/25/redis/" class="post-title-link" itemprop="url">Redis 系列</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-02-25 00:00:00" itemprop="dateCreated datePublished" datetime="2021-02-25T00:00:00+08:00">2021-02-25</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-02-26 15:12:23" itemprop="dateModified" datetime="2021-02-26T15:12:23+08:00">2021-02-26</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Database/" itemprop="url" rel="index"><span itemprop="name">Database</span></a>
-        </span>
-    </span>
-
-  
-  
-  
-      </div>
-      <div class="post-meta">
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>2.7k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>Redis是基于内存的、单线程的非关系型数据库。</p>
-<p>基于内存是指数据库运行在主存空间中，因此读写速度比硬盘数据库快得多，性能瓶颈从CPU转移到了内存和网络上。</p>
-<p>单线程是指数据库仅使用一个线程完成IO复用过程，遍历、拷贝就绪的IO文件到线程中，对IO数据进行读/写处理操作。单线程下不存在线程安全问题，避免了线程频繁地上下文切换，单线程实现的系统可维护性高。在6.0版本后，Redis的处理模型划分为IO复用处理、文件分发、就绪事件读取(从内核拷贝到用户线程)、事件处理器(handler)，其中IO复用、文件分发、事件处理仍然由一个主线程完成，而就绪事件读取采用多线程完成。具体来说，主线程完成IO复用得到返回之后，会将就绪的IO事件分发给多个线程，这些线程负责就绪事件的数据拷贝，将数据从内核拷贝到用户进程，所有线程完成拷贝后，再由主线程的handler模块依次处理这些IO事件。因此这里的多线程并不会产生数据的线程安全问题，因为它们只负责将数据从内核缓冲区拿到Redis进程中，实际的数据读写操作仍然是顺序同步的。</p>
-<p>非关系型数据库是以各种抽象形式的数据结构保存在实际地址中的数据库，比如定义键值对数据的存储形式，并将其以哈希表形式抽象使用。相比之下，关系型数据库是固定的表形式，其抽象形式是固定的表格字段与数据行。</p>
-<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>Redis在底层使用redis对象来包装不同的数据结构，在一个Redis对象中，包含三个字段，分别是对外的数据结构类型，对内的基础数据结构类型，以及指向具体数据结构地址的指针。</p>
-<p>对外的数据结构有string、list、hash、set、zset五种，对内数据结构有int，embstr，sds，哈希表，双向链表，压缩列表，整形集合，跳表8种。</p>
-<h3 id="对外数据结构"><a href="#对外数据结构" class="headerlink" title="对外数据结构"></a>对外数据结构</h3><h4 id="String"><a href="#String" class="headerlink" title="String"></a>String</h4><p>String是字符串，其底层实现分为三种。如果字符串是纯数字，则用int类型存储；如果是较小的字符串，会用embstr编码的SDS存储；如果是大字符串，使用SDS存储。</p>
-<h4 id="List"><a href="#List" class="headerlink" title="List"></a>List</h4><p>List是列表。如果列表的元素长度64字节，且列表元素数量小于512，会使用压缩列表ziplist存储；否则使用双向链表linkedlist存储。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/02/25/redis/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/02/25/redis/" rel="prev" title="Redis 系列">
+                  <i class="fa fa-chevron-left"></i> Redis 系列
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
     </footer>
   </article>
 </div>
@@ -549,10 +470,9 @@
 
 
 
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
 
+
+    <div class="comments" id="waline-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -688,7 +608,7 @@ document.addEventListener('pjax:success', () => {
       quicklink.listen({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri === 'https://zayeum.com/',]
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://zayeum.com/2021/03/22/os/',]
       });
       });
   </script>
@@ -699,7 +619,7 @@ NexT.utils.loadComments('#waline-comments', () => {
       lang: 'zh-CN'
     }, {"enable":true,"serverURL":"https://comment-api-seven.vercel.app","placeholder":"欢迎在这里评论...","avatar":"monsterid","meta":["nick","mail","link"],"pageSize":10,"visitor":false,"comment_count":false,"requiredFields":["nick"],"lang":"zh-cn","libUrl":null}, {
       el: '#waline-comments',
-      path: "/",
+      path: "/2021/03/22/os/",
     }));
   }, window.Waline);
 });
