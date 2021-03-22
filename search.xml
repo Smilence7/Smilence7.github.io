@@ -91,51 +91,6 @@
       </tags>
   </entry>
   <entry>
-    <title>并发容器系列</title>
-    <url>/2021/02/24/concurrent-collections/</url>
-    <content><![CDATA[<h3 id="CopyOnWriteArrayList"><a href="#CopyOnWriteArrayList" class="headerlink" title="CopyOnWriteArrayList"></a>CopyOnWriteArrayList</h3><p>维护一个被volatile修饰的Object数组：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/** The array, accessed only via getArray/setArray. */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">volatile</span> Object[] array;</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-
-<h4 id="读操作"><a href="#读操作" class="headerlink" title="读操作"></a>读操作</h4><p><code>get()</code>方法普通地读取array：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> get(getArray(), index);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Gets the array.  Non-private so as to also be accessible</span></span><br><span class="line"><span class="comment"> * from CopyOnWriteArraySet class.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">final</span> Object[] getArray() &#123;</span><br><span class="line">    <span class="keyword">return</span> array;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> E <span class="title">get</span><span class="params">(Object[] a, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (E) a[index];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="写操作"><a href="#写操作" class="headerlink" title="写操作"></a>写操作</h4><p><code>add()</code>方法通过ReentrantLock下在拷贝数组中添加元素，并修改原引用来实现：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="comment">// 得到旧数组对象</span></span><br><span class="line">        Object[] elements = getArray();</span><br><span class="line">        <span class="keyword">int</span> len = elements.length;</span><br><span class="line">        <span class="comment">// 拷贝并写新数组对象</span></span><br><span class="line">        Object[] newElements = Arrays.copyOf(elements, len + <span class="number">1</span>);	        </span><br><span class="line">		newElements[len] = e;</span><br><span class="line">		<span class="comment">// 将旧数组引用指向新的数组</span></span><br><span class="line">        setArray(newElements);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="值得注意的问题"><a href="#值得注意的问题" class="headerlink" title="值得注意的问题"></a>值得注意的问题</h4><p>虽然array是volatile修饰的，但array是一个引用，其引用对象也就是数组的内容修改是无法保证数据可见性的，所以在<code>add()</code>方法中采用创建新的数组对象，并将array的引用更新的方法，保证写操作的数据可见性。</p>
-<p>CopyOnWrite容器只能保证数据的最终一致性(基于volatile与引用更新)，不能保证数据实时一致性，也就是说会发生脏读现象。因为后来的读线程不会等待写线程，后来的写线程也不会等待读线程。</p>
-<p>CopyOnWrite的copy特点使其会占用额外的内存，如果对象比较大，可能造成频繁地垃圾回收。</p>
-<h3 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h3><p>ConcurrentHashMap是HashMap的并发优化版本，起初的并发解决方案是HashTable，就是把大部分方法都用synchronized加锁，使所有的并发操作都互斥从而序列化。在JDK 1.8之前的ConcurrentHashMap使用ReentrantLock对哈希表加了分段锁，使用继承ReentrantLock的segment锁分段锁住哈希桶，如果并发线程处理的不是同一段的数据，就可以非阻塞并发进行。而在1.8版本，不仅将结点长度大于8的哈希桶优化为红黑树结构，还取消了segment锁，转而对每个哈希桶加锁，细化了锁的粒度。也就是说，只有当两个线程操作的位置发生哈希碰撞才会互斥。</p>
-<p>并发哈希表中主要的核心操作是 <code>putVal()</code> 和其中的 <code>casTabAt()</code>、<code>helpTransfer()</code>。</p>
-<ul>
-<li><p><code>casTabAt()</code>主要是在<code>putVal()</code>中用到的，当使用<code>tabAt()</code>得到插入位置的哈希桶结点时，发现没有哈希冲突(结点为null)，就尝试CAS操作替换这个位置的结点，如果成功就直接完成了putVal()操作。</p>
-</li>
-<li><p>如果没有成功，<code>putVal()</code>在并发HashMap中的不同之处就是判断这个结点的hash值是否为<code>MOVED</code>，如果是，则说明table正在被扩容，这时要参与到多线程<strong>协作</strong>的扩容过程中，即调用<code>helpTransfer()</code>。</p>
-</li>
-<li><p>在<code>helpTransfer()</code>中主要是判断当前线程加入协作时，扩容是不是已经结束了，并判断协作的线程数是否已经达到限制数了，如果都没有，就修改sizeCtl变量(扩容阶段用于反映协助扩容的线程数)，实际的扩容操作在<code>tansfer()</code>中实现。</p>
-</li>
-<li><p>在<code>transfer()</code>中，线程根据核心数和桶个数分派到自己要处理的桶个数，从分到的最后一个桶开始：</p>
-<ul>
-<li>如果这个桶是空的，就插入占位符告诉其他线程现在在扩容，其他线程不会再往这个位置插入数据，而且会参与协作扩容；</li>
-<li>如果桶不为空且有占位符，说明有线程已经在处理这个桶了，跳过这个桶；</li>
-<li>如果都不是，就可以对这个桶进行迁移了，<strong>先对这个桶上锁</strong>，然后将其拷贝到新的两倍大小的数组nextTable的对应位置。</li>
-<li>如果分派的桶迁移任务数量完成了，或者迁移结束了，更新sizeCtl和table。</li>
-</ul>
-</li>
-<li><p>如果不在扩容，而且发生哈希冲突，就<strong>对这个桶上锁</strong>，在同步块中完成与HashMap中一样的put操作。</p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Multithread &amp; Concurrency</category>
-      </categories>
-      <tags>
-        <tag>ConcurrentHashMap</tag>
-        <tag>CopyOnWriteArrayList</tag>
-        <tag>Concurrent Collections</tag>
-        <tag>Multithread &amp; Concurrency</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>设计模式</title>
     <url>/2021/02/14/design-pattern/</url>
     <content><![CDATA[<h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><p>模式是你必须在应用程序中自己实现的形式化的最佳实践。</p>
@@ -239,6 +194,51 @@
       <tags>
         <tag>Hexo</tag>
         <tag>Blog</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>并发容器系列</title>
+    <url>/2021/02/24/concurrent-collections/</url>
+    <content><![CDATA[<h3 id="CopyOnWriteArrayList"><a href="#CopyOnWriteArrayList" class="headerlink" title="CopyOnWriteArrayList"></a>CopyOnWriteArrayList</h3><p>维护一个被volatile修饰的Object数组：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/** The array, accessed only via getArray/setArray. */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">volatile</span> Object[] array;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+<h4 id="读操作"><a href="#读操作" class="headerlink" title="读操作"></a>读操作</h4><p><code>get()</code>方法普通地读取array：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> get(getArray(), index);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Gets the array.  Non-private so as to also be accessible</span></span><br><span class="line"><span class="comment"> * from CopyOnWriteArraySet class.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">final</span> Object[] getArray() &#123;</span><br><span class="line">    <span class="keyword">return</span> array;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> E <span class="title">get</span><span class="params">(Object[] a, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (E) a[index];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="写操作"><a href="#写操作" class="headerlink" title="写操作"></a>写操作</h4><p><code>add()</code>方法通过ReentrantLock下在拷贝数组中添加元素，并修改原引用来实现：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="comment">// 得到旧数组对象</span></span><br><span class="line">        Object[] elements = getArray();</span><br><span class="line">        <span class="keyword">int</span> len = elements.length;</span><br><span class="line">        <span class="comment">// 拷贝并写新数组对象</span></span><br><span class="line">        Object[] newElements = Arrays.copyOf(elements, len + <span class="number">1</span>);	        </span><br><span class="line">		newElements[len] = e;</span><br><span class="line">		<span class="comment">// 将旧数组引用指向新的数组</span></span><br><span class="line">        setArray(newElements);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="值得注意的问题"><a href="#值得注意的问题" class="headerlink" title="值得注意的问题"></a>值得注意的问题</h4><p>虽然array是volatile修饰的，但array是一个引用，其引用对象也就是数组的内容修改是无法保证数据可见性的，所以在<code>add()</code>方法中采用创建新的数组对象，并将array的引用更新的方法，保证写操作的数据可见性。</p>
+<p>CopyOnWrite容器只能保证数据的最终一致性(基于volatile与引用更新)，不能保证数据实时一致性，也就是说会发生脏读现象。因为后来的读线程不会等待写线程，后来的写线程也不会等待读线程。</p>
+<p>CopyOnWrite的copy特点使其会占用额外的内存，如果对象比较大，可能造成频繁地垃圾回收。</p>
+<h3 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h3><p>ConcurrentHashMap是HashMap的并发优化版本，起初的并发解决方案是HashTable，就是把大部分方法都用synchronized加锁，使所有的并发操作都互斥从而序列化。在JDK 1.8之前的ConcurrentHashMap使用ReentrantLock对哈希表加了分段锁，使用继承ReentrantLock的segment锁分段锁住哈希桶，如果并发线程处理的不是同一段的数据，就可以非阻塞并发进行。而在1.8版本，不仅将结点长度大于8的哈希桶优化为红黑树结构，还取消了segment锁，转而对每个哈希桶加锁，细化了锁的粒度。也就是说，只有当两个线程操作的位置发生哈希碰撞才会互斥。</p>
+<p>并发哈希表中主要的核心操作是 <code>putVal()</code> 和其中的 <code>casTabAt()</code>、<code>helpTransfer()</code>。</p>
+<ul>
+<li><p><code>casTabAt()</code>主要是在<code>putVal()</code>中用到的，当使用<code>tabAt()</code>得到插入位置的哈希桶结点时，发现没有哈希冲突(结点为null)，就尝试CAS操作替换这个位置的结点，如果成功就直接完成了putVal()操作。</p>
+</li>
+<li><p>如果没有成功，<code>putVal()</code>在并发HashMap中的不同之处就是判断这个结点的hash值是否为<code>MOVED</code>，如果是，则说明table正在被扩容，这时要参与到多线程<strong>协作</strong>的扩容过程中，即调用<code>helpTransfer()</code>。</p>
+</li>
+<li><p>在<code>helpTransfer()</code>中主要是判断当前线程加入协作时，扩容是不是已经结束了，并判断协作的线程数是否已经达到限制数了，如果都没有，就修改sizeCtl变量(扩容阶段用于反映协助扩容的线程数)，实际的扩容操作在<code>tansfer()</code>中实现。</p>
+</li>
+<li><p>在<code>transfer()</code>中，线程根据核心数和桶个数分派到自己要处理的桶个数，从分到的最后一个桶开始：</p>
+<ul>
+<li>如果这个桶是空的，就插入占位符告诉其他线程现在在扩容，其他线程不会再往这个位置插入数据，而且会参与协作扩容；</li>
+<li>如果桶不为空且有占位符，说明有线程已经在处理这个桶了，跳过这个桶；</li>
+<li>如果都不是，就可以对这个桶进行迁移了，<strong>先对这个桶上锁</strong>，然后将其拷贝到新的两倍大小的数组nextTable的对应位置。</li>
+<li>如果分派的桶迁移任务数量完成了，或者迁移结束了，更新sizeCtl和table。</li>
+</ul>
+</li>
+<li><p>如果不在扩容，而且发生哈希冲突，就<strong>对这个桶上锁</strong>，在同步块中完成与HashMap中一样的put操作。</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Multithread &amp; Concurrency</category>
+      </categories>
+      <tags>
+        <tag>ConcurrentHashMap</tag>
+        <tag>CopyOnWriteArrayList</tag>
+        <tag>Concurrent Collections</tag>
+        <tag>Multithread &amp; Concurrency</tag>
       </tags>
   </entry>
   <entry>
@@ -705,35 +705,6 @@
       </tags>
   </entry>
   <entry>
-    <title>I/O 模型</title>
-    <url>/2021/02/15/io-models/</url>
-    <content><![CDATA[<h2 id="IO模型"><a href="#IO模型" class="headerlink" title="IO模型"></a>IO模型</h2><h3 id="各种IO模型"><a href="#各种IO模型" class="headerlink" title="各种IO模型"></a>各种IO模型</h3><h4 id="阻塞-IO"><a href="#阻塞-IO" class="headerlink" title="阻塞 IO"></a>阻塞 IO</h4><p>缺省情形下，所有文件操作都是阻塞的。在进程空间中进行系统调用 (比如<code>recvfrom</code>)，系统切换到内核态准备接受数据，并将数据从内核拷贝到用户空间(进程内存)，返回成功提示，期间进程一直等待操作完成的返回结果。</p>
-<h4 id="非阻塞-IO"><a href="#非阻塞-IO" class="headerlink" title="非阻塞 IO"></a>非阻塞 IO</h4><p>进程执行系统调用后，如果内核IO操作没完成就返回一个错误；进程通过轮询的方式不断执行系统调用确认操作是否完成，直到返回成功提示。虽然这种方式是非阻塞的，但在获得成功返回之后执行的IO操作是阻塞的，所以整体上是同步的。</p>
-<a id="more"></a>
-
-<h4 id="IO多路复用"><a href="#IO多路复用" class="headerlink" title="IO多路复用"></a>IO多路复用</h4><p>IO多路复用是指非阻塞式地向内核申请IO操作，这样线程不会因为处理某个耗时的IO操作而阻塞。IO复用模型用单进程单线程同时管理多个文件描述符(file description, fd)，将fd构成的数据结构传给<code>select</code> / <code>poll</code> / <code>epoll</code> 系统调用，内核根据采用哪种系统调用而选择返回就绪的fd或使用回调函数通知线程。工作线程(单线程或多线程)负责处理存在就绪队列中的IO操作。</p>
-<h5 id="select和poll"><a href="#select和poll" class="headerlink" title="select和poll"></a>select和poll</h5><p><code>select</code> 和 <code>poll</code> 是非阻塞调用，在每次调用后会收到内核的返回值：就绪的fd或者失败信号(没有就序的fd)。一批fd并不能同时准备就绪，所以select和poll方法通过轮询的方式不断向内核请求准备就绪的fd，每次内核都需要从用户态拷贝请求的fd集合，并且遍历一遍集合来判断哪些fd已经就绪，在有大量IO请求时非常耗时。select和poll的区别在于select是基于数组实现的fd数据结构，有默认的规定大小1024或2048；而poll的fd数据结构基于链表实现，没有大小限制，所以可以同时支持更多的IO请求。此外，poll是水平触发模式，即如果通知了就绪fd但没有被处理，下次会继续通知这些fd。</p>
-<h5 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h5><p><code>epoll</code> 是event poll，是事件驱动的。它的系统调用有一组方法，调用 <code>epoll_create</code> 创建一个eventpoll对象，有了对象后通过 <code>epoll_ctl</code> 向内核注册新fd或是改变fd的状态(而不是把fd集合拷贝到内核)，内核使用红黑树维护已注册的fd，并使用双向链表实现就绪队列，一旦有fd就绪，就会使用回调函数通知用户线程，用户线程的回调函数 <code>    epoll_wait</code> (对应于select和epoll的轮询)获得就序队列。在水平触发模式下，用户线程可以不立即处理通知的就绪fd，因为下次调用 <code>epoll_wait</code> 时会再次获得；在边沿触发模式下，就序事件仅通知一次，进程需要立即处理。</p>
-<h4 id="信号驱动IO"><a href="#信号驱动IO" class="headerlink" title="信号驱动IO"></a>信号驱动IO</h4><p>信号处理IO是一种非阻塞模型，进程用系统调用<code>signaction</code>注册信号处理方法，然后立即返回(非阻塞)，当内核数据就序会递交一个信号给进程的信号处理方法，这时进程再阻塞调用<code>recvfrom</code>拷贝数据到进程中。</p>
-<h4 id="异步IO"><a href="#异步IO" class="headerlink" title="异步IO"></a>异步IO</h4><p>同样是进程系统调用<code>aio_read</code>之后立即返回，但内核不仅完成数据就序工作，还会自动把数据拷贝到进程中，再递交系统调用中指定的信号。它与信号驱动的异步IO的区别在于：信号驱动IO在数据就序时通知，由进程调用数据拷贝操作；异步IO由内核进行数据拷贝，在拷贝完成时通知。</p>
-<h3 id="划分方式"><a href="#划分方式" class="headerlink" title="划分方式"></a>划分方式</h3><p>同步、非同步和阻塞、非阻塞很容易混淆，它们的区别很明显，如果把IO分为两个阶段：发起IO请求(内核准备数据报)和执行IO操作(内核内存拷贝至进程内存)。那么阻塞/非阻塞就在于发起IO请求是否被阻塞，前面介绍的阻塞IO和IO复用都是在第一步阻塞，所以是阻塞IO；而同步/非同步在于执行IO操作是否被阻塞，前四种模型在执行IO操作时都在第二步阻塞，所以是同步IO。</p>
-<h2 id="BIO-NIO-AIO"><a href="#BIO-NIO-AIO" class="headerlink" title="BIO, NIO, AIO"></a>BIO, NIO, AIO</h2><p>BIO是同步阻塞IO(block)，适用于连接数目<strong>少</strong>且固定的架构；</p>
-<p>NIO是同步非阻塞IO(Non-block)，适用于连接数目<strong>多</strong>但连接时间<strong>较短</strong>的架构，JDK1.4开始支持；</p>
-<p>AIO是异步非阻塞IO(Asynchronous)，适用于连接数目<strong>多</strong>且连接持续时间<strong>较长</strong>的架构，JDK7开始支持。</p>
-<p>JavaBIO：服务器采用一个连接对应一个线程的模式，客户端有连接请求时服务器启动一个线程进行处理；</p>
-<p>JavaNIO：服务期采用一个IO请求对应一个线程的模式，客户端发送的连接请求注册到多路复用器上，当轮询到有IO请求时才启动一个线程进行处理。(epoll实现)</p>
-<p>JavaAIO(NIO 2.0)：服务器采用一个有效IO请求对应一个线程，客户端的IO请求由内核先完成再通知服务器启动线程进行处理。</p>
-<p>与前面介绍的IO模型基础思想进行对照就很好理解。</p>
-]]></content>
-      <categories>
-        <category>Operation System</category>
-      </categories>
-      <tags>
-        <tag>I/O models</tag>
-        <tag>Operation System</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Java 基础</title>
     <url>/2021/01/28/java-basics/</url>
     <content><![CDATA[<h2 id="Java-基础"><a href="#Java-基础" class="headerlink" title="Java 基础"></a>Java 基础</h2><h3 id="运算符优先级"><a href="#运算符优先级" class="headerlink" title="运算符优先级"></a>运算符优先级</h3><table>
@@ -1044,6 +1015,8 @@
     <url>/2021/03/22/os/</url>
     <content><![CDATA[<h3 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h3><p>每个进程拥有一个结构体task_struct(指向mm_struct)，即进程描述符PCB。每个进程创建时拥有一段虚拟内存地址，通过页表映射到实际的物理地址。32位系统使用32位总线产生2^32bit=4GB的地址空间，64位系统并没有使用64位总线，而是受限于操作系统，最大256G内存。</p>
 <h4 id="分页和页表"><a href="#分页和页表" class="headerlink" title="分页和页表"></a>分页和页表</h4><p>如果对每个地址建立到物理地址的映射，在32位的情况下就需要32GB的空间存放映射表(32位虚拟地址-&gt;32位虚拟地址)。因此操作系统引入了页的概念，将物理内存以4K为单位划分为页，这样建立的映射表就只有8MB。</p>
+<a id="more"></a>
+
 <p>页表(地址映射表)保存在CR3控制寄存器中，进程切换时，内核会切换上下文，其中就包括的寄存器，上一个进程的寄存器会被保存回task_struct，下一个寄存器从task_struct被拷贝到寄存器中。</p>
 <p>task_struct中的pgd项指向PGD(page global directory)表，PGD表指向PMD(page middle directory)表，PMD表指向页表(page index)，再通过偏移量(offset)获得最终的物理地址，构成多级页表模式。</p>
 <h4 id="内存寻址"><a href="#内存寻址" class="headerlink" title="内存寻址"></a>内存寻址</h4><p>每个CPU核中都有一个内存控制单元(MMU)，它负责将虚拟地址转为物理地址。MMU通过页表高速缓存(TLB)和页表查询单元(table walk unit)完成这一系列工作。如果高速缓存命中，则直接得到物理地址；否则通过页表查询物理地址并更新缓存。如果页表没有命中内存中的页，从外部存储中加载对应页。</p>
@@ -1143,9 +1116,9 @@
 <p>信号由用户态处理，而中断由内核态处理。</p>
 ]]></content>
       <tags>
-        <tag>Operation System</tag>
         <tag>Interview</tag>
         <tag>Computer Basics</tag>
+        <tag>Operation System</tag>
       </tags>
   </entry>
   <entry>
@@ -1263,6 +1236,33 @@
       </tags>
   </entry>
   <entry>
+    <title>SpringBoot 2</title>
+    <url>/2021/02/01/spring-boot/</url>
+    <content><![CDATA[<h3 id="Web-开发"><a href="#Web-开发" class="headerlink" title="Web 开发"></a>Web 开发</h3><h4 id="1-静态资源访问"><a href="#1-静态资源访问" class="headerlink" title="1. 静态资源访问"></a>1. 静态资源访问</h4><h5 id="1-1-路径"><a href="#1-1-路径" class="headerlink" title="1.1 路径"></a>1.1 路径</h5><p>静态资源路径包括 <code>/static</code>、 <code>/public</code>、 <code>/resources</code> 、<code>/META-INF/resources</code> ，访问 <em>根路径 + 静态资源名</em> 即可访问对应的静态资源，如： /picture123.jpg</p>
+<p>其原理是使用静态映射/**，当访问请求找不到对应的Controller，再交给静态资源处理器，如果静态资源处理器也找不到就返回404。</p>
+<p>在application.yaml文件中使用<code>  static-path-pattern</code>修改配置</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">	<span class="attr">mvc:</span></span><br><span class="line">	<span class="attr">static-path-pattern:</span> <span class="string">/resources/**</span></span><br></pre></td></tr></table></figure>
+<p>相应地，<code>static-location: [classpath: /xxx/]</code> 用来重新设置多个静态资源路径</p>
+<a id="more"></a>
+
+
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>Framework</category>
+      </categories>
+      <tags>
+        <tag>Spring Boot</tag>
+        <tag>Framework</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>排序系列</title>
     <url>/2021/02/17/sort/</url>
     <content><![CDATA[<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆 / 优先队列保证在O(log n)的复杂度下插入和维护一个有序数据，有两种实现，一种是跳表，一种是二叉堆。</p>
@@ -1332,107 +1332,6 @@
       <tags>
         <tag>Heap</tag>
         <tag>Quicksort</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SpringBoot 2</title>
-    <url>/2021/02/01/spring-boot/</url>
-    <content><![CDATA[<h3 id="Web-开发"><a href="#Web-开发" class="headerlink" title="Web 开发"></a>Web 开发</h3><h4 id="1-静态资源访问"><a href="#1-静态资源访问" class="headerlink" title="1. 静态资源访问"></a>1. 静态资源访问</h4><h5 id="1-1-路径"><a href="#1-1-路径" class="headerlink" title="1.1 路径"></a>1.1 路径</h5><p>静态资源路径包括 <code>/static</code>、 <code>/public</code>、 <code>/resources</code> 、<code>/META-INF/resources</code> ，访问 <em>根路径 + 静态资源名</em> 即可访问对应的静态资源，如： /picture123.jpg</p>
-<p>其原理是使用静态映射/**，当访问请求找不到对应的Controller，再交给静态资源处理器，如果静态资源处理器也找不到就返回404。</p>
-<p>在application.yaml文件中使用<code>  static-path-pattern</code>修改配置</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">	<span class="attr">mvc:</span></span><br><span class="line">	<span class="attr">static-path-pattern:</span> <span class="string">/resources/**</span></span><br></pre></td></tr></table></figure>
-<p>相应地，<code>static-location: [classpath: /xxx/]</code> 用来重新设置多个静态资源路径</p>
-<a id="more"></a>
-
-
-
-
-
-
-
-
-
-]]></content>
-      <categories>
-        <category>Framework</category>
-      </categories>
-      <tags>
-        <tag>Spring Boot</tag>
-        <tag>Framework</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>synchronized 关键字</title>
-    <url>/2021/02/24/synchronized/</url>
-    <content><![CDATA[<h3 id="解决的问题"><a href="#解决的问题" class="headerlink" title="解决的问题"></a>解决的问题</h3><p>synchronized关键字的设计目的很简单，就是悲观地认为线程间的并发操作会引发线程安全问题，由此设计出在这种场景下使用的同步互斥机制，但由最初的重量级阻塞方案优化为后来的锁升级方案，保证不同的线程竞争规模下的程序执行效率。</p>
-<h3 id="synchronized与字节码"><a href="#synchronized与字节码" class="headerlink" title="synchronized与字节码"></a>synchronized与字节码</h3><p>当synchronized关键字修饰方法时，对应的字节码处会有ACC_SYNCHRONIZED标识来隐式使用monitor_enter/monitor_exit；</p>
-<p>当修饰代码块时，对应的字节码显式地使用monitor_enter/monitor_exit。</p>
-<a id="more"></a>
-
-<h3 id="synchronized-的-happens-before-原则"><a href="#synchronized-的-happens-before-原则" class="headerlink" title="synchronized 的 happens-before 原则"></a>synchronized 的 happens-before 原则</h3><p>对一个monitor的解锁 happens-before 于随后对同一个monitor的加锁，由于happens-before的传递性以及as-if-serial原则，保证了程序运行结果的线程安全型。</p>
-<h3 id="锁升级"><a href="#锁升级" class="headerlink" title="锁升级"></a>锁升级</h3><p>在一些高并发场景中，如果只有少量线程操作会产生线程安全问题，或者只有小部分时间产生线程安全问题，那么使用moniter锁会严重影响程序效率。因此优化了synchronized关键字，使其成为动态的、可升级的锁。</p>
-<img src="/2021/02/24/synchronized/markword.png" class="">
-
-
-
-<h4 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h4><p>偏向锁是synchronized对象的初始锁状态，它在对象头中记录线程ID和epoch，来表示当前锁的偏向线程。</p>
-<h5 id="偏向锁的获取"><a href="#偏向锁的获取" class="headerlink" title="偏向锁的获取"></a>偏向锁的获取</h5><p>当一个线程获取一个synchronized对象时，如果其对象头的锁状态为偏向锁，则检查其Thread ID：</p>
-<ul>
-<li>如果Thread ID是当前线程，则已经获取了锁，开始执行同步代码块；</li>
-<li>如果不是，尝试用CAS操作替换Thread ID为当前线程：<ul>
-<li>如果成功，获得锁，开始执行同步代码块；</li>
-<li>如果失败，进入偏向锁<strong>撤销/升级</strong>过程。</li>
-</ul>
-</li>
-</ul>
-<h5 id="偏向锁的撤销和升级"><a href="#偏向锁的撤销和升级" class="headerlink" title="偏向锁的撤销和升级"></a>偏向锁的撤销和升级</h5><p>首先我们需要知道，synchronized锁在初始状态是偏向锁，当发生竞争时，有可能撤销为无锁状态，也可能升级为轻量级锁，选择的依据就是当前发生的竞争是同步(实时)发生的竞争、还是“历史”(已经退出同步块的线程)竞争。偏向锁撤销过程开始的条件是当有线程尝试CAS修改偏向锁Thread ID时修改失败，这时，等待持有锁的线程执行到safepoint时暂停线程，对其进行检查：</p>
-<ul>
-<li>如果线程已经不存活或者退出了同步块，则把偏向锁撤销为无锁状态，唤醒原线程，而当前线程继续CAS操作修改Thread ID(回到偏向锁的获取阶段)；</li>
-<li>如果线程未退出同步代码块，则升级为轻量级锁：<ul>
-<li>在原持有锁的线程栈中分配Lock Record空间，把对象头的Mark Word拷贝到Lock Record中，修改对象头Mark Word的前面部分(除了锁标识位)为指向Lock Record的指针，此时原线程获得了轻量级锁，唤醒原线程；</li>
-<li>当前线程则开始轻量级锁的<strong>获取</strong>过程。</li>
-</ul>
-</li>
-</ul>
-<p>偏向锁和无锁状态其实比较类似，所以锁标识位都为01，之所以要区分是为了重入逻辑简单(如果是偏向锁就判断重入)，偏向锁或者无锁升级为轻量级锁的原则或者说思想很简单：不能让我等待(只要持有锁的线程还在执行同步代码块，当前线程就只能等待)，一旦我要等待，就升级轻量级锁。</p>
-<h4 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h4><p>轻量级锁如前提到的，通过在Mark Word中分配指向线程栈中的Lock Record，来表示对象被这个线程占用。而Lock Record就是线程占用对象之前的Mark Word的拷贝，也被称为Displaced Mark Word，用于锁的释放。</p>
-<h5 id="轻量级锁的获取"><a href="#轻量级锁的获取" class="headerlink" title="轻量级锁的获取"></a>轻量级锁的获取</h5><p>如果一个线程检测到当前对象的锁状态为轻量级锁，会先把Mark Word拷贝到当前线程栈的Lock Record中，然后尝试CAS操作修改对象的锁指针，使其指向自己的Lock Record：</p>
-<ul>
-<li>如果成功，获得轻量级锁，开始执行同步代码块；</li>
-<li>如果失败，自旋地使用CAS操作尝试修改锁指针，如果次数耗尽，就升级为重量级锁：<ul>
-<li>暂停原线程，修改锁状态，修改锁指针为指向monitor的指针，原线程获取重量级锁，唤醒原线程；</li>
-<li>当前线程进入阻塞队列。</li>
-</ul>
-</li>
-<li>如果是重入(修改前和修改后相等)，则将Lock Record设为null。</li>
-</ul>
-<h5 id="轻量级锁的解锁"><a href="#轻量级锁的解锁" class="headerlink" title="轻量级锁的解锁"></a>轻量级锁的解锁</h5><p>轻量级锁的释放就是尝试用CAS操作将线程的Lock Record替换回对象头的Mark Word(重入的释放什么都不用做，也不用替换回去)：</p>
-<ul>
-<li>如果成功则对象恢复了之前的状态，释放成功；</li>
-<li>如果失败，则升级为重量级锁：<ul>
-<li>当前线程获得monitor，并释放monitor；</li>
-<li>其他线程竞争重量级锁的monitor。</li>
-</ul>
-</li>
-</ul>
-<h4 id="重量级锁"><a href="#重量级锁" class="headerlink" title="重量级锁"></a>重量级锁</h4><p>重量级锁就是原来的synchronized监视器锁，在对象头的Mark Word中锁标识位为10，前面部分为指向monitor的指针。</p>
-<p>monitor是由C++代码实现、java代码包装的，在java被包装为一个名为ObjectMonitor的对象，其中包含几个主要字段：</p>
-<ul>
-<li>recursions: 线程重入次数</li>
-<li>object: Monitor对象</li>
-<li>owner: 持有者</li>
-<li>waitSet: wait状态的线程列表</li>
-<li>cxq: 单向列表</li>
-<li>entryList: block状态线程列表</li>
-</ul>
-<p>ObjectMonitor的方法中包含大量的CAS操作(相比膨胀前的各种锁CAS操作次数)，需要大量的内核态和用户态的切换，因此非常耗费资源和时间(比轻量级锁的CPU自旋更加耗资源)。</p>
-]]></content>
-      <categories>
-        <category>Multithread &amp; Concurrency</category>
-      </categories>
-      <tags>
-        <tag>Multithread &amp; Concurrency</tag>
-        <tag>synchronized</tag>
       </tags>
   </entry>
   <entry>
@@ -1520,6 +1419,80 @@
       </tags>
   </entry>
   <entry>
+    <title>synchronized 关键字</title>
+    <url>/2021/02/24/synchronized/</url>
+    <content><![CDATA[<h3 id="解决的问题"><a href="#解决的问题" class="headerlink" title="解决的问题"></a>解决的问题</h3><p>synchronized关键字的设计目的很简单，就是悲观地认为线程间的并发操作会引发线程安全问题，由此设计出在这种场景下使用的同步互斥机制，但由最初的重量级阻塞方案优化为后来的锁升级方案，保证不同的线程竞争规模下的程序执行效率。</p>
+<h3 id="synchronized与字节码"><a href="#synchronized与字节码" class="headerlink" title="synchronized与字节码"></a>synchronized与字节码</h3><p>当synchronized关键字修饰方法时，对应的字节码处会有ACC_SYNCHRONIZED标识来隐式使用monitor_enter/monitor_exit；</p>
+<p>当修饰代码块时，对应的字节码显式地使用monitor_enter/monitor_exit。</p>
+<a id="more"></a>
+
+<h3 id="synchronized-的-happens-before-原则"><a href="#synchronized-的-happens-before-原则" class="headerlink" title="synchronized 的 happens-before 原则"></a>synchronized 的 happens-before 原则</h3><p>对一个monitor的解锁 happens-before 于随后对同一个monitor的加锁，由于happens-before的传递性以及as-if-serial原则，保证了程序运行结果的线程安全型。</p>
+<h3 id="锁升级"><a href="#锁升级" class="headerlink" title="锁升级"></a>锁升级</h3><p>在一些高并发场景中，如果只有少量线程操作会产生线程安全问题，或者只有小部分时间产生线程安全问题，那么使用moniter锁会严重影响程序效率。因此优化了synchronized关键字，使其成为动态的、可升级的锁。</p>
+<img src="/2021/02/24/synchronized/markword.png" class="">
+
+
+
+<h4 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h4><p>偏向锁是synchronized对象的初始锁状态，它在对象头中记录线程ID和epoch，来表示当前锁的偏向线程。</p>
+<h5 id="偏向锁的获取"><a href="#偏向锁的获取" class="headerlink" title="偏向锁的获取"></a>偏向锁的获取</h5><p>当一个线程获取一个synchronized对象时，如果其对象头的锁状态为偏向锁，则检查其Thread ID：</p>
+<ul>
+<li>如果Thread ID是当前线程，则已经获取了锁，开始执行同步代码块；</li>
+<li>如果不是，尝试用CAS操作替换Thread ID为当前线程：<ul>
+<li>如果成功，获得锁，开始执行同步代码块；</li>
+<li>如果失败，进入偏向锁<strong>撤销/升级</strong>过程。</li>
+</ul>
+</li>
+</ul>
+<h5 id="偏向锁的撤销和升级"><a href="#偏向锁的撤销和升级" class="headerlink" title="偏向锁的撤销和升级"></a>偏向锁的撤销和升级</h5><p>首先我们需要知道，synchronized锁在初始状态是偏向锁，当发生竞争时，有可能撤销为无锁状态，也可能升级为轻量级锁，选择的依据就是当前发生的竞争是同步(实时)发生的竞争、还是“历史”(已经退出同步块的线程)竞争。偏向锁撤销过程开始的条件是当有线程尝试CAS修改偏向锁Thread ID时修改失败，这时，等待持有锁的线程执行到safepoint时暂停线程，对其进行检查：</p>
+<ul>
+<li>如果线程已经不存活或者退出了同步块，则把偏向锁撤销为无锁状态，唤醒原线程，而当前线程继续CAS操作修改Thread ID(回到偏向锁的获取阶段)；</li>
+<li>如果线程未退出同步代码块，则升级为轻量级锁：<ul>
+<li>在原持有锁的线程栈中分配Lock Record空间，把对象头的Mark Word拷贝到Lock Record中，修改对象头Mark Word的前面部分(除了锁标识位)为指向Lock Record的指针，此时原线程获得了轻量级锁，唤醒原线程；</li>
+<li>当前线程则开始轻量级锁的<strong>获取</strong>过程。</li>
+</ul>
+</li>
+</ul>
+<p>偏向锁和无锁状态其实比较类似，所以锁标识位都为01，之所以要区分是为了重入逻辑简单(如果是偏向锁就判断重入)，偏向锁或者无锁升级为轻量级锁的原则或者说思想很简单：不能让我等待(只要持有锁的线程还在执行同步代码块，当前线程就只能等待)，一旦我要等待，就升级轻量级锁。</p>
+<h4 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h4><p>轻量级锁如前提到的，通过在Mark Word中分配指向线程栈中的Lock Record，来表示对象被这个线程占用。而Lock Record就是线程占用对象之前的Mark Word的拷贝，也被称为Displaced Mark Word，用于锁的释放。</p>
+<h5 id="轻量级锁的获取"><a href="#轻量级锁的获取" class="headerlink" title="轻量级锁的获取"></a>轻量级锁的获取</h5><p>如果一个线程检测到当前对象的锁状态为轻量级锁，会先把Mark Word拷贝到当前线程栈的Lock Record中，然后尝试CAS操作修改对象的锁指针，使其指向自己的Lock Record：</p>
+<ul>
+<li>如果成功，获得轻量级锁，开始执行同步代码块；</li>
+<li>如果失败，自旋地使用CAS操作尝试修改锁指针，如果次数耗尽，就升级为重量级锁：<ul>
+<li>暂停原线程，修改锁状态，修改锁指针为指向monitor的指针，原线程获取重量级锁，唤醒原线程；</li>
+<li>当前线程进入阻塞队列。</li>
+</ul>
+</li>
+<li>如果是重入(修改前和修改后相等)，则将Lock Record设为null。</li>
+</ul>
+<h5 id="轻量级锁的解锁"><a href="#轻量级锁的解锁" class="headerlink" title="轻量级锁的解锁"></a>轻量级锁的解锁</h5><p>轻量级锁的释放就是尝试用CAS操作将线程的Lock Record替换回对象头的Mark Word(重入的释放什么都不用做，也不用替换回去)：</p>
+<ul>
+<li>如果成功则对象恢复了之前的状态，释放成功；</li>
+<li>如果失败，则升级为重量级锁：<ul>
+<li>当前线程获得monitor，并释放monitor；</li>
+<li>其他线程竞争重量级锁的monitor。</li>
+</ul>
+</li>
+</ul>
+<h4 id="重量级锁"><a href="#重量级锁" class="headerlink" title="重量级锁"></a>重量级锁</h4><p>重量级锁就是原来的synchronized监视器锁，在对象头的Mark Word中锁标识位为10，前面部分为指向monitor的指针。</p>
+<p>monitor是由C++代码实现、java代码包装的，在java被包装为一个名为ObjectMonitor的对象，其中包含几个主要字段：</p>
+<ul>
+<li>recursions: 线程重入次数</li>
+<li>object: Monitor对象</li>
+<li>owner: 持有者</li>
+<li>waitSet: wait状态的线程列表</li>
+<li>cxq: 单向列表</li>
+<li>entryList: block状态线程列表</li>
+</ul>
+<p>ObjectMonitor的方法中包含大量的CAS操作(相比膨胀前的各种锁CAS操作次数)，需要大量的内核态和用户态的切换，因此非常耗费资源和时间(比轻量级锁的CPU自旋更加耗资源)。</p>
+]]></content>
+      <categories>
+        <category>Multithread &amp; Concurrency</category>
+      </categories>
+      <tags>
+        <tag>Multithread &amp; Concurrency</tag>
+        <tag>synchronized</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Wordpress Docker部署</title>
     <url>/2021/01/23/wordpress/</url>
     <content><![CDATA[<h4 id="安装-docker"><a href="#安装-docker" class="headerlink" title="安装 docker"></a>安装 docker</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">yum install docker-ce</span><br><span class="line">sudo systemctl start docker</span><br><span class="line">sudo systemctl <span class="built_in">enable</span> docker</span><br></pre></td></tr></table></figure>
@@ -1556,6 +1529,35 @@
       <tags>
         <tag>Blog</tag>
         <tag>Wordpress</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>I/O 模型</title>
+    <url>/2021/02/15/io-models/</url>
+    <content><![CDATA[<h2 id="IO模型"><a href="#IO模型" class="headerlink" title="IO模型"></a>IO模型</h2><h3 id="各种IO模型"><a href="#各种IO模型" class="headerlink" title="各种IO模型"></a>各种IO模型</h3><h4 id="阻塞-IO"><a href="#阻塞-IO" class="headerlink" title="阻塞 IO"></a>阻塞 IO</h4><p>缺省情形下，所有文件操作都是阻塞的。在进程空间中进行系统调用 (比如<code>recvfrom</code>)，系统切换到内核态准备接受数据，并将数据从内核拷贝到用户空间(进程内存)，返回成功提示，期间进程一直等待操作完成的返回结果。</p>
+<h4 id="非阻塞-IO"><a href="#非阻塞-IO" class="headerlink" title="非阻塞 IO"></a>非阻塞 IO</h4><p>进程执行系统调用后，如果内核IO操作没完成就返回一个错误；进程通过轮询的方式不断执行系统调用确认操作是否完成，直到返回成功提示。虽然这种方式是非阻塞的，但在获得成功返回之后执行的IO操作是阻塞的，所以整体上是同步的。</p>
+<a id="more"></a>
+
+<h4 id="IO多路复用"><a href="#IO多路复用" class="headerlink" title="IO多路复用"></a>IO多路复用</h4><p>IO多路复用是指非阻塞式地向内核申请IO操作，这样线程不会因为处理某个耗时的IO操作而阻塞。IO复用模型用单进程单线程同时管理多个文件描述符(file description, fd)，将fd构成的数据结构传给<code>select</code> / <code>poll</code> / <code>epoll</code> 系统调用，内核根据采用哪种系统调用而选择返回就绪的fd或使用回调函数通知线程。工作线程(单线程或多线程)负责处理存在就绪队列中的IO操作。</p>
+<h5 id="select和poll"><a href="#select和poll" class="headerlink" title="select和poll"></a>select和poll</h5><p><code>select</code> 和 <code>poll</code> 是非阻塞调用，在每次调用后会收到内核的返回值：就绪的fd或者失败信号(没有就序的fd)。一批fd并不能同时准备就绪，所以select和poll方法通过轮询的方式不断向内核请求准备就绪的fd，每次内核都需要从用户态拷贝请求的fd集合，并且遍历一遍集合来判断哪些fd已经就绪，在有大量IO请求时非常耗时。select和poll的区别在于select是基于数组实现的fd数据结构，有默认的规定大小1024或2048；而poll的fd数据结构基于链表实现，没有大小限制，所以可以同时支持更多的IO请求。此外，poll是水平触发模式，即如果通知了就绪fd但没有被处理，下次会继续通知这些fd。</p>
+<h5 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h5><p><code>epoll</code> 是event poll，是事件驱动的。它的系统调用有一组方法，调用 <code>epoll_create</code> 创建一个eventpoll对象，有了对象后通过 <code>epoll_ctl</code> 向内核注册新fd或是改变fd的状态(而不是把fd集合拷贝到内核)，内核使用红黑树维护已注册的fd，并使用双向链表实现就绪队列，一旦有fd就绪，就会使用回调函数通知用户线程，用户线程的回调函数 <code>    epoll_wait</code> (对应于select和epoll的轮询)获得就序队列。在水平触发模式下，用户线程可以不立即处理通知的就绪fd，因为下次调用 <code>epoll_wait</code> 时会再次获得；在边沿触发模式下，就序事件仅通知一次，进程需要立即处理。</p>
+<h4 id="信号驱动IO"><a href="#信号驱动IO" class="headerlink" title="信号驱动IO"></a>信号驱动IO</h4><p>信号处理IO是一种非阻塞模型，进程用系统调用<code>signaction</code>注册信号处理方法，然后立即返回(非阻塞)，当内核数据就序会递交一个信号给进程的信号处理方法，这时进程再阻塞调用<code>recvfrom</code>拷贝数据到进程中。</p>
+<h4 id="异步IO"><a href="#异步IO" class="headerlink" title="异步IO"></a>异步IO</h4><p>同样是进程系统调用<code>aio_read</code>之后立即返回，但内核不仅完成数据就序工作，还会自动把数据拷贝到进程中，再递交系统调用中指定的信号。它与信号驱动的异步IO的区别在于：信号驱动IO在数据就序时通知，由进程调用数据拷贝操作；异步IO由内核进行数据拷贝，在拷贝完成时通知。</p>
+<h3 id="划分方式"><a href="#划分方式" class="headerlink" title="划分方式"></a>划分方式</h3><p>同步、非同步和阻塞、非阻塞很容易混淆，它们的区别很明显，如果把IO分为两个阶段：发起IO请求(内核准备数据报)和执行IO操作(内核内存拷贝至进程内存)。那么阻塞/非阻塞就在于发起IO请求是否被阻塞，前面介绍的阻塞IO和IO复用都是在第一步阻塞，所以是阻塞IO；而同步/非同步在于执行IO操作是否被阻塞，前四种模型在执行IO操作时都在第二步阻塞，所以是同步IO。</p>
+<h2 id="BIO-NIO-AIO"><a href="#BIO-NIO-AIO" class="headerlink" title="BIO, NIO, AIO"></a>BIO, NIO, AIO</h2><p>BIO是同步阻塞IO(block)，适用于连接数目<strong>少</strong>且固定的架构；</p>
+<p>NIO是同步非阻塞IO(Non-block)，适用于连接数目<strong>多</strong>但连接时间<strong>较短</strong>的架构，JDK1.4开始支持；</p>
+<p>AIO是异步非阻塞IO(Asynchronous)，适用于连接数目<strong>多</strong>且连接持续时间<strong>较长</strong>的架构，JDK7开始支持。</p>
+<p>JavaBIO：服务器采用一个连接对应一个线程的模式，客户端有连接请求时服务器启动一个线程进行处理；</p>
+<p>JavaNIO：服务期采用一个IO请求对应一个线程的模式，客户端发送的连接请求注册到多路复用器上，当轮询到有IO请求时才启动一个线程进行处理。(epoll实现)</p>
+<p>JavaAIO(NIO 2.0)：服务器采用一个有效IO请求对应一个线程，客户端的IO请求由内核先完成再通知服务器启动线程进行处理。</p>
+<p>与前面介绍的IO模型基础思想进行对照就很好理解。</p>
+]]></content>
+      <categories>
+        <category>Operation System</category>
+      </categories>
+      <tags>
+        <tag>Operation System</tag>
+        <tag>I/O models</tag>
       </tags>
   </entry>
   <entry>

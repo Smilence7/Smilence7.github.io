@@ -289,7 +289,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-03-22 00:00:00 / 修改时间：16:43:55" itemprop="dateCreated datePublished" datetime="2021-03-22T00:00:00+08:00">2021-03-22</time>
+      <time title="创建时间：2021-03-22 00:00:00 / 修改时间：16:52:24" itemprop="dateCreated datePublished" datetime="2021-03-22T00:00:00+08:00">2021-03-22</time>
     </span>
 
   
@@ -322,104 +322,14 @@
     <div class="post-body" itemprop="articleBody">
           <h3 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h3><p>每个进程拥有一个结构体task_struct(指向mm_struct)，即进程描述符PCB。每个进程创建时拥有一段虚拟内存地址，通过页表映射到实际的物理地址。32位系统使用32位总线产生2^32bit=4GB的地址空间，64位系统并没有使用64位总线，而是受限于操作系统，最大256G内存。</p>
 <h4 id="分页和页表"><a href="#分页和页表" class="headerlink" title="分页和页表"></a>分页和页表</h4><p>如果对每个地址建立到物理地址的映射，在32位的情况下就需要32GB的空间存放映射表(32位虚拟地址-&gt;32位虚拟地址)。因此操作系统引入了页的概念，将物理内存以4K为单位划分为页，这样建立的映射表就只有8MB。</p>
-<p>页表(地址映射表)保存在CR3控制寄存器中，进程切换时，内核会切换上下文，其中就包括的寄存器，上一个进程的寄存器会被保存回task_struct，下一个寄存器从task_struct被拷贝到寄存器中。</p>
-<p>task_struct中的pgd项指向PGD(page global directory)表，PGD表指向PMD(page middle directory)表，PMD表指向页表(page index)，再通过偏移量(offset)获得最终的物理地址，构成多级页表模式。</p>
-<h4 id="内存寻址"><a href="#内存寻址" class="headerlink" title="内存寻址"></a>内存寻址</h4><p>每个CPU核中都有一个内存控制单元(MMU)，它负责将虚拟地址转为物理地址。MMU通过页表高速缓存(TLB)和页表查询单元(table walk unit)完成这一系列工作。如果高速缓存命中，则直接得到物理地址；否则通过页表查询物理地址并更新缓存。如果页表没有命中内存中的页，从外部存储中加载对应页。</p>
-<p>多级页表节约了很多内存，因为一个进程占用的地址通常是远小于最大值的(32位是4GB)，页表分级后，如果一级页表是空的，就不需要分配二级页表。</p>
-<h3 id="进程的创建"><a href="#进程的创建" class="headerlink" title="进程的创建"></a>进程的创建</h3><p>fork()方法返回一个pid，这个方法会向父进程返回子进程的pid，向子进程本身返回0。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    pid = fork();</span><br><span class="line">    <span class="keyword">if</span> (pid == <span class="number">-1</span>)&#123;</span><br><span class="line">        perror(<span class="string">&quot;pipe()&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (pid == <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="comment">// child process</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    	<span class="comment">// parent process  </span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><em>TODO..</em></p>
-<h3 id="进程间通信-IPC"><a href="#进程间通信-IPC" class="headerlink" title="进程间通信(IPC)"></a>进程间通信(IPC)</h3><h4 id="管道-Pipe"><a href="#管道-Pipe" class="headerlink" title="管道(Pipe)"></a>管道(Pipe)</h4><p>半双工。只能用于有亲缘关系的进程间通信，因为必须由父进程打开一个管道文件，通过fork()产生子进程和共享的管道文件。</p>
-<p><code>int pipe(int pipefd[2]);</code> 可以产生一个管道文件，并且由pipefd[0]存储读方式打开的描述符，pipefd[1]存储写方式打开的描述符。</p>
-<p>fork()之后，子进程也拥有同一组文件描述符，这时父子进程可以通过相应的文件描述符实现双向通信，但同一时间只能使用一种方向，所以是半双工的。</p>
-<h4 id="有名管道-FIFO-Named-Pipe"><a href="#有名管道-FIFO-Named-Pipe" class="headerlink" title="有名管道(FIFO / Named Pipe)"></a>有名管道(FIFO / Named Pipe)</h4><p>半双工，读写的两端如果只有一端存在，会<strong>阻塞等待</strong>。可以用于任意两个进程之间的通信。</p>
-<p>FIFO的本质也是文件，但这个文件在系统中存在名字。通过保证进程的同步读/写来通信，使用字符串命名FIFO，通过名字创建、读/写对应的FIFO。</p>
-<h5 id="创建FIFO"><a href="#创建FIFO" class="headerlink" title="创建FIFO"></a>创建FIFO</h5><p><code>int mkfifo(const char *pathname, mode_t mode);</code> </p>
-<p>其中pathname是FIFO的名字，mode是定义文件权限的参数。创建出的文件类型最前面有一个p标识。</p>
-<h5 id="打开-读写FIFO"><a href="#打开-读写FIFO" class="headerlink" title="打开/读写FIFO"></a>打开/读写FIFO</h5><p>FIFO也是以文件的形式存在的，创建之后使用open()方式读打开/写打开，返回文件描述符。读写FIFO也是同理，read() / write()。</p>
-<h5 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h5><p>服务端</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FIFO1 <span class="meta-string">&quot;/tmp/fifo.1&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FIFO2 <span class="meta-string">&quot;/tmp/fifo.2&quot;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> readfd, writefd;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建两个管道</span></span><br><span class="line">    <span class="keyword">if</span> ((mkfifo(FIFO1, <span class="number">0777</span>) &lt; <span class="number">0</span>) &amp;&amp; (errno != EEXIST))</span><br><span class="line">        Perror(<span class="string">&quot;can&#x27;t create FIFO1&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> ((mkfifo(FIFO2, <span class="number">0777</span>) &lt; <span class="number">0</span>) &amp;&amp; (errno != EEXIST)) &#123;</span><br><span class="line">        <span class="comment">// 进程结束后自动删除第一个管道</span></span><br><span class="line">        unlink(FIFO1); </span><br><span class="line">        Perror(<span class="string">&quot;can&#x27;t create FIFO2&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 读打开第二个，写打开第一个</span></span><br><span class="line">    readfd = open(FIFO2, O_RDONLY, <span class="number">0</span>);</span><br><span class="line">    writefd = open(FIFO1, O_WRONLY, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 进程结束后自动删除</span></span><br><span class="line">    unlink(FIFO1);</span><br><span class="line">    unlink(FIFO2);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用管道</span></span><br><span class="line">    server(readfd, writefd);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>客户端</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FIFO1 <span class="meta-string">&quot;/tmp/fifo.1&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FIFO2 <span class="meta-string">&quot;/tmp/fifo.2&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">// 同上</span></span><br><span class="line">    <span class="keyword">int</span> readfd, writefd;</span><br><span class="line">    <span class="keyword">if</span> ((mkfifo(FIFO1, <span class="number">0777</span>) &lt; <span class="number">0</span>) &amp;&amp; (errno != EEXIST))</span><br><span class="line">        Perror(<span class="string">&quot;can&#x27;t create FIFO1&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> ((mkfifo(FIFO2, <span class="number">0777</span>) &lt; <span class="number">0</span>) &amp;&amp; (errno != EEXIST)) &#123;</span><br><span class="line">        unlink(FIFO1);</span><br><span class="line">        Perror(<span class="string">&quot;can&#x27;t create FIFO2&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 反过来</span></span><br><span class="line">    writefd = open(FIFO2, O_WRONLY);</span><br><span class="line">    readfd = open(FIFO1, O_RDONLY);</span><br><span class="line">    <span class="comment">// 使用管道</span></span><br><span class="line">    client(readfd, writefd);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="共享内存"><a href="#共享内存" class="headerlink" title="共享内存"></a>共享内存</h4><p>多个进程直接读写共享的内存块来实现通信，而不是使用文件方式的读写，是最快的进程通信方法。</p>
-<p><code>int shmget(key_t key, size_t size, int shmflg)</code></p>
-<p>shmflg参数有三种选择：0表示取共享内存标识符，如果不存在就返回错误代码(ENOENT)；IPC_CREAT表示如果没找到key就创建一个新的返回，如果找到了就返回这个标识符；IPC_CREAT|IPC_EXCL表示如果没找到就创建返回，如果找到了返回错误代码(EEXIST)。</p>
-<p>shmat() 挂接一个共享内存区段，使用返回值进行数据读写。</p>
-<p>共享内存需要严格控制并发同步才能保证数据的有效性，比如结合信号量使用。</p>
-<h4 id="信号、信号量"><a href="#信号、信号量" class="headerlink" title="信号、信号量"></a>信号、信号量</h4><p><em>TODO</em></p>
-<h4 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h4><p><em>TODO</em></p>
-<h3 id="僵尸进程-孤儿进程"><a href="#僵尸进程-孤儿进程" class="headerlink" title="僵尸进程/孤儿进程"></a>僵尸进程/孤儿进程</h3><p>当一个子进程因终止而退出时，系统进程表为其保留退出状态信息，需要父进程调用wait()或waitpid()方法来收集这些信息，子进程才会真正被删除；如果父进程没有调用这些方法，子进程会一直占用系统资源，被称为僵尸进程(zombie)。</p>
-<p>当一个父进程先于其子进程终止退出，就没有人为子进程“善后”了，此时子进程成为孤儿进程(orphan)，由init进程接管。而init进程会循环地对子进程调用wait()，为子进程处理退出时的善后工作。</p>
-<p>孤儿进程不会产生不良影响，而僵尸进程会占用系统资源。如果僵尸进程过多，需要找到大量产生僵尸进程的父进程，通过kill命令终止其运行，从而让僵尸进程变成孤儿进程，被init进程接管并wait()释放。</p>
-<h3 id="线程切换的开销"><a href="#线程切换的开销" class="headerlink" title="线程切换的开销"></a>线程切换的开销</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/52845869">https://zhuanlan.zhihu.com/p/52845869</a></p>
-<p>线程切换开销：切换CPU上下文、切换内核栈；</p>
-<p>进程切换开销：切换CPU上下文、切换内核栈、切换虚拟空间地址(进程被分配的内存地址)；</p>
-<h4 id="CPU上下文切换"><a href="#CPU上下文切换" class="headerlink" title="CPU上下文切换"></a>CPU上下文切换</h4><p>CPU上下文包括程序计数器和寄存器，CPU执行任何指令都需要依赖这两者。在切换时需要把上一个<strong>任务</strong>的上下文保存在<strong>事先开辟的内核空间task_struct中</strong>，在任务重新调度时再加载进来。</p>
-<p>任务分为线程上下文切换、进程上下文切换、中断上下文切换。</p>
-<h4 id="虚拟空间地址"><a href="#虚拟空间地址" class="headerlink" title="虚拟空间地址"></a>虚拟空间地址</h4><p>虚拟地址到物理地址通过地址空间映射完成，这种映射关系被保存在<strong>页表</strong>中。</p>
-<p>如果是进程上下文切换，切换虚拟地址空间实际上就是切换页表，那么 快表会失效。页表切换后，原先的快表也就失效了，导致cache命中率降低，程序运行效率会降低。</p>
-<p>快表：快表(TLB)是一种特殊的cache，用于保存常用的地址映射，加速页表查找。</p>
-<h4 id="切换内核栈"><a href="#切换内核栈" class="headerlink" title="切换内核栈"></a>切换内核栈</h4><p>线程/进程的上下文切换必须由内核完成，所以需要经过系统调用从用户态陷入内核态，再回到用户态，需要保存和切换内核栈。</p>
-<h3 id="Java线程调度"><a href="#Java线程调度" class="headerlink" title="Java线程调度"></a>Java线程调度</h3><p>Java线程调度的策略取决于JVM的实现以及运行的操作系统。</p>
-<p>在windows上，Java线程被一对一地绑定到win32线程，win32线程再一对一地绑定到内核级线程。Java6的实现是将线程的10个优先级被映射为Win32的5个线程优先级，windows分为6个进程优先级和6个线程优先级，由两者决定了线程的最终优先级(1~36级)。</p>
-<p>在linux上，java线程也是被一对一映射到内核级线程上，JVM将线程的10个优先级映射为linux的线程nice值(谦让值)，nice值越高就越有可能把cpu让给别的线程用。</p>
-<p>hotspot除了将线程按优先级映射到操作系统原生线程之外，不做任何干扰线程调度的事，全部交由操作系统处理。</p>
-<h3 id="操作系统线程调度"><a href="#操作系统线程调度" class="headerlink" title="操作系统线程调度"></a>操作系统线程调度</h3><p>操作系统对CPU时间分配的基本单位应该是线程，线程是执行任务的最小单位。如果调度时前后的线程不属于一个进程，就会触发进程上下文切换；否则只需要线程上下文切换，而具体的调度方法有以下几种。</p>
-<h4 id="优先服务算法"><a href="#优先服务算法" class="headerlink" title="优先服务算法"></a>优先服务算法</h4><p>先来先服务：按进入队列的时间顺序分配CPU使用权.</p>
-<p>短作业优先：每次选出估计运行时间最短的线程分配CPU使用权.</p>
-<h4 id="优先级调度"><a href="#优先级调度" class="headerlink" title="优先级调度"></a>优先级调度</h4><p>调度是总是选择优先级最高的进程，对紧迫型任务有利。</p>
-<p>非抢占式优先权：当一个最高优先权的线程拿到CPU使用权后，就一直执行直到完成，或因其他原因让出使用权。</p>
-<p>抢占式优先权：当一个最高优先权进程拿到CPU使用权后，如果有更高优先级的线程出现，会立即将使用权分配给新的最高优先级线程。常用于实时系统。</p>
-<h4 id="时间片轮转"><a href="#时间片轮转" class="headerlink" title="时间片轮转"></a>时间片轮转</h4><p>就绪进程按时间顺序排成队列，CPU轮流分配时间片给队列中的进程。</p>
-<h4 id="多级反馈队列"><a href="#多级反馈队列" class="headerlink" title="多级反馈队列"></a>多级反馈队列</h4><p>设置多个不同级别的队列，每级队列的时间片逐级递增，新的就绪进程首先进入1级队列，当在1级队列中分到的时间片执行完还没有完成就进入2级队列，在2级队列会分到比1级队列多一倍的时间片，以此类推。</p>
-<h3 id="Kill和信号"><a href="#Kill和信号" class="headerlink" title="Kill和信号"></a>Kill和信号</h3><p>kill命令实际上是一个程序，根据后面的参数给对应的进程发送一个信号，比如-9对应<code>SIGKILL</code>，用于强制结束进程；-15对应<code>SIGTERM</code>(默认参数)；而键盘按下<code>Control+C</code>会发送一个<code>SIGINT</code>(interrupt signal)。每次操作系统<strong>调度进程</strong>时，会通过<code>do_signal</code>函数检查其task_struct中存储信号的位置有没有需要被处理的信号，和<code>handle_signal</code>进行具体的处理。</p>
-<table>
-<thead>
-<tr>
-<th align="left">信号名称</th>
-<th align="left">用途</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">SIGKILL</td>
-<td align="left">强制杀死进程</td>
-</tr>
-<tr>
-<td align="left">SIGTERM</td>
-<td align="left">软件终止信号</td>
-</tr>
-<tr>
-<td align="left">SIGTSTP</td>
-<td align="left">终端来的停止信号</td>
-</tr>
-<tr>
-<td align="left">SIGPROF</td>
-<td align="left">统计分布图用计时器到时</td>
-</tr>
-<tr>
-<td align="left">SIGUSR1</td>
-<td align="left">用户定义信号1</td>
-</tr>
-<tr>
-<td align="left">SIGUSR2</td>
-<td align="left">用户定义信号2</td>
-</tr>
-<tr>
-<td align="left">SIGINT</td>
-<td align="left">中断进程</td>
-</tr>
-<tr>
-<td align="left">SIGQUIT</td>
-<td align="left">终止进程并且生成core文件</td>
-</tr>
-</tbody></table>
-<h4 id="kill-9-杀不死进程可能的原因"><a href="#kill-9-杀不死进程可能的原因" class="headerlink" title="kill -9 杀不死进程可能的原因"></a>kill -9 杀不死进程可能的原因</h4><ol>
-<li>进程是僵尸进程，虽然释放了资源，但父进程没有wait()</li>
-<li>进程处于内核态，且在等待锁资源</li>
-</ol>
-<h3 id="中断"><a href="#中断" class="headerlink" title="中断"></a>中断</h3><p>中断信号由外部设备发起，被中断控制器捕捉并将相应的信号发送给CPU。例如网卡设备收到网络数据包，会向IO APIC(高级可编程中断控制器)发送中断信号，IO APIC发给本地APIC，本地APIC发送给CPU；CPU根据情况判断是否需要处理中断，如果处理就保存上下文，并切换到中断上下文中。</p>
-<p>信号由用户态处理，而中断由内核态处理。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/03/22/os/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 

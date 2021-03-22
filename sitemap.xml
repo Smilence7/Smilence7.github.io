@@ -179,34 +179,6 @@
   </url>
   
   <url>
-    <loc>https://zayeum.com/tags/ConcurrentHashMap/</loc>
-    <lastmod>2021-03-22</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/tags/CopyOnWriteArrayList/</loc>
-    <lastmod>2021-03-22</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/tags/Concurrent-Collections/</loc>
-    <lastmod>2021-03-22</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/tags/Multithread-Concurrency/</loc>
-    <lastmod>2021-03-22</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zayeum.com/tags/Factory-Pattern/</loc>
     <lastmod>2021-03-22</lastmod>
     <changefreq>daily</changefreq>
@@ -256,6 +228,34 @@
   </url>
   
   <url>
+    <loc>https://zayeum.com/tags/ConcurrentHashMap/</loc>
+    <lastmod>2021-03-22</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/CopyOnWriteArrayList/</loc>
+    <lastmod>2021-03-22</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/Concurrent-Collections/</loc>
+    <lastmod>2021-03-22</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/Multithread-Concurrency/</loc>
+    <lastmod>2021-03-22</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zayeum.com/tags/IDE/</loc>
     <lastmod>2021-03-22</lastmod>
     <changefreq>daily</changefreq>
@@ -264,20 +264,6 @@
   
   <url>
     <loc>https://zayeum.com/tags/Toolbox/</loc>
-    <lastmod>2021-03-22</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/tags/I-O-models/</loc>
-    <lastmod>2021-03-22</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/tags/Operation-System/</loc>
     <lastmod>2021-03-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -326,6 +312,13 @@
   </url>
   
   <url>
+    <loc>https://zayeum.com/tags/Operation-System/</loc>
+    <lastmod>2021-03-22</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zayeum.com/tags/Redis/</loc>
     <lastmod>2021-03-22</lastmod>
     <changefreq>daily</changefreq>
@@ -347,20 +340,6 @@
   </url>
   
   <url>
-    <loc>https://zayeum.com/tags/Heap/</loc>
-    <lastmod>2021-03-22</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/tags/Quicksort/</loc>
-    <lastmod>2021-03-22</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zayeum.com/tags/Spring-Boot/</loc>
     <lastmod>2021-03-22</lastmod>
     <changefreq>daily</changefreq>
@@ -375,6 +354,20 @@
   </url>
   
   <url>
+    <loc>https://zayeum.com/tags/Heap/</loc>
+    <lastmod>2021-03-22</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/Quicksort/</loc>
+    <lastmod>2021-03-22</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zayeum.com/tags/synchronized/</loc>
     <lastmod>2021-03-22</lastmod>
     <changefreq>daily</changefreq>
@@ -383,6 +376,13 @@
   
   <url>
     <loc>https://zayeum.com/tags/Wordpress/</loc>
+    <lastmod>2021-03-22</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/I-O-models/</loc>
     <lastmod>2021-03-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -426,13 +426,6 @@
   </url>
   
   <url>
-    <loc>https://zayeum.com/categories/Multithread-Concurrency/</loc>
-    <lastmod>2021-03-22</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zayeum.com/categories/Design-Patterns/</loc>
     <lastmod>2021-03-22</lastmod>
     <changefreq>daily</changefreq>
@@ -447,14 +440,14 @@
   </url>
   
   <url>
-    <loc>https://zayeum.com/categories/IDE/</loc>
+    <loc>https://zayeum.com/categories/Multithread-Concurrency/</loc>
     <lastmod>2021-03-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zayeum.com/categories/Operation-System/</loc>
+    <loc>https://zayeum.com/categories/IDE/</loc>
     <lastmod>2021-03-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -476,6 +469,13 @@
   
   <url>
     <loc>https://zayeum.com/categories/Framework/</loc>
+    <lastmod>2021-03-22</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/categories/Operation-System/</loc>
     <lastmod>2021-03-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>

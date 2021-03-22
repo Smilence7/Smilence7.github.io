@@ -33,11 +33,11 @@
 <meta property="og:description" content="虚拟内存每个进程拥有一个结构体task_struct(指向mm_struct)，即进程描述符PCB。每个进程创建时拥有一段虚拟内存地址，通过页表映射到实际的物理地址。32位系统使用32位总线产生2^32bit&#x3D;4GB的地址空间，64位系统并没有使用64位总线，而是受限于操作系统，最大256G内存。 分页和页表如果对每个地址建立到物理地址的映射，在32位的情况下就需要32GB的空间存放映射表(32位">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-03-21T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-03-22T08:43:55.006Z">
+<meta property="article:modified_time" content="2021-03-22T08:52:24.287Z">
 <meta property="article:author" content="Zayeum">
-<meta property="article:tag" content="Operation System">
 <meta property="article:tag" content="Interview">
 <meta property="article:tag" content="Computer Basics">
+<meta property="article:tag" content="Operation System">
 <meta name="twitter:card" content="summary">
 
 
@@ -296,7 +296,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-03-22 00:00:00 / 修改时间：16:43:55" itemprop="dateCreated datePublished" datetime="2021-03-22T00:00:00+08:00">2021-03-22</time>
+      <time title="创建时间：2021-03-22 00:00:00 / 修改时间：16:52:24" itemprop="dateCreated datePublished" datetime="2021-03-22T00:00:00+08:00">2021-03-22</time>
     </span>
 
   
@@ -341,6 +341,8 @@
     <div class="post-body" itemprop="articleBody">
         <h3 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h3><p>每个进程拥有一个结构体task_struct(指向mm_struct)，即进程描述符PCB。每个进程创建时拥有一段虚拟内存地址，通过页表映射到实际的物理地址。32位系统使用32位总线产生2^32bit=4GB的地址空间，64位系统并没有使用64位总线，而是受限于操作系统，最大256G内存。</p>
 <h4 id="分页和页表"><a href="#分页和页表" class="headerlink" title="分页和页表"></a>分页和页表</h4><p>如果对每个地址建立到物理地址的映射，在32位的情况下就需要32GB的空间存放映射表(32位虚拟地址-&gt;32位虚拟地址)。因此操作系统引入了页的概念，将物理内存以4K为单位划分为页，这样建立的映射表就只有8MB。</p>
+<a id="more"></a>
+
 <p>页表(地址映射表)保存在CR3控制寄存器中，进程切换时，内核会切换上下文，其中就包括的寄存器，上一个进程的寄存器会被保存回task_struct，下一个寄存器从task_struct被拷贝到寄存器中。</p>
 <p>task_struct中的pgd项指向PGD(page global directory)表，PGD表指向PMD(page middle directory)表，PMD表指向页表(page index)，再通过偏移量(offset)获得最终的物理地址，构成多级页表模式。</p>
 <h4 id="内存寻址"><a href="#内存寻址" class="headerlink" title="内存寻址"></a>内存寻址</h4><p>每个CPU核中都有一个内存控制单元(MMU)，它负责将虚拟地址转为物理地址。MMU通过页表高速缓存(TLB)和页表查询单元(table walk unit)完成这一系列工作。如果高速缓存命中，则直接得到物理地址；否则通过页表查询物理地址并更新缓存。如果页表没有命中内存中的页，从外部存储中加载对应页。</p>
@@ -447,9 +449,9 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Operation-System/" rel="tag"><i class="fa fa-tag"></i> Operation System</a>
               <a href="/tags/Interview/" rel="tag"><i class="fa fa-tag"></i> Interview</a>
               <a href="/tags/Computer-Basics/" rel="tag"><i class="fa fa-tag"></i> Computer Basics</a>
+              <a href="/tags/Operation-System/" rel="tag"><i class="fa fa-tag"></i> Operation System</a>
           </div>
 
         
