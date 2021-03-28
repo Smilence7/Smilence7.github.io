@@ -2,7 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://zayeum.com/2021/03/22/os/</loc>
-    <lastmod>2021-03-22</lastmod>
+    <lastmod>2021-03-28</lastmod>
+  </url>
+  <url>
+    <loc>https://zayeum.com/2021/02/15/io-models/</loc>
+    <lastmod>2021-03-26</lastmod>
   </url>
   <url>
     <loc>https://zayeum.com/2021/01/28/java-basics/</loc>
@@ -14,10 +18,6 @@
   </url>
   <url>
     <loc>https://zayeum.com/2021/02/25/redis/</loc>
-    <lastmod>2021-02-26</lastmod>
-  </url>
-  <url>
-    <loc>https://zayeum.com/2021/02/15/io-models/</loc>
     <lastmod>2021-02-26</lastmod>
   </url>
   <url>
