@@ -165,6 +165,20 @@
 
   
   <url>
+    <loc>https://zayeum.com/tags/Data-Structure/</loc>
+    <lastmod>2021-03-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/Algorithm/</loc>
+    <lastmod>2021-03-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zayeum.com/tags/ConcurrentHashMap/</loc>
     <lastmod>2021-03-28</lastmod>
     <changefreq>daily</changefreq>
@@ -187,20 +201,6 @@
   
   <url>
     <loc>https://zayeum.com/tags/Multithread-Concurrency/</loc>
-    <lastmod>2021-03-28</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/tags/Data-Structure/</loc>
-    <lastmod>2021-03-28</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/tags/Algorithm/</loc>
     <lastmod>2021-03-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -419,14 +419,14 @@
 
   
   <url>
-    <loc>https://zayeum.com/categories/Multithread-Concurrency/</loc>
+    <loc>https://zayeum.com/categories/Algorithm-Data-Structure/</loc>
     <lastmod>2021-03-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zayeum.com/categories/Algorithm-Data-Structure/</loc>
+    <loc>https://zayeum.com/categories/Multithread-Concurrency/</loc>
     <lastmod>2021-03-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>

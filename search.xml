@@ -1,51 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>并发容器系列</title>
-    <url>/2021/02/24/concurrent-collections/</url>
-    <content><![CDATA[<h3 id="CopyOnWriteArrayList"><a href="#CopyOnWriteArrayList" class="headerlink" title="CopyOnWriteArrayList"></a>CopyOnWriteArrayList</h3><p>维护一个被volatile修饰的Object数组：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/** The array, accessed only via getArray/setArray. */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">volatile</span> Object[] array;</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-
-<h4 id="读操作"><a href="#读操作" class="headerlink" title="读操作"></a>读操作</h4><p><code>get()</code>方法普通地读取array：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> get(getArray(), index);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Gets the array.  Non-private so as to also be accessible</span></span><br><span class="line"><span class="comment"> * from CopyOnWriteArraySet class.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">final</span> Object[] getArray() &#123;</span><br><span class="line">    <span class="keyword">return</span> array;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> E <span class="title">get</span><span class="params">(Object[] a, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (E) a[index];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="写操作"><a href="#写操作" class="headerlink" title="写操作"></a>写操作</h4><p><code>add()</code>方法通过ReentrantLock下在拷贝数组中添加元素，并修改原引用来实现：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="comment">// 得到旧数组对象</span></span><br><span class="line">        Object[] elements = getArray();</span><br><span class="line">        <span class="keyword">int</span> len = elements.length;</span><br><span class="line">        <span class="comment">// 拷贝并写新数组对象</span></span><br><span class="line">        Object[] newElements = Arrays.copyOf(elements, len + <span class="number">1</span>);	        </span><br><span class="line">		newElements[len] = e;</span><br><span class="line">		<span class="comment">// 将旧数组引用指向新的数组</span></span><br><span class="line">        setArray(newElements);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="值得注意的问题"><a href="#值得注意的问题" class="headerlink" title="值得注意的问题"></a>值得注意的问题</h4><p>虽然array是volatile修饰的，但array是一个引用，其引用对象也就是数组的内容修改是无法保证数据可见性的，所以在<code>add()</code>方法中采用创建新的数组对象，并将array的引用更新的方法，保证写操作的数据可见性。</p>
-<p>CopyOnWrite容器只能保证数据的最终一致性(基于volatile与引用更新)，不能保证数据实时一致性，也就是说会发生脏读现象。因为后来的读线程不会等待写线程，后来的写线程也不会等待读线程。</p>
-<p>CopyOnWrite的copy特点使其会占用额外的内存，如果对象比较大，可能造成频繁地垃圾回收。</p>
-<h3 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h3><p>ConcurrentHashMap是HashMap的并发优化版本，起初的并发解决方案是HashTable，就是把大部分方法都用synchronized加锁，使所有的并发操作都互斥从而序列化。在JDK 1.8之前的ConcurrentHashMap使用ReentrantLock对哈希表加了分段锁，使用继承ReentrantLock的segment锁分段锁住哈希桶，如果并发线程处理的不是同一段的数据，就可以非阻塞并发进行。而在1.8版本，不仅将结点长度大于8的哈希桶优化为红黑树结构，还取消了segment锁，转而对每个哈希桶加锁，细化了锁的粒度。也就是说，只有当两个线程操作的位置发生哈希碰撞才会互斥。</p>
-<p>并发哈希表中主要的核心操作是 <code>putVal()</code> 和其中的 <code>casTabAt()</code>、<code>helpTransfer()</code>。</p>
-<ul>
-<li><p><code>casTabAt()</code>主要是在<code>putVal()</code>中用到的，当使用<code>tabAt()</code>得到插入位置的哈希桶结点时，发现没有哈希冲突(结点为null)，就尝试CAS操作替换这个位置的结点，如果成功就直接完成了putVal()操作。</p>
-</li>
-<li><p>如果没有成功，<code>putVal()</code>在并发HashMap中的不同之处就是判断这个结点的hash值是否为<code>MOVED</code>，如果是，则说明table正在被扩容，这时要参与到多线程<strong>协作</strong>的扩容过程中，即调用<code>helpTransfer()</code>。</p>
-</li>
-<li><p>在<code>helpTransfer()</code>中主要是判断当前线程加入协作时，扩容是不是已经结束了，并判断协作的线程数是否已经达到限制数了，如果都没有，就修改sizeCtl变量(扩容阶段用于反映协助扩容的线程数)，实际的扩容操作在<code>tansfer()</code>中实现。</p>
-</li>
-<li><p>在<code>transfer()</code>中，线程根据核心数和桶个数分派到自己要处理的桶个数，从分到的最后一个桶开始：</p>
-<ul>
-<li>如果这个桶是空的，就插入占位符告诉其他线程现在在扩容，其他线程不会再往这个位置插入数据，而且会参与协作扩容；</li>
-<li>如果桶不为空且有占位符，说明有线程已经在处理这个桶了，跳过这个桶；</li>
-<li>如果都不是，就可以对这个桶进行迁移了，<strong>先对这个桶上锁</strong>，然后将其拷贝到新的两倍大小的数组nextTable的对应位置。</li>
-<li>如果分派的桶迁移任务数量完成了，或者迁移结束了，更新sizeCtl和table。</li>
-</ul>
-</li>
-<li><p>如果不在扩容，而且发生哈希冲突，就<strong>对这个桶上锁</strong>，在同步块中完成与HashMap中一样的put操作。</p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Multithread &amp; Concurrency</category>
-      </categories>
-      <tags>
-        <tag>ConcurrentHashMap</tag>
-        <tag>CopyOnWriteArrayList</tag>
-        <tag>Concurrent Collections</tag>
-        <tag>Multithread &amp; Concurrency</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>查找树系列</title>
     <url>/2021/02/04/binary-search-tree/</url>
     <content><![CDATA[<h2 id="二叉查找树"><a href="#二叉查找树" class="headerlink" title="二叉查找树"></a>二叉查找树</h2><p>二叉查找树定义每个结点的左子树里的元素值都小于该节点、右子树里的元素都大于该节点，这样的定义使它的中序遍历就是升序的有序数据，时间复杂度为O(n)。</p>
@@ -133,6 +88,51 @@
       <tags>
         <tag>Data Structure</tag>
         <tag>Algorithm</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>并发容器系列</title>
+    <url>/2021/02/24/concurrent-collections/</url>
+    <content><![CDATA[<h3 id="CopyOnWriteArrayList"><a href="#CopyOnWriteArrayList" class="headerlink" title="CopyOnWriteArrayList"></a>CopyOnWriteArrayList</h3><p>维护一个被volatile修饰的Object数组：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/** The array, accessed only via getArray/setArray. */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">transient</span> <span class="keyword">volatile</span> Object[] array;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+<h4 id="读操作"><a href="#读操作" class="headerlink" title="读操作"></a>读操作</h4><p><code>get()</code>方法普通地读取array：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> get(getArray(), index);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Gets the array.  Non-private so as to also be accessible</span></span><br><span class="line"><span class="comment"> * from CopyOnWriteArraySet class.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">final</span> Object[] getArray() &#123;</span><br><span class="line">    <span class="keyword">return</span> array;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> E <span class="title">get</span><span class="params">(Object[] a, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (E) a[index];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="写操作"><a href="#写操作" class="headerlink" title="写操作"></a>写操作</h4><p><code>add()</code>方法通过ReentrantLock下在拷贝数组中添加元素，并修改原引用来实现：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="comment">// 得到旧数组对象</span></span><br><span class="line">        Object[] elements = getArray();</span><br><span class="line">        <span class="keyword">int</span> len = elements.length;</span><br><span class="line">        <span class="comment">// 拷贝并写新数组对象</span></span><br><span class="line">        Object[] newElements = Arrays.copyOf(elements, len + <span class="number">1</span>);	        </span><br><span class="line">		newElements[len] = e;</span><br><span class="line">		<span class="comment">// 将旧数组引用指向新的数组</span></span><br><span class="line">        setArray(newElements);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="值得注意的问题"><a href="#值得注意的问题" class="headerlink" title="值得注意的问题"></a>值得注意的问题</h4><p>虽然array是volatile修饰的，但array是一个引用，其引用对象也就是数组的内容修改是无法保证数据可见性的，所以在<code>add()</code>方法中采用创建新的数组对象，并将array的引用更新的方法，保证写操作的数据可见性。</p>
+<p>CopyOnWrite容器只能保证数据的最终一致性(基于volatile与引用更新)，不能保证数据实时一致性，也就是说会发生脏读现象。因为后来的读线程不会等待写线程，后来的写线程也不会等待读线程。</p>
+<p>CopyOnWrite的copy特点使其会占用额外的内存，如果对象比较大，可能造成频繁地垃圾回收。</p>
+<h3 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h3><p>ConcurrentHashMap是HashMap的并发优化版本，起初的并发解决方案是HashTable，就是把大部分方法都用synchronized加锁，使所有的并发操作都互斥从而序列化。在JDK 1.8之前的ConcurrentHashMap使用ReentrantLock对哈希表加了分段锁，使用继承ReentrantLock的segment锁分段锁住哈希桶，如果并发线程处理的不是同一段的数据，就可以非阻塞并发进行。而在1.8版本，不仅将结点长度大于8的哈希桶优化为红黑树结构，还取消了segment锁，转而对每个哈希桶加锁，细化了锁的粒度。也就是说，只有当两个线程操作的位置发生哈希碰撞才会互斥。</p>
+<p>并发哈希表中主要的核心操作是 <code>putVal()</code> 和其中的 <code>casTabAt()</code>、<code>helpTransfer()</code>。</p>
+<ul>
+<li><p><code>casTabAt()</code>主要是在<code>putVal()</code>中用到的，当使用<code>tabAt()</code>得到插入位置的哈希桶结点时，发现没有哈希冲突(结点为null)，就尝试CAS操作替换这个位置的结点，如果成功就直接完成了putVal()操作。</p>
+</li>
+<li><p>如果没有成功，<code>putVal()</code>在并发HashMap中的不同之处就是判断这个结点的hash值是否为<code>MOVED</code>，如果是，则说明table正在被扩容，这时要参与到多线程<strong>协作</strong>的扩容过程中，即调用<code>helpTransfer()</code>。</p>
+</li>
+<li><p>在<code>helpTransfer()</code>中主要是判断当前线程加入协作时，扩容是不是已经结束了，并判断协作的线程数是否已经达到限制数了，如果都没有，就修改sizeCtl变量(扩容阶段用于反映协助扩容的线程数)，实际的扩容操作在<code>tansfer()</code>中实现。</p>
+</li>
+<li><p>在<code>transfer()</code>中，线程根据核心数和桶个数分派到自己要处理的桶个数，从分到的最后一个桶开始：</p>
+<ul>
+<li>如果这个桶是空的，就插入占位符告诉其他线程现在在扩容，其他线程不会再往这个位置插入数据，而且会参与协作扩容；</li>
+<li>如果桶不为空且有占位符，说明有线程已经在处理这个桶了，跳过这个桶；</li>
+<li>如果都不是，就可以对这个桶进行迁移了，<strong>先对这个桶上锁</strong>，然后将其拷贝到新的两倍大小的数组nextTable的对应位置。</li>
+<li>如果分派的桶迁移任务数量完成了，或者迁移结束了，更新sizeCtl和table。</li>
+</ul>
+</li>
+<li><p>如果不在扩容，而且发生哈希冲突，就<strong>对这个桶上锁</strong>，在同步块中完成与HashMap中一样的put操作。</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Multithread &amp; Concurrency</category>
+      </categories>
+      <tags>
+        <tag>ConcurrentHashMap</tag>
+        <tag>CopyOnWriteArrayList</tag>
+        <tag>Concurrent Collections</tag>
+        <tag>Multithread &amp; Concurrency</tag>
       </tags>
   </entry>
   <entry>
@@ -1106,7 +1106,7 @@
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FIFO1 <span class="meta-string">&quot;/tmp/fifo.1&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FIFO2 <span class="meta-string">&quot;/tmp/fifo.2&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">// 同上</span></span><br><span class="line">    <span class="keyword">int</span> readfd, writefd;</span><br><span class="line">    <span class="keyword">if</span> ((mkfifo(FIFO1, <span class="number">0777</span>) &lt; <span class="number">0</span>) &amp;&amp; (errno != EEXIST))</span><br><span class="line">        Perror(<span class="string">&quot;can&#x27;t create FIFO1&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> ((mkfifo(FIFO2, <span class="number">0777</span>) &lt; <span class="number">0</span>) &amp;&amp; (errno != EEXIST)) &#123;</span><br><span class="line">        unlink(FIFO1);</span><br><span class="line">        Perror(<span class="string">&quot;can&#x27;t create FIFO2&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 反过来</span></span><br><span class="line">    writefd = open(FIFO2, O_WRONLY);</span><br><span class="line">    readfd = open(FIFO1, O_RDONLY);</span><br><span class="line">    <span class="comment">// 使用管道</span></span><br><span class="line">    client(readfd, writefd);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h4 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h4><p><em>TODO</em></p>
 <h4 id="共享内存"><a href="#共享内存" class="headerlink" title="共享内存"></a>共享内存</h4><p>多个进程直接读写共享的内存块来实现通信，是最快的进程通信方法。共享内存本质上是共享一段<strong>物理地址</strong>，而Linux万物皆文件，所以创建共享内存时，系统会创建一个文件，这个文件对应一段物理地址，并且可以被所有进程读写。</p>
-<p>申请/获取共享内存时，shmget会**[(创建+初始化) or 获得]<strong>一个</strong>共享内存区<strong>，同时在特殊shm文件系统(其存储介质是RAM内存)中</strong>[(创建+初始化) or 打开]<strong>一个同名</strong>文件**，返回这个文件的描述符。</p>
+<p>申请/获取共享内存时，shmget会<strong>[(创建+初始化) or 获得]**一个</strong>共享内存区<strong>，同时在特殊shm文件系统(其存储介质是RAM内存)中</strong>[(创建+初始化) or 打开]<strong>一个同名</strong>文件**，返回这个文件的描述符。</p>
 <p><code>int shmget(key_t key, size_t size, int shmflg)</code></p>
 <p>shmflg参数有三种选择：0表示取共享内存标识符，如果不存在就返回错误代码(ENOENT)；IPC_CREAT表示如果没找到key就创建一个新的返回，如果找到了就返回这个标识符；IPC_CREAT|IPC_EXCL表示如果没找到就创建返回，如果找到了返回错误代码(EEXIST)。</p>
 <p><code>shmat()</code> 传入文件描述符，系统会通过<code>mmap()</code>调用将对应的文件映射到当前进程的虚拟空间中，而其他进程也能够映射这个文件，实现多进程的虚拟空间指向同一段物理空间，这样就能够使用文件读写的方式来写共享内存了。</p>
