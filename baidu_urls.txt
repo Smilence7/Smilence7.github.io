@@ -1,5 +1,5 @@
 https://zayeum.com/2021/03/22/os/
 https://zayeum.com/2021/02/25/redis/
 https://zayeum.com/2021/02/24/concurrent-collections/
-https://zayeum.com/2021/02/24/locks/
 https://zayeum.com/2021/02/24/synchronized/
+https://zayeum.com/2021/02/24/locks/

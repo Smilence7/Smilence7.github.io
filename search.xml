@@ -136,6 +136,48 @@
       </tags>
   </entry>
   <entry>
+    <title>Hexo 快速部署</title>
+    <url>/2021/01/23/hexo/</url>
+    <content><![CDATA[<p>因为搭建博客的命令步骤都很容易理解，所以本文只是简单的记录过程中用到的命令和配置，可供参考和回查。</p>
+<h4 id="安装nodejs"><a href="#安装nodejs" class="headerlink" title="安装nodejs"></a>安装nodejs</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo wget https://npm.taobao.org/mirrors/node/latest-v14.x/node-v14.15.4.tar.gz</span><br><span class="line">sudo tar zxvf node-v14.15.4.tar.gz</span><br><span class="line">yum install gcc gcc-c++</span><br><span class="line">mv node-v14.15.4-linux-x64 nodejs</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/node /usr/bin/node </span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npm /usr/bin/npm</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npx /usr/bin/npx</span><br><span class="line"><span class="comment"># 换源</span></span><br><span class="line">npm install -g cnpm --registry=https://registry.npm.taobao.org</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/cnpm /usr/bin/cnpm</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+<h4 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo cnpm install -g hexo-cli</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/hexo /usr/bin/hexo</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 依赖</span></span><br><span class="line">yum -y install curl-devel expat-devel gettext-devel openssl-devel zlib-devel gcc</span><br><span class="line">sudo tar -zxf git-2.21.0.tar.gz</span><br><span class="line"><span class="built_in">cd</span> git-2.21.0</span><br><span class="line">sudo make</span><br><span class="line">sudo make install prefix=/usr/<span class="built_in">local</span>/git</span><br><span class="line"><span class="comment"># 添加环境变量</span></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/usr/<span class="built_in">local</span>/git/bin</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br><span class="line"><span class="comment"># 或建立软连接</span></span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/git/bin/git /usr/<span class="built_in">local</span>/bin/</span><br><span class="line"><span class="comment"># 配置身份</span></span><br><span class="line">git config --global user.name <span class="string">&quot;zayeum&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;smilence7@outlook.com&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo hexo init</span><br><span class="line">sudo hexo s  <span class="comment"># start local server</span></span><br><span class="line">sudo npm install hexo-deployer-git --save</span><br><span class="line">sudo vim _config.yml</span><br><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: <span class="string">&#x27;git&#x27;</span></span><br><span class="line">  repo: <span class="string">&#x27;https://github.com/Smilence7/Smilence7.github.io&#x27;</span></span><br><span class="line">  branch: <span class="string">&#x27;master&#x27;</span></span><br><span class="line">sudo hexo clean</span><br><span class="line">sudo hexo g  <span class="comment"># generate</span></span><br><span class="line">sudo hexo d  <span class="comment"># deploy</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="多端部署"><a href="#多端部署" class="headerlink" title="多端部署"></a>多端部署</h4><p>主要参考 <a href="https://leooo48.github.io/2017/07/12/hexo-github/">这篇博客</a></p>
+<p>从base端上传源文件到github的hexo branch下</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog</span><br><span class="line"><span class="comment"># 先删除theme中的.git文件夹</span></span><br><span class="line">sudo git init</span><br><span class="line">sudo git add -A</span><br><span class="line">sudo git commit -m <span class="string">&quot;all blog source files&quot;</span></span><br><span class="line">sudo git branch hexo</span><br><span class="line">sudo git checkout hexo</span><br><span class="line">sudo git remote add origin https://github.com/Smilence7/Smilence7.github.io.git</span><br><span class="line">sudo git push origin hexo -f</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>在新环境中安装Git, Nodejs</p>
+</li>
+<li><p>从github repo中克隆源文件</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> -b hexo https://github.com/Smilence7/Smilence7.github.io.git</span><br></pre></td></tr></table></figure></li>
+<li><p>安装hexo</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># windows</span></span><br><span class="line">npm install hexo-cli -g</span><br><span class="line">npm install</span><br><span class="line"><span class="comment"># Ubuntu</span></span><br><span class="line">npm install hexo --save</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<h4 id="配置域名"><a href="#配置域名" class="headerlink" title="配置域名"></a>配置域名</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog/<span class="built_in">source</span></span><br><span class="line"><span class="comment"># 创建CNAME文件绑定域名</span></span><br><span class="line">vim CNAME</span><br><span class="line">zayeum.com</span><br><span class="line"><span class="comment"># 在域名管理页面中配置DNS解析</span></span><br><span class="line"><span class="comment"># 解析类型为CNAME，ip为Smilence7.github.io</span></span><br></pre></td></tr></table></figure>
+
+
+]]></content>
+      <categories>
+        <category>Blog</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+        <tag>Blog</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>设计模式</title>
     <url>/2021/02/14/design-pattern/</url>
     <content><![CDATA[<h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><p>模式是你必须在应用程序中自己实现的形式化的最佳实践。</p>
@@ -197,48 +239,6 @@
         <tag>Agent Pattern</tag>
         <tag>Singleton Pattern</tag>
         <tag>Design Patterns</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hexo 快速部署</title>
-    <url>/2021/01/23/hexo/</url>
-    <content><![CDATA[<p>因为搭建博客的命令步骤都很容易理解，所以本文只是简单的记录过程中用到的命令和配置，可供参考和回查。</p>
-<h4 id="安装nodejs"><a href="#安装nodejs" class="headerlink" title="安装nodejs"></a>安装nodejs</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo wget https://npm.taobao.org/mirrors/node/latest-v14.x/node-v14.15.4.tar.gz</span><br><span class="line">sudo tar zxvf node-v14.15.4.tar.gz</span><br><span class="line">yum install gcc gcc-c++</span><br><span class="line">mv node-v14.15.4-linux-x64 nodejs</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/node /usr/bin/node </span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npm /usr/bin/npm</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/npx /usr/bin/npx</span><br><span class="line"><span class="comment"># 换源</span></span><br><span class="line">npm install -g cnpm --registry=https://registry.npm.taobao.org</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/cnpm /usr/bin/cnpm</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-
-<h4 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo cnpm install -g hexo-cli</span><br><span class="line">sudo ln -s /usr/<span class="built_in">local</span>/bin/nodejs/bin/hexo /usr/bin/hexo</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 依赖</span></span><br><span class="line">yum -y install curl-devel expat-devel gettext-devel openssl-devel zlib-devel gcc</span><br><span class="line">sudo tar -zxf git-2.21.0.tar.gz</span><br><span class="line"><span class="built_in">cd</span> git-2.21.0</span><br><span class="line">sudo make</span><br><span class="line">sudo make install prefix=/usr/<span class="built_in">local</span>/git</span><br><span class="line"><span class="comment"># 添加环境变量</span></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/usr/<span class="built_in">local</span>/git/bin</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br><span class="line"><span class="comment"># 或建立软连接</span></span><br><span class="line">ln -s /usr/<span class="built_in">local</span>/git/bin/git /usr/<span class="built_in">local</span>/bin/</span><br><span class="line"><span class="comment"># 配置身份</span></span><br><span class="line">git config --global user.name <span class="string">&quot;zayeum&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;smilence7@outlook.com&quot;</span></span><br></pre></td></tr></table></figure>
-
-
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo hexo init</span><br><span class="line">sudo hexo s  <span class="comment"># start local server</span></span><br><span class="line">sudo npm install hexo-deployer-git --save</span><br><span class="line">sudo vim _config.yml</span><br><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: <span class="string">&#x27;git&#x27;</span></span><br><span class="line">  repo: <span class="string">&#x27;https://github.com/Smilence7/Smilence7.github.io&#x27;</span></span><br><span class="line">  branch: <span class="string">&#x27;master&#x27;</span></span><br><span class="line">sudo hexo clean</span><br><span class="line">sudo hexo g  <span class="comment"># generate</span></span><br><span class="line">sudo hexo d  <span class="comment"># deploy</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<h4 id="多端部署"><a href="#多端部署" class="headerlink" title="多端部署"></a>多端部署</h4><p>主要参考 <a href="https://leooo48.github.io/2017/07/12/hexo-github/">这篇博客</a></p>
-<p>从base端上传源文件到github的hexo branch下</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog</span><br><span class="line"><span class="comment"># 先删除theme中的.git文件夹</span></span><br><span class="line">sudo git init</span><br><span class="line">sudo git add -A</span><br><span class="line">sudo git commit -m <span class="string">&quot;all blog source files&quot;</span></span><br><span class="line">sudo git branch hexo</span><br><span class="line">sudo git checkout hexo</span><br><span class="line">sudo git remote add origin https://github.com/Smilence7/Smilence7.github.io.git</span><br><span class="line">sudo git push origin hexo -f</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>在新环境中安装Git, Nodejs</p>
-</li>
-<li><p>从github repo中克隆源文件</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> -b hexo https://github.com/Smilence7/Smilence7.github.io.git</span><br></pre></td></tr></table></figure></li>
-<li><p>安装hexo</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># windows</span></span><br><span class="line">npm install hexo-cli -g</span><br><span class="line">npm install</span><br><span class="line"><span class="comment"># Ubuntu</span></span><br><span class="line">npm install hexo --save</span><br></pre></td></tr></table></figure>
-
-
-</li>
-</ul>
-<h4 id="配置域名"><a href="#配置域名" class="headerlink" title="配置域名"></a>配置域名</h4><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> blog/<span class="built_in">source</span></span><br><span class="line"><span class="comment"># 创建CNAME文件绑定域名</span></span><br><span class="line">vim CNAME</span><br><span class="line">zayeum.com</span><br><span class="line"><span class="comment"># 在域名管理页面中配置DNS解析</span></span><br><span class="line"><span class="comment"># 解析类型为CNAME，ip为Smilence7.github.io</span></span><br></pre></td></tr></table></figure>
-
-
-]]></content>
-      <categories>
-        <category>Blog</category>
-      </categories>
-      <tags>
-        <tag>Hexo</tag>
-        <tag>Blog</tag>
       </tags>
   </entry>
   <entry>
@@ -1001,82 +1001,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Lock 系列</title>
-    <url>/2021/02/24/locks/</url>
-    <content><![CDATA[<h2 id="ReentrantReadWriteLock"><a href="#ReentrantReadWriteLock" class="headerlink" title="ReentrantReadWriteLock"></a>ReentrantReadWriteLock</h2><p>在一些业务场景中，读数据的操作次数远大于写数据，这是如果读写操作都使用独占锁，会非常影响业务性能；如果允许读操作并发，写操作互斥，并且用读锁和写锁的一些获取规则来防止读脏数据，类似于数据库中读写锁的思想，就能解放大部分读操作的等待时间，j.u.c包中的ReentrantReadWriteLock(简称读写锁)就是对这样的读写锁的实现。</p>
-<p>读写锁是基于Lock实现的一种读写分离的锁，与ReentrantLock相同的是，它们都借助AQS工具类实现独占锁和共享锁，都支持重入，且都能选择公平锁或非公平锁模式。读写锁的特点是读锁与写锁分离，读锁基于共享锁实现，写锁基于独占锁实现，并增加了读写规则：写锁只有在没有线程获取读锁和写锁的情况下获取成功，读锁只能在没有线程获取写锁的情况下获取成功。</p>
-<a id="more"></a>
-
-
-
-<h3 id="读写锁获取计数"><a href="#读写锁获取计数" class="headerlink" title="读写锁获取计数"></a>读写锁获取计数</h3><p>要实现读锁、写锁被线程持有状态的逻辑，就需要对读锁和写锁被获取次数计数。在源码中，使用32位的int类型变量保存读锁、写锁的状态，其中高16位保存读锁状态，低16位保存写状态，获取状态时通过位运算提取需要的部分(mask取低位，右移取高位)。注意，虽然写锁是独占锁，只能同时被同一个线程获取，但写锁是可重入的，所以每次重入时会对其计数+1。</p>
-<h3 id="写锁获取"><a href="#写锁获取" class="headerlink" title="写锁获取"></a>写锁获取</h3><p>Java8源码是这样的：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryWriteLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">int</span> c = getState();</span><br><span class="line">    <span class="keyword">if</span> (c != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> w = exclusiveCount(c);</span><br><span class="line">        <span class="keyword">if</span> (w == <span class="number">0</span> || current != getExclusiveOwnerThread())</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">if</span> (w == MAX_COUNT)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">&quot;Maximum lock count exceeded&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!compareAndSetState(c, c + <span class="number">1</span>))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    setExclusiveOwnerThread(current);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>逻辑其实很清晰，首先获取读写锁状态c和写锁状态w：</p>
-<ul>
-<li>如果 c != 0 且 w == 0，说明有线程获取了读锁，写锁获取失败；</li>
-<li>如果 c != 0 且 current != getExclusiveOwnerThread()，说明有其他线程获取了写锁；</li>
-<li>如果不是这两种情况，就可以尝试获取写锁了，使用CAS操作更新写锁状态 (c + 1)。</li>
-</ul>
-<p>这里可以看出，当前线程在获取读锁后，自己也不能获取写锁进行修改。</p>
-<h3 id="写锁释放"><a href="#写锁释放" class="headerlink" title="写锁释放"></a>写锁释放</h3><p>写锁释放使用AQS的实现类中的<code>tryRealse()</code>方法：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryRelease</span><span class="params">(<span class="keyword">int</span> releases)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!isHeldExclusively())</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalMonitorStateException();</span><br><span class="line">    <span class="keyword">int</span> nextc = getState() - releases;</span><br><span class="line">    <span class="keyword">boolean</span> free = exclusiveCount(nextc) == <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (free)</span><br><span class="line">        setExclusiveOwnerThread(<span class="keyword">null</span>);</span><br><span class="line">    setState(nextc);</span><br><span class="line">    <span class="keyword">return</span> free;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>先计算出新的读写锁状态(-releases)：</p>
-<ul>
-<li>如果新状态中的写锁状态归0了，就释放写锁，更新状态；</li>
-<li>如果新状态中写锁仍不为0，说明是重入，不释放锁，更新状态。</li>
-</ul>
-<h3 id="读锁获取"><a href="#读锁获取" class="headerlink" title="读锁获取"></a>读锁获取</h3><p>源码：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryReadLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">int</span> c = getState();</span><br><span class="line">        <span class="keyword">if</span> (exclusiveCount(c) != <span class="number">0</span> &amp;&amp;</span><br><span class="line">            getExclusiveOwnerThread() != current)</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">int</span> r = sharedCount(c);</span><br><span class="line">        <span class="keyword">if</span> (r == MAX_COUNT)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">&quot;Maximum lock count exceeded&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (compareAndSetState(c, c + SHARED_UNIT)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (r == <span class="number">0</span>) &#123;</span><br><span class="line">                firstReader = current;</span><br><span class="line">                firstReaderHoldCount = <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (firstReader == current) &#123;</span><br><span class="line">                firstReaderHoldCount++;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                HoldCounter rh = cachedHoldCounter;</span><br><span class="line">                <span class="keyword">if</span> (rh == <span class="keyword">null</span> || rh.tid != getThreadId(current))</span><br><span class="line">                    cachedHoldCounter = rh = readHolds.get();</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (rh.count == <span class="number">0</span>)</span><br><span class="line">                    readHolds.set(rh);</span><br><span class="line">                rh.count++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>逻辑更简单了，前面部分是获取逻辑，后面部分是对线程持有读锁数量的计数(不具体讲解)：</p>
-<ul>
-<li>如果写锁被非当前线程获取，则读锁获取失败；</li>
-<li>否则，使用 CAS操作尝试修改读锁状态。</li>
-</ul>
-<h3 id="读锁释放"><a href="#读锁释放" class="headerlink" title="读锁释放"></a>读锁释放</h3><p>读锁释放调用AQS实现类中的<code>tryReleaseShared()</code>方法：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryReleaseShared</span><span class="params">(<span class="keyword">int</span> unused)</span> </span>&#123;</span><br><span class="line">    Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">if</span> (firstReader == current) &#123;</span><br><span class="line">        <span class="comment">// assert firstReaderHoldCount &gt; 0;</span></span><br><span class="line">        <span class="keyword">if</span> (firstReaderHoldCount == <span class="number">1</span>)</span><br><span class="line">            firstReader = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            firstReaderHoldCount--;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        HoldCounter rh = cachedHoldCounter;</span><br><span class="line">        <span class="keyword">if</span> (rh == <span class="keyword">null</span> || rh.tid != getThreadId(current))</span><br><span class="line">            rh = readHolds.get();</span><br><span class="line">        <span class="keyword">int</span> count = rh.count;</span><br><span class="line">        <span class="keyword">if</span> (count &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">            readHolds.remove();</span><br><span class="line">            <span class="keyword">if</span> (count &lt;= <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">throw</span> unmatchedUnlockException();</span><br><span class="line">        &#125;</span><br><span class="line">        --rh.count;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">int</span> c = getState();</span><br><span class="line">        <span class="keyword">int</span> nextc = c - SHARED_UNIT;</span><br><span class="line">        <span class="keyword">if</span> (compareAndSetState(c, nextc))</span><br><span class="line">            <span class="comment">// Releasing the read lock has no effect on readers,</span></span><br><span class="line">            <span class="comment">// but it may allow waiting writers to proceed if</span></span><br><span class="line">            <span class="comment">// both read and write locks are now free.</span></span><br><span class="line">            <span class="keyword">return</span> nextc == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>同样地，if-else部分是对线程持有读锁数量的计数更新，for部分是读锁的释放：计算出新的锁状态，因为读锁不用释放，只需要修改状态计数，所以用CAS操作尝试更新状态。正如官方注释中说的那样，释放读锁对其他读操作没有影响，但可能使其他在等待的写操作能够获取到写锁，所以这个方法返回一个当前锁状态给调用者。</p>
-<h2 id="ReentrantLock"><a href="#ReentrantLock" class="headerlink" title="ReentrantLock"></a>ReentrantLock</h2><p>实际上，ReentrantReadWriteLock已经覆盖了大量ReentrantLock内部的实现，甚至ReentrantLock要更简单一些(因为不分读锁和写锁)。ReentrantLock主要需要关注的就是重入性的实现(锁计数状态)、独占锁和共享锁(对计数状态的逻辑判断不同)、公平锁和非公平锁(获取锁前是否检查阻塞队列)，其中独占锁和共享锁的逻辑是由AQS实现的。</p>
-<h3 id="重入性实现"><a href="#重入性实现" class="headerlink" title="重入性实现"></a>重入性实现</h3><p>与读写锁相同，ReentrantLock的核心就是它的锁状态，通过一个整形数值来表示当前锁被获取的次数：</p>
-<ul>
-<li>如果是独占锁，则锁状态代表重入次数，只有当锁状态为0时才释放锁。</li>
-<li>如果是共享锁，锁状态</li>
-</ul>
-<h3 id="AQS和ReentrantLock的关系"><a href="#AQS和ReentrantLock的关系" class="headerlink" title="AQS和ReentrantLock的关系"></a>AQS和ReentrantLock的关系</h3><p>AQS(AbstractQueuedSynchronizer)是一个抽象类，其中定义了等待队列的双向链表结构，CAS入队、出队方法，锁的所属者记录，以及独占锁和共享锁不同的获取和排队逻辑。ReentrantLock用抽象静态内部类Sync继承了AQS类，用于实现一些通用的同步器方法，再以静态内部类NonfairSync和FairSync对Sync类进一步继承实现。</p>
-<h3 id="NonfairSync和FairSync"><a href="#NonfairSync和FairSync" class="headerlink" title="NonfairSync和FairSync"></a>NonfairSync和FairSync</h3><p>公平锁和非公平锁的区别在于锁的获取过程。在公平锁申请中，尝试修改锁状态之前先判断等待队列中有没有在排队的线程，也就是说自己必须先排队。</p>
-<h4 id="非公平锁获取"><a href="#非公平锁获取" class="headerlink" title="非公平锁获取"></a>非公平锁获取</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">nonfairTryAcquire</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">int</span> c = getState();</span><br><span class="line">    <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (compareAndSetState(<span class="number">0</span>, acquires)) &#123;</span><br><span class="line">            setExclusiveOwnerThread(current);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">        <span class="keyword">int</span> nextc = c + acquires;</span><br><span class="line">        <span class="keyword">if</span> (nextc &lt; <span class="number">0</span>) <span class="comment">// overflow</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">&quot;Maximum lock count exceeded&quot;</span>);</span><br><span class="line">        setState(nextc);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="公平锁获取"><a href="#公平锁获取" class="headerlink" title="公平锁获取"></a>公平锁获取</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryAcquire</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">int</span> c = getState();</span><br><span class="line">    <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!hasQueuedPredecessors() &amp;&amp;</span><br><span class="line">            compareAndSetState(<span class="number">0</span>, acquires)) &#123;</span><br><span class="line">            setExclusiveOwnerThread(current);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">        <span class="keyword">int</span> nextc = c + acquires;</span><br><span class="line">        <span class="keyword">if</span> (nextc &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">&quot;Maximum lock count exceeded&quot;</span>);</span><br><span class="line">        setState(nextc);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在读写锁中没有提到(但也存在)的是，如果锁获取失败，还要将当前线程放入等待队列，并打断线程。源码中通过<code>lock()</code>方法来包装一层新的逻辑：</p>
-<ul>
-<li><p>在非公平锁中，<code>lock()</code>方法先尝试用CAS直接修改锁状态(不管锁是什么状态，先试试能不能改)，成功就直接获得锁，失败了就调用父类AQS实现的<code>acquire()</code>方法，这个方法又会先调用NonfiarSync中实现的<code>tryAcquire()</code>方法试试，也就是上面给出的<code>nonfairTryAcquire()</code>方法，如果又不行，调用AQS实现的<code>acquireQueued()</code>方法把线程放入等待队列，并打断线程。<strong>也就是说</strong>，当一个线程尝试获得锁时，会先尝试“插队”，假如正好抢到了锁，就插队成功，没抢到再乖乖去排队。</p>
-</li>
-<li><p>在公平锁中，<code>lock()</code>直接调用AQS的<code>acquire()</code>方法，使其调用公平锁的<code>tryAcquire()</code>方法，也就是无论如何都遵从公平排队的原则。</p>
-</li>
-</ul>
-<h4 id="释放"><a href="#释放" class="headerlink" title="释放"></a>释放</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryRelease</span><span class="params">(<span class="keyword">int</span> releases)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = getState() - releases;</span><br><span class="line">    <span class="keyword">if</span> (Thread.currentThread() != getExclusiveOwnerThread())</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalMonitorStateException();</span><br><span class="line">    <span class="keyword">boolean</span> free = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;</span><br><span class="line">        free = <span class="keyword">true</span>;</span><br><span class="line">        setExclusiveOwnerThread(<span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    setState(c);</span><br><span class="line">    <span class="keyword">return</span> free;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>两种锁的释放逻辑是一样的。</p>
-<p>ReentrantLock默认在无参情况下默认使用非公平锁模式，当指定构造器参数为true时才使用公平锁。这是因为非公平锁的吞吐量更大，性能更好，不过缺点显然是线程竞争不公平。</p>
-<h3 id="与synchronized的比较"><a href="#与synchronized的比较" class="headerlink" title="与synchronized的比较"></a>与synchronized的比较</h3><p>可重入锁和synchronized锁都是阻塞式同步锁，区别在于：</p>
-<ul>
-<li>synchronized是关键字，隐式地获得和释放锁；ReentrantLock是类，通过实例化对象可以在代码中显式的获得、释放锁。</li>
-<li>ReentrantLock可响应中断，更灵活。</li>
-<li>synchronized互斥逻辑是由JVM完成的；ReentrantLock互斥逻辑是由API完成的。</li>
-<li>ReentrantLock可以支持公平锁。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Multithread &amp; Concurrency</category>
-      </categories>
-      <tags>
-        <tag>Multithread &amp; Concurrency</tag>
-        <tag>Locks</tag>
-        <tag>ReentrantReadWriteLock</tag>
-        <tag>ReentrantLock</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>进程和线程</title>
     <url>/2021/03/22/os/</url>
     <content><![CDATA[<h3 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h3><p>每个进程拥有一个结构体task_struct(指向mm_struct)，即进程描述符PCB。每个进程创建时拥有一段虚拟内存地址，通过页表映射到实际的物理地址。32位系统使用32位总线产生2^32bit=4GB的地址空间，64位系统并没有使用64位总线，而是受限于操作系统，最大256G内存。</p>
@@ -1573,6 +1497,82 @@
       <tags>
         <tag>Multithread &amp; Concurrency</tag>
         <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Lock 系列</title>
+    <url>/2021/02/24/locks/</url>
+    <content><![CDATA[<h2 id="ReentrantReadWriteLock"><a href="#ReentrantReadWriteLock" class="headerlink" title="ReentrantReadWriteLock"></a>ReentrantReadWriteLock</h2><p>在一些业务场景中，读数据的操作次数远大于写数据，这是如果读写操作都使用独占锁，会非常影响业务性能；如果允许读操作并发，写操作互斥，并且用读锁和写锁的一些获取规则来防止读脏数据，类似于数据库中读写锁的思想，就能解放大部分读操作的等待时间，j.u.c包中的ReentrantReadWriteLock(简称读写锁)就是对这样的读写锁的实现。</p>
+<p>读写锁是基于Lock实现的一种读写分离的锁，与ReentrantLock相同的是，它们都借助AQS工具类实现独占锁和共享锁，都支持重入，且都能选择公平锁或非公平锁模式。读写锁的特点是读锁与写锁分离，读锁基于共享锁实现，写锁基于独占锁实现，并增加了读写规则：写锁只有在没有线程获取读锁和写锁的情况下获取成功，读锁只能在没有线程获取写锁的情况下获取成功。</p>
+<a id="more"></a>
+
+
+
+<h3 id="读写锁获取计数"><a href="#读写锁获取计数" class="headerlink" title="读写锁获取计数"></a>读写锁获取计数</h3><p>要实现读锁、写锁被线程持有状态的逻辑，就需要对读锁和写锁被获取次数计数。在源码中，使用32位的int类型变量保存读锁、写锁的状态，其中高16位保存读锁状态，低16位保存写状态，获取状态时通过位运算提取需要的部分(mask取低位，右移取高位)。注意，虽然写锁是独占锁，只能同时被同一个线程获取，但写锁是可重入的，所以每次重入时会对其计数+1。</p>
+<h3 id="写锁获取"><a href="#写锁获取" class="headerlink" title="写锁获取"></a>写锁获取</h3><p>Java8源码是这样的：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryWriteLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">int</span> c = getState();</span><br><span class="line">    <span class="keyword">if</span> (c != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> w = exclusiveCount(c);</span><br><span class="line">        <span class="keyword">if</span> (w == <span class="number">0</span> || current != getExclusiveOwnerThread())</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">if</span> (w == MAX_COUNT)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">&quot;Maximum lock count exceeded&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!compareAndSetState(c, c + <span class="number">1</span>))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    setExclusiveOwnerThread(current);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>逻辑其实很清晰，首先获取读写锁状态c和写锁状态w：</p>
+<ul>
+<li>如果 c != 0 且 w == 0，说明有线程获取了读锁，写锁获取失败；</li>
+<li>如果 c != 0 且 current != getExclusiveOwnerThread()，说明有其他线程获取了写锁；</li>
+<li>如果不是这两种情况，就可以尝试获取写锁了，使用CAS操作更新写锁状态 (c + 1)。</li>
+</ul>
+<p>这里可以看出，当前线程在获取读锁后，自己也不能获取写锁进行修改。</p>
+<h3 id="写锁释放"><a href="#写锁释放" class="headerlink" title="写锁释放"></a>写锁释放</h3><p>写锁释放使用AQS的实现类中的<code>tryRealse()</code>方法：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryRelease</span><span class="params">(<span class="keyword">int</span> releases)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!isHeldExclusively())</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalMonitorStateException();</span><br><span class="line">    <span class="keyword">int</span> nextc = getState() - releases;</span><br><span class="line">    <span class="keyword">boolean</span> free = exclusiveCount(nextc) == <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (free)</span><br><span class="line">        setExclusiveOwnerThread(<span class="keyword">null</span>);</span><br><span class="line">    setState(nextc);</span><br><span class="line">    <span class="keyword">return</span> free;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先计算出新的读写锁状态(-releases)：</p>
+<ul>
+<li>如果新状态中的写锁状态归0了，就释放写锁，更新状态；</li>
+<li>如果新状态中写锁仍不为0，说明是重入，不释放锁，更新状态。</li>
+</ul>
+<h3 id="读锁获取"><a href="#读锁获取" class="headerlink" title="读锁获取"></a>读锁获取</h3><p>源码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryReadLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">int</span> c = getState();</span><br><span class="line">        <span class="keyword">if</span> (exclusiveCount(c) != <span class="number">0</span> &amp;&amp;</span><br><span class="line">            getExclusiveOwnerThread() != current)</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">int</span> r = sharedCount(c);</span><br><span class="line">        <span class="keyword">if</span> (r == MAX_COUNT)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">&quot;Maximum lock count exceeded&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (compareAndSetState(c, c + SHARED_UNIT)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (r == <span class="number">0</span>) &#123;</span><br><span class="line">                firstReader = current;</span><br><span class="line">                firstReaderHoldCount = <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (firstReader == current) &#123;</span><br><span class="line">                firstReaderHoldCount++;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                HoldCounter rh = cachedHoldCounter;</span><br><span class="line">                <span class="keyword">if</span> (rh == <span class="keyword">null</span> || rh.tid != getThreadId(current))</span><br><span class="line">                    cachedHoldCounter = rh = readHolds.get();</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (rh.count == <span class="number">0</span>)</span><br><span class="line">                    readHolds.set(rh);</span><br><span class="line">                rh.count++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>逻辑更简单了，前面部分是获取逻辑，后面部分是对线程持有读锁数量的计数(不具体讲解)：</p>
+<ul>
+<li>如果写锁被非当前线程获取，则读锁获取失败；</li>
+<li>否则，使用 CAS操作尝试修改读锁状态。</li>
+</ul>
+<h3 id="读锁释放"><a href="#读锁释放" class="headerlink" title="读锁释放"></a>读锁释放</h3><p>读锁释放调用AQS实现类中的<code>tryReleaseShared()</code>方法：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryReleaseShared</span><span class="params">(<span class="keyword">int</span> unused)</span> </span>&#123;</span><br><span class="line">    Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">if</span> (firstReader == current) &#123;</span><br><span class="line">        <span class="comment">// assert firstReaderHoldCount &gt; 0;</span></span><br><span class="line">        <span class="keyword">if</span> (firstReaderHoldCount == <span class="number">1</span>)</span><br><span class="line">            firstReader = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            firstReaderHoldCount--;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        HoldCounter rh = cachedHoldCounter;</span><br><span class="line">        <span class="keyword">if</span> (rh == <span class="keyword">null</span> || rh.tid != getThreadId(current))</span><br><span class="line">            rh = readHolds.get();</span><br><span class="line">        <span class="keyword">int</span> count = rh.count;</span><br><span class="line">        <span class="keyword">if</span> (count &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">            readHolds.remove();</span><br><span class="line">            <span class="keyword">if</span> (count &lt;= <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">throw</span> unmatchedUnlockException();</span><br><span class="line">        &#125;</span><br><span class="line">        --rh.count;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">int</span> c = getState();</span><br><span class="line">        <span class="keyword">int</span> nextc = c - SHARED_UNIT;</span><br><span class="line">        <span class="keyword">if</span> (compareAndSetState(c, nextc))</span><br><span class="line">            <span class="comment">// Releasing the read lock has no effect on readers,</span></span><br><span class="line">            <span class="comment">// but it may allow waiting writers to proceed if</span></span><br><span class="line">            <span class="comment">// both read and write locks are now free.</span></span><br><span class="line">            <span class="keyword">return</span> nextc == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样地，if-else部分是对线程持有读锁数量的计数更新，for部分是读锁的释放：计算出新的锁状态，因为读锁不用释放，只需要修改状态计数，所以用CAS操作尝试更新状态。正如官方注释中说的那样，释放读锁对其他读操作没有影响，但可能使其他在等待的写操作能够获取到写锁，所以这个方法返回一个当前锁状态给调用者。</p>
+<h2 id="ReentrantLock"><a href="#ReentrantLock" class="headerlink" title="ReentrantLock"></a>ReentrantLock</h2><p>实际上，ReentrantReadWriteLock已经覆盖了大量ReentrantLock内部的实现，甚至ReentrantLock要更简单一些(因为不分读锁和写锁)。ReentrantLock主要需要关注的就是重入性的实现(锁计数状态)、独占锁和共享锁(对计数状态的逻辑判断不同)、公平锁和非公平锁(获取锁前是否检查阻塞队列)，其中独占锁和共享锁的逻辑是由AQS实现的。</p>
+<h3 id="重入性实现"><a href="#重入性实现" class="headerlink" title="重入性实现"></a>重入性实现</h3><p>与读写锁相同，ReentrantLock的核心就是它的锁状态，通过一个整形数值来表示当前锁被获取的次数：</p>
+<ul>
+<li>如果是独占锁，则锁状态代表重入次数，只有当锁状态为0时才释放锁。</li>
+<li>如果是共享锁，锁状态</li>
+</ul>
+<h3 id="AQS和ReentrantLock的关系"><a href="#AQS和ReentrantLock的关系" class="headerlink" title="AQS和ReentrantLock的关系"></a>AQS和ReentrantLock的关系</h3><p>AQS(AbstractQueuedSynchronizer)是一个抽象类，其中定义了等待队列的双向链表结构，CAS入队、出队方法，锁的所属者记录，以及独占锁和共享锁不同的获取和排队逻辑。ReentrantLock用抽象静态内部类Sync继承了AQS类，用于实现一些通用的同步器方法，再以静态内部类NonfairSync和FairSync对Sync类进一步继承实现。</p>
+<h3 id="NonfairSync和FairSync"><a href="#NonfairSync和FairSync" class="headerlink" title="NonfairSync和FairSync"></a>NonfairSync和FairSync</h3><p>公平锁和非公平锁的区别在于锁的获取过程。在公平锁申请中，尝试修改锁状态之前先判断等待队列中有没有在排队的线程，也就是说自己必须先排队。</p>
+<h4 id="非公平锁获取"><a href="#非公平锁获取" class="headerlink" title="非公平锁获取"></a>非公平锁获取</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">nonfairTryAcquire</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">int</span> c = getState();</span><br><span class="line">    <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (compareAndSetState(<span class="number">0</span>, acquires)) &#123;</span><br><span class="line">            setExclusiveOwnerThread(current);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">        <span class="keyword">int</span> nextc = c + acquires;</span><br><span class="line">        <span class="keyword">if</span> (nextc &lt; <span class="number">0</span>) <span class="comment">// overflow</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">&quot;Maximum lock count exceeded&quot;</span>);</span><br><span class="line">        setState(nextc);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="公平锁获取"><a href="#公平锁获取" class="headerlink" title="公平锁获取"></a>公平锁获取</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryAcquire</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">int</span> c = getState();</span><br><span class="line">    <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!hasQueuedPredecessors() &amp;&amp;</span><br><span class="line">            compareAndSetState(<span class="number">0</span>, acquires)) &#123;</span><br><span class="line">            setExclusiveOwnerThread(current);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">        <span class="keyword">int</span> nextc = c + acquires;</span><br><span class="line">        <span class="keyword">if</span> (nextc &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">&quot;Maximum lock count exceeded&quot;</span>);</span><br><span class="line">        setState(nextc);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在读写锁中没有提到(但也存在)的是，如果锁获取失败，还要将当前线程放入等待队列，并打断线程。源码中通过<code>lock()</code>方法来包装一层新的逻辑：</p>
+<ul>
+<li><p>在非公平锁中，<code>lock()</code>方法先尝试用CAS直接修改锁状态(不管锁是什么状态，先试试能不能改)，成功就直接获得锁，失败了就调用父类AQS实现的<code>acquire()</code>方法，这个方法又会先调用NonfiarSync中实现的<code>tryAcquire()</code>方法试试，也就是上面给出的<code>nonfairTryAcquire()</code>方法，如果又不行，调用AQS实现的<code>acquireQueued()</code>方法把线程放入等待队列，并打断线程。<strong>也就是说</strong>，当一个线程尝试获得锁时，会先尝试“插队”，假如正好抢到了锁，就插队成功，没抢到再乖乖去排队。</p>
+</li>
+<li><p>在公平锁中，<code>lock()</code>直接调用AQS的<code>acquire()</code>方法，使其调用公平锁的<code>tryAcquire()</code>方法，也就是无论如何都遵从公平排队的原则。</p>
+</li>
+</ul>
+<h4 id="释放"><a href="#释放" class="headerlink" title="释放"></a>释放</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryRelease</span><span class="params">(<span class="keyword">int</span> releases)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = getState() - releases;</span><br><span class="line">    <span class="keyword">if</span> (Thread.currentThread() != getExclusiveOwnerThread())</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalMonitorStateException();</span><br><span class="line">    <span class="keyword">boolean</span> free = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;</span><br><span class="line">        free = <span class="keyword">true</span>;</span><br><span class="line">        setExclusiveOwnerThread(<span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    setState(c);</span><br><span class="line">    <span class="keyword">return</span> free;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>两种锁的释放逻辑是一样的。</p>
+<p>ReentrantLock默认在无参情况下默认使用非公平锁模式，当指定构造器参数为true时才使用公平锁。这是因为非公平锁的吞吐量更大，性能更好，不过缺点显然是线程竞争不公平。</p>
+<h3 id="与synchronized的比较"><a href="#与synchronized的比较" class="headerlink" title="与synchronized的比较"></a>与synchronized的比较</h3><p>可重入锁和synchronized锁都是阻塞式同步锁，区别在于：</p>
+<ul>
+<li>synchronized是关键字，隐式地获得和释放锁；ReentrantLock是类，通过实例化对象可以在代码中显式的获得、释放锁。</li>
+<li>ReentrantLock可响应中断，更灵活。</li>
+<li>synchronized互斥逻辑是由JVM完成的；ReentrantLock互斥逻辑是由API完成的。</li>
+<li>ReentrantLock可以支持公平锁。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Multithread &amp; Concurrency</category>
+      </categories>
+      <tags>
+        <tag>Multithread &amp; Concurrency</tag>
+        <tag>Locks</tag>
+        <tag>ReentrantReadWriteLock</tag>
+        <tag>ReentrantLock</tag>
       </tags>
   </entry>
   <entry>
