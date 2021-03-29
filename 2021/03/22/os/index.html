@@ -25,15 +25,15 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"zayeum.com","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
-<meta name="description" content="虚拟内存每个进程拥有一个结构体task_struct(指向mm_struct)，即进程描述符PCB。每个进程创建时拥有一段虚拟内存地址，通过页表映射到实际的物理地址。32位系统使用32位总线产生2^32bit&#x3D;4GB的地址空间，64位系统并没有使用64位总线，而是受限于操作系统，最大256G内存。 分页和页表如果对每个地址建立到物理地址的映射，在32位的情况下就需要32GB的空间存放映射表(32位">
+<meta name="description" content="进程的创建fork传统的fork()过程会为子进程申请一个PCB结构体，拥有新的进程标识符，将父进程的PCB中存储的正文(代码)、数据、上下文(寄存器、程序计数器)拷贝到子进程的PCB中。fork()方法返回一个pid，这个方法会向父进程返回子进程的pid，向子进程本身返回0。注意，fork之后父子进程的执行次序是不确定的。 123456789101112int main()&amp;#123;    p">
 <meta property="og:type" content="article">
-<meta property="og:title" content="进程和线程">
+<meta property="og:title" content="操作系统基础">
 <meta property="og:url" content="https://zayeum.com/2021/03/22/os/index.html">
 <meta property="og:site_name" content="Zayeum&#39;s Carriage">
-<meta property="og:description" content="虚拟内存每个进程拥有一个结构体task_struct(指向mm_struct)，即进程描述符PCB。每个进程创建时拥有一段虚拟内存地址，通过页表映射到实际的物理地址。32位系统使用32位总线产生2^32bit&#x3D;4GB的地址空间，64位系统并没有使用64位总线，而是受限于操作系统，最大256G内存。 分页和页表如果对每个地址建立到物理地址的映射，在32位的情况下就需要32GB的空间存放映射表(32位">
+<meta property="og:description" content="进程的创建fork传统的fork()过程会为子进程申请一个PCB结构体，拥有新的进程标识符，将父进程的PCB中存储的正文(代码)、数据、上下文(寄存器、程序计数器)拷贝到子进程的PCB中。fork()方法返回一个pid，这个方法会向父进程返回子进程的pid，向子进程本身返回0。注意，fork之后父子进程的执行次序是不确定的。 123456789101112int main()&amp;#123;    p">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-03-21T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-03-28T08:27:23.210Z">
+<meta property="article:modified_time" content="2021-03-29T08:22:57.969Z">
 <meta property="article:author" content="Zayeum">
 <meta property="article:tag" content="Operation System">
 <meta property="article:tag" content="Interview">
@@ -53,7 +53,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>进程和线程 | Zayeum's Carriage</title>
+<title>操作系统基础 | Zayeum's Carriage</title>
   
 
 
@@ -191,7 +191,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98"><span class="nav-text">虚拟内存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E9%A1%B5%E5%92%8C%E9%A1%B5%E8%A1%A8"><span class="nav-text">分页和页表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80"><span class="nav-text">内存寻址</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="nav-text">进程的创建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#fork"><span class="nav-text">fork</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Copy-on-Write"><span class="nav-text">Copy on Write</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vfork"><span class="nav-text">vfork</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1-IPC"><span class="nav-text">进程间通信(IPC)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%A1%E9%81%93-Pipe"><span class="nav-text">管道(Pipe)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%89%E5%90%8D%E7%AE%A1%E9%81%93-FIFO-Named-Pipe"><span class="nav-text">有名管道(FIFO &#x2F; Named Pipe)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAFIFO"><span class="nav-text">创建FIFO</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%89%93%E5%BC%80-%E8%AF%BB%E5%86%99FIFO"><span class="nav-text">打开&#x2F;读写FIFO</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-text">示例</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-text">消息队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98"><span class="nav-text">共享内存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94"><span class="nav-text">对比</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F%E3%80%81%E4%BA%92%E6%96%A5%E9%87%8F"><span class="nav-text">信号量、互斥量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E5%92%8Ckill"><span class="nav-text">信号和kill</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#kill-9-%E6%9D%80%E4%B8%8D%E6%AD%BB%E8%BF%9B%E7%A8%8B%E5%8F%AF%E8%83%BD%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="nav-text">kill -9 杀不死进程可能的原因</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B-%E5%AD%A4%E5%84%BF%E8%BF%9B%E7%A8%8B"><span class="nav-text">僵尸进程&#x2F;孤儿进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2"><span class="nav-text">上下文切换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CPU%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2"><span class="nav-text">CPU上下文切换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E7%A9%BA%E9%97%B4%E5%9C%B0%E5%9D%80"><span class="nav-text">虚拟空间地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E5%86%85%E5%AD%98%E7%A9%BA%E9%97%B4"><span class="nav-text">进程内存空间</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6"><span class="nav-text">Java线程调度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6"><span class="nav-text">操作系统线程调度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E6%9C%8D%E5%8A%A1%E7%AE%97%E6%B3%95"><span class="nav-text">优先服务算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E7%BA%A7%E8%B0%83%E5%BA%A6"><span class="nav-text">优先级调度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E7%89%87%E8%BD%AE%E8%BD%AC"><span class="nav-text">时间片轮转</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E7%BA%A7%E5%8F%8D%E9%A6%88%E9%98%9F%E5%88%97"><span class="nav-text">多级反馈队列</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E6%96%AD"><span class="nav-text">中断</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="nav-text">进程的创建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#fork"><span class="nav-text">fork</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Copy-on-Write"><span class="nav-text">Copy on Write</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vfork"><span class="nav-text">vfork</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1-IPC"><span class="nav-text">进程间通信(IPC)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%A1%E9%81%93-Pipe"><span class="nav-text">管道(Pipe)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%89%E5%90%8D%E7%AE%A1%E9%81%93-FIFO-Named-Pipe"><span class="nav-text">有名管道(FIFO &#x2F; Named Pipe)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAFIFO"><span class="nav-text">创建FIFO</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%89%93%E5%BC%80-%E8%AF%BB%E5%86%99FIFO"><span class="nav-text">打开&#x2F;读写FIFO</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-text">示例</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-text">消息队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98"><span class="nav-text">共享内存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94"><span class="nav-text">对比</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F%E3%80%81%E4%BA%92%E6%96%A5%E9%87%8F"><span class="nav-text">信号量、互斥量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7"><span class="nav-text">信号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kill%E5%91%BD%E4%BB%A4"><span class="nav-text">kill命令</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#kill-9-%E6%9D%80%E4%B8%8D%E6%AD%BB%E8%BF%9B%E7%A8%8B%E5%8F%AF%E8%83%BD%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="nav-text">kill -9 杀不死进程可能的原因</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B-%E5%AD%A4%E5%84%BF%E8%BF%9B%E7%A8%8B"><span class="nav-text">僵尸进程&#x2F;孤儿进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2"><span class="nav-text">上下文切换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CPU%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2"><span class="nav-text">CPU上下文切换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E7%A9%BA%E9%97%B4%E5%9C%B0%E5%9D%80"><span class="nav-text">虚拟空间地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E5%86%85%E5%AD%98%E7%A9%BA%E9%97%B4"><span class="nav-text">进程内存空间</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B"><span class="nav-text">守护进程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B"><span class="nav-text">实现一个守护进程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6"><span class="nav-text">Java线程调度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6"><span class="nav-text">操作系统线程调度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E6%9C%8D%E5%8A%A1%E7%AE%97%E6%B3%95"><span class="nav-text">优先服务算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E7%BA%A7%E8%B0%83%E5%BA%A6"><span class="nav-text">优先级调度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E7%89%87%E8%BD%AE%E8%BD%AC"><span class="nav-text">时间片轮转</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E7%BA%A7%E5%8F%8D%E9%A6%88%E9%98%9F%E5%88%97"><span class="nav-text">多级反馈队列</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6"><span class="nav-text">内存管理机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4"><span class="nav-text">虚拟地址空间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E9%A1%B5%E5%92%8C%E9%A1%B5%E8%A1%A8"><span class="nav-text">分页和页表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AE%B5%E9%A1%B5%E5%BC%8F%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6"><span class="nav-text">段页式管理机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80"><span class="nav-text">内存寻址</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E6%96%AD"><span class="nav-text">中断</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -284,7 +284,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          进程和线程
+          操作系统基础
         </h1>
 
         <div class="post-meta-container">
@@ -302,7 +302,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-03-28 16:27:23" itemprop="dateModified" datetime="2021-03-28T16:27:23+08:00">2021-03-28</time>
+        <time title="修改时间：2021-03-29 16:22:57" itemprop="dateModified" datetime="2021-03-29T16:22:57+08:00">2021-03-29</time>
       </span>
 
   
@@ -327,14 +327,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>6.5k</span>
+      <span>7.4k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>6 分钟</span>
+      <span>7 分钟</span>
     </span>
 </div>
 
@@ -345,15 +345,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h3 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h3><p>每个进程拥有一个结构体task_struct(指向mm_struct)，即进程描述符PCB。每个进程创建时拥有一段虚拟内存地址，通过页表映射到实际的物理地址。32位系统使用32位总线产生2^32bit=4GB的地址空间，64位系统并没有使用64位总线，而是受限于操作系统，最大256G内存。</p>
-<h4 id="分页和页表"><a href="#分页和页表" class="headerlink" title="分页和页表"></a>分页和页表</h4><p>如果对每个地址建立到物理地址的映射，在32位的情况下就需要32GB的空间存放映射表(32位虚拟地址-&gt;32位虚拟地址)。因此操作系统引入了页的概念，将物理内存以4K为单位划分为页，这样建立的映射表就只有8MB。</p>
-<a id="more"></a>
-
-<p>页表(地址映射表)保存在CR3控制寄存器中，进程切换时，内核会切换上下文，其中就包括的寄存器，上一个进程的寄存器会被保存回task_struct，下一个寄存器从task_struct被拷贝到寄存器中。</p>
-<p>task_struct中的pgd项指向PGD(page global directory)表，PGD表指向PMD(page middle directory)表，PMD表指向页表(page index)，再通过偏移量(offset)获得最终的物理地址，构成多级页表模式。</p>
-<h4 id="内存寻址"><a href="#内存寻址" class="headerlink" title="内存寻址"></a>内存寻址</h4><p>每个CPU核中都有一个内存控制单元(MMU)，它负责将虚拟地址转为物理地址。MMU通过页表高速缓存(TLB)和页表查询单元(table walk unit)完成这一系列工作。如果高速缓存命中，则直接得到物理地址；否则通过页表查询物理地址并更新缓存。如果页表没有命中内存中的页，从外部存储中加载对应页。</p>
-<p>多级页表节约了很多内存，因为一个进程占用的地址通常是远小于最大值的(32位是4GB)，页表分级后，如果一级页表是空的，就不需要分配二级页表。</p>
-<h3 id="进程的创建"><a href="#进程的创建" class="headerlink" title="进程的创建"></a>进程的创建</h3><h4 id="fork"><a href="#fork" class="headerlink" title="fork"></a>fork</h4><p>传统的fork()过程会为子进程申请一个PCB结构体，拥有新的进程标识符，将父进程的PCB中存储的正文(代码)、数据、上下文(寄存器、程序计数器)拷贝到子进程的PCB中。fork()方法返回一个pid，这个方法会向父进程返回子进程的pid，向子进程本身返回0。注意，fork之后父子进程的执行次序是不确定的。</p>
+        <h3 id="进程的创建"><a href="#进程的创建" class="headerlink" title="进程的创建"></a>进程的创建</h3><h4 id="fork"><a href="#fork" class="headerlink" title="fork"></a>fork</h4><p>传统的fork()过程会为子进程申请一个PCB结构体，拥有新的进程标识符，将父进程的PCB中存储的正文(代码)、数据、上下文(寄存器、程序计数器)拷贝到子进程的PCB中。fork()方法返回一个pid，这个方法会向父进程返回子进程的pid，向子进程本身返回0。注意，fork之后父子进程的执行次序是不确定的。</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    pid = fork();</span><br><span class="line">    <span class="keyword">if</span> (pid == <span class="number">-1</span>)&#123;</span><br><span class="line">        perror(<span class="string">&quot;pipe()&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (pid == <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="comment">// child process</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    	<span class="comment">// parent process  </span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h4 id="Copy-on-Write"><a href="#Copy-on-Write" class="headerlink" title="Copy on Write"></a>Copy on Write</h4><p>但实际上，linux中并不会在fork子进程时立即拷贝父进程的数据，而是在为子进程分配PCB后，将其中的正文、数据、上下文表项指向父进程的对应地址，也就是共用同一份内容，仅当父进程或子进程的这些内容需要更改时，才将父进程的内容拷贝到子进程的PCB中，这就是copy on write方法，本质上是一种lazy思想，可以加速fork()过程，延迟或避免拷贝过程。</p>
 <p>值得注意的是，拷贝的结果是发动修改的一方会将原物理地址的内容拷贝到一个新的地址中，作为自己PCB的内容地址，并进行修改；而另一方仍然使用原来的物理地址。</p>
@@ -391,49 +383,65 @@
 </ul>
 <p>当发生缺页中断时，只需要<strong>一次</strong>将缺失的页加载到内存中的过程。这个过程会首先检查swap cache中有没有所需的页面，如果没有再调用nopage函数加载缺失页。</p>
 <p>所以平均情况下，完成一次通信只需要两次拷贝。</p>
-<h4 id="信号量、互斥量"><a href="#信号量、互斥量" class="headerlink" title="信号量、互斥量"></a>信号量、互斥量</h4><p>信号量和互斥量本质上是计数器，通过一个数字来协调多线程/多进程之间的并发操作。信号量计数器的数值代表资源的数量，使用该资源的线程将信号量减1，释放资源或生产资源的线程将信号量加1，这样能够限制资源的使用，比如建立生产者消费者模型。</p>
+<h4 id="信号量、互斥量"><a href="#信号量、互斥量" class="headerlink" title="信号量、互斥量"></a>信号量、互斥量</h4><p>信号量和互斥量是操作系统中的两种<strong>同步</strong>机制。</p>
+<p>信号量和互斥量本质上是计数器，通过一个数字来协调多线程/多进程之间的并发操作。信号量计数器的数值代表资源的数量，使用该资源的线程将信号量减1，释放资源或生产资源的线程将信号量加1，这样能够限制资源的使用，比如建立生产者消费者模型。</p>
 <p>互斥量是特殊的信号量，计数器只允许为1或0，也就是说资源只允许同时被一个线程使用，达到互斥锁的效果。</p>
-<h4 id="信号和kill"><a href="#信号和kill" class="headerlink" title="信号和kill"></a>信号和kill</h4><p>kill命令实际上是一个程序，根据后面的参数给对应的进程发送一个信号，比如-9对应<code>SIGKILL</code>，用于强制结束进程；-15对应<code>SIGTERM</code>(默认参数)；而键盘按下<code>Control+C</code>会发送一个<code>SIGINT</code>(interrupt signal)。每次操作系统<strong>调度进程</strong>时，会通过<code>do_signal</code>函数检查其task_struct中存储信号的位置有没有需要被处理的信号，和<code>handle_signal</code>进行具体的处理。</p>
+<h4 id="信号"><a href="#信号" class="headerlink" title="信号"></a>信号</h4><p>信号是操作系统中的一种<strong>异步</strong>机制(还有epoll)。操作系统定义了64种信号，每个进程的表项中都有一个64位的信号位，以及一张对应信号处理函数的表。当内核需要将信号传递给进程时，就修改这个进程的信号位对应信号为1。进程每次从内核态返回用户态时，都会检查信号位，并执行相应的信号处理函数。常见的信号有以下几种：</p>
 <table>
 <thead>
 <tr>
-<th align="left">信号名称</th>
-<th align="left">用途</th>
+<th align="center">名称</th>
+<th align="center">含义</th>
+<th align="center">备注</th>
 </tr>
 </thead>
 <tbody><tr>
-<td align="left">SIGKILL</td>
-<td align="left">强制杀死进程</td>
+<td align="center">SIGKILL</td>
+<td align="center">强制杀死进程</td>
+<td align="center">不能被忽略/捕获</td>
 </tr>
 <tr>
-<td align="left">SIGTERM</td>
-<td align="left">软件终止信号</td>
+<td align="center">SIGTERM</td>
+<td align="center">kill 不带参数时对应的信号，终止进程</td>
+<td align="center">能被忽略/捕获</td>
 </tr>
 <tr>
-<td align="left">SIGTSTP</td>
-<td align="left">终端来的停止信号</td>
+<td align="center">SIGINT</td>
+<td align="center">Ctrl+C对应的信号，终止进程</td>
+<td align="center">能被忽略/捕获</td>
 </tr>
 <tr>
-<td align="left">SIGPROF</td>
-<td align="left">统计分布图用计时器到时</td>
+<td align="center">SIGSTOP</td>
+<td align="center">暂停进程执行</td>
+<td align="center">不能被忽略/捕获</td>
 </tr>
 <tr>
-<td align="left">SIGUSR1</td>
-<td align="left">用户定义信号1</td>
+<td align="center">SIGCONT</td>
+<td align="center">恢复暂停的进程执行</td>
+<td align="center">不能被忽略/捕获</td>
 </tr>
 <tr>
-<td align="left">SIGUSR2</td>
-<td align="left">用户定义信号2</td>
+<td align="center">SIGPIPE</td>
+<td align="center">向没有读进程的管道写数据产生的信号</td>
+<td align="center">默认处理是关掉进程，高可用服务器一般捕获处理这个信号</td>
 </tr>
 <tr>
-<td align="left">SIGINT</td>
-<td align="left">中断进程</td>
+<td align="center">SIGIO</td>
+<td align="center">信号驱动IO对应的信号</td>
+<td align="center">能被忽略/捕获</td>
 </tr>
 <tr>
-<td align="left">SIGQUIT</td>
-<td align="left">终止进程并且生成core文件</td>
+<td align="center">SIGBUS</td>
+<td align="center">访问的地址无文件内容对应</td>
+<td align="center">能被忽略/捕获</td>
+</tr>
+<tr>
+<td align="center">SIGSEGV</td>
+<td align="center">访问的地址是内存映射区外，不属于该进程</td>
+<td align="center">能被忽略/捕获</td>
 </tr>
 </tbody></table>
+<h4 id="kill命令"><a href="#kill命令" class="headerlink" title="kill命令"></a>kill命令</h4><p>kill命令实际上是一个<strong>程序</strong>，根据后面的参数给对应的进程发送一个<strong>信号</strong>，比如-9对应<code>SIGKILL</code>，用于强制结束进程；-15对应<code>SIGTERM</code>(默认参数)；而键盘按下<code>Control+C</code>会发送一个<code>SIGINT</code>(interrupt signal)。每次操作系统<strong>调度进程</strong>时，会通过<code>do_signal</code>函数检查其task_struct中存储信号的位置有没有需要被处理的信号，和<code>handle_signal</code>进行具体的处理。</p>
 <h5 id="kill-9-杀不死进程可能的原因"><a href="#kill-9-杀不死进程可能的原因" class="headerlink" title="kill -9 杀不死进程可能的原因"></a>kill -9 杀不死进程可能的原因</h5><ol>
 <li>进程是僵尸进程，虽然释放了资源，但父进程没有wait()</li>
 <li>进程处于内核态，且在等待锁资源</li>
@@ -450,6 +458,16 @@
 <p>如果是进程上下文切换，切换虚拟地址空间需要切换页表和，那么快表会失效。页表切换后，原先的快表也就失效了，导致cache命中率降低，程序运行效率会降低。</p>
 <p>快表：快表(TLB)是一种特殊的cache，用于保存常用的地址映射，加速页表查找。</p>
 <h4 id="进程内存空间"><a href="#进程内存空间" class="headerlink" title="进程内存空间"></a>进程内存空间</h4><p>在进程被分配的虚拟内存空间中，包含代码段、数据段、bss段、栈和堆五个部分。代码段保存只读的程序执行码，数据段存放已初始化的静态变量和全局变量，bss段存放未初始化的静态变量和全局变量，栈中包含一段内核栈用于内核态调用，堆是由程序员分配的内存空间。堆是由地位向高位分配的，栈是由高位向低位分配的。</p>
+<h3 id="守护进程"><a href="#守护进程" class="headerlink" title="守护进程"></a>守护进程</h3><p>操作系统中的守护进程是运行在后台的、独立于控制终端、周期性执行某种任务或等待某些事件发生的进程，这些进程不能直接和用户交互，不受用户登录/注销的影响，一直在运行。</p>
+<p>通过<code>ps axj</code>可以看到所有用户的(a)、包括有控制终端和无控制终端的(x)、与作业控制相关的(j)进程，结果中TPGID栏为-1的都是守护进程(无控制终端)。</p>
+<h4 id="实现一个守护进程"><a href="#实现一个守护进程" class="headerlink" title="实现一个守护进程"></a>实现一个守护进程</h4><ul>
+<li>调用umask(0)将文件模式创建屏蔽字设置为0，让fork出的子进程更加灵活</li>
+<li>调用fork创建子进程，并退出父进程(exit)，让子进程成为孤儿进程，保证子进程不是一个进程组的组长进程。</li>
+<li>调用setsid创建一个新会话，使该进程成为新会话的首进程，并成为进程组的组长进程(所以要先fork)，并使该进程失去控制终端。</li>
+<li>为防止守护进程重新打开控制终端，再次fork子进程、退出父进程，因为子进程不是会话组长，不能重新打开控制终端。</li>
+<li>将当前工作目录改为根目录</li>
+<li>关闭不需要的文件描述符</li>
+</ul>
 <h3 id="Java线程调度"><a href="#Java线程调度" class="headerlink" title="Java线程调度"></a>Java线程调度</h3><p>Java线程调度的策略取决于JVM的实现以及运行的操作系统。</p>
 <p>在windows上，Java线程被一对一地绑定到win32线程，win32线程再一对一地绑定到内核级线程。Java6的实现是将线程的10个优先级被映射为Win32的5个线程优先级，windows分为6个进程优先级和6个线程优先级，由两者决定了线程的最终优先级(1~36级)。</p>
 <p>在linux上，java线程也是被一对一映射到内核级线程上，JVM将线程的10个优先级映射为linux的线程nice值(谦让值)，nice值越高就越有可能把cpu让给别的线程用。</p>
@@ -462,6 +480,15 @@
 <p>抢占式优先权：当一个最高优先权进程拿到CPU使用权后，如果有更高优先级的线程出现，会立即将使用权分配给新的最高优先级线程。常用于实时系统。</p>
 <h4 id="时间片轮转"><a href="#时间片轮转" class="headerlink" title="时间片轮转"></a>时间片轮转</h4><p>就绪进程按时间顺序排成队列，CPU轮流分配时间片给队列中的进程。</p>
 <h4 id="多级反馈队列"><a href="#多级反馈队列" class="headerlink" title="多级反馈队列"></a>多级反馈队列</h4><p>设置多个不同级别的队列，每级队列的时间片逐级递增，新的就绪进程首先进入1级队列，当在1级队列中分到的时间片执行完还没有完成就进入2级队列，在2级队列会分到比1级队列多一倍的时间片，以此类推。</p>
+<h3 id="内存管理机制"><a href="#内存管理机制" class="headerlink" title="内存管理机制"></a>内存管理机制</h3><h4 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h4><p>每个进程拥有一个结构体task_struct(指向mm_struct)，即进程描述符PCB。每个进程创建时拥有一段虚拟内存地址，通过页表映射到实际的物理地址。32位系统使用32位总线产生2^32bit=4GB的地址空间，64位系统并没有使用64位总线，而是受限于操作系统，最大256G内存。</p>
+<h4 id="分页和页表"><a href="#分页和页表" class="headerlink" title="分页和页表"></a>分页和页表</h4><p>如果对每个地址建立到物理地址的映射，在32位的情况下就需要32GB的空间存放映射表(32位虚拟地址-&gt;32位虚拟地址)。因此操作系统引入了页的概念，将物理内存以4K为单位划分为页，这样建立的映射表就只有8MB。</p>
+<a id="more"></a>
+
+<p>页表(地址映射表)保存在CR3控制寄存器中，进程切换时，内核会切换上下文，其中就包括的寄存器，上一个进程的寄存器会被保存回task_struct，下一个寄存器从task_struct被拷贝到寄存器中。</p>
+<p>task_struct中的pgd项指向PGD(page global directory)表，PGD表指向PMD(page middle directory)表，PMD表指向页表(page index)，再通过偏移量(offset)获得最终的物理地址，构成多级页表模式。</p>
+<h4 id="段页式管理机制"><a href="#段页式管理机制" class="headerlink" title="段页式管理机制"></a>段页式管理机制</h4><p>短夜管理机制是分段式管理和分页式管理的组合，分页如上文所述，是物理上的管理方式，而分段式逻辑上的管理方式。</p>
+<h4 id="内存寻址"><a href="#内存寻址" class="headerlink" title="内存寻址"></a>内存寻址</h4><p>每个CPU核中都有一个内存控制单元(MMU)，它负责将虚拟地址转为物理地址。MMU拿到CPU传来的逻辑地址，首先由分段单元转换为线性地址，再由分页单元转换为物理地址。分页单元通过页表高速缓存(TLB)和页表查询单元(table walk unit)完成这一系列工作。页表高速缓存存储了页表中的部分映射，如果高速缓存命中，则直接得到物理地址；否则通过页表查询物理地址并更新缓存。如果查出的页面不在内存中，则发生缺页中断，会从磁盘中加载到内存(页面置换)。</p>
+<p>多级页表节约了很多内存，因为一个进程占用的地址通常是远小于最大值的(32位是4GB)，页表分级后，如果一级页表是空的，就不需要分配二级页表。</p>
 <h3 id="中断"><a href="#中断" class="headerlink" title="中断"></a>中断</h3><p>中断信号由外部设备发起，被中断控制器捕捉并将相应的信号发送给CPU。例如网卡设备收到网络数据包，会向IO APIC(高级可编程中断控制器)发送中断信号，IO APIC发给本地APIC，本地APIC发送给CPU；CPU根据情况判断是否需要处理中断，如果处理就保存上下文，并切换到中断上下文中。</p>
 <p>信号由用户态处理，而中断由内核态处理。</p>
 
@@ -541,13 +568,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">77k</span>
+    <span title="站点总字数">78k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:10</span>
+    <span title="站点阅读时长">1:11</span>
   </span>
 </div>
 
