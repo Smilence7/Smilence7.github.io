@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://zayeum.com/2021/02/07/volatile/</loc>
+    
+    <lastmod>2021-04-26</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://zayeum.com/2021/01/28/java-basics/</loc>
     
     <lastmod>2021-04-26</lastmod>
@@ -89,13 +96,6 @@
     <loc>https://zayeum.com/2021/01/28/singleton-pattern/</loc>
     
     <lastmod>2021-02-14</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/2021/02/07/volatile/</loc>
-    
-    <lastmod>2021-02-10</lastmod>
     
   </url>
   
@@ -242,20 +242,6 @@
   </url>
   
   <url>
-    <loc>https://zayeum.com/tags/Hexo/</loc>
-    <lastmod>2021-04-26</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://zayeum.com/tags/Blog/</loc>
-    <lastmod>2021-04-26</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zayeum.com/tags/IDE/</loc>
     <lastmod>2021-04-26</lastmod>
     <changefreq>daily</changefreq>
@@ -264,6 +250,20 @@
   
   <url>
     <loc>https://zayeum.com/tags/Toolbox/</loc>
+    <lastmod>2021-04-26</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/Hexo/</loc>
+    <lastmod>2021-04-26</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zayeum.com/tags/Blog/</loc>
     <lastmod>2021-04-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -440,14 +440,14 @@
   </url>
   
   <url>
-    <loc>https://zayeum.com/categories/Blog/</loc>
+    <loc>https://zayeum.com/categories/IDE/</loc>
     <lastmod>2021-04-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://zayeum.com/categories/IDE/</loc>
+    <loc>https://zayeum.com/categories/Blog/</loc>
     <lastmod>2021-04-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
